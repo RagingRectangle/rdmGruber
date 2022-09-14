@@ -1,0 +1,61 @@
+{
+    "serverName": "RDM Server",
+    "delaySeconds": 0,
+    "discord": {
+        "token": "",
+        "prefix": "!",
+        "adminIDs": [""],
+        "channelIDs": [""],
+        "useSlashCommands": false,
+        "slashGuildIDs": [""],
+        "helpCommand": "rdmgruber",
+        "pm2Command": "pm2",
+        "scriptCommand": "scripts",
+        "queryCommand": "query",
+        "linksCommand": "links",
+        "devicesCommand": "devices",
+        "noProtoCommand": "noproto",
+        "grepCommand": "grep"
+    },
+    "pm2": {
+        "ignore": [""],
+        "pm2ResponseDeleteSeconds": 0
+    },
+    "roles": {
+        "sendRoleMessage": true,
+        "roleMessageDeleteSeconds": 30,
+        "commandPermRoles": {
+            "pm2": [],
+            "scripts": [],
+            "queries": [],
+            "deviceInfo": [""],
+            "links": []
+        }
+    },
+    "scripts": {
+        "scriptVerify": true,
+        "scriptResponseDeleteSeconds": 0
+    },
+    "devices": {
+        "noProtoMinutes": 20,
+        "noProtoCheckMinutes": 0,
+        "noProtoChannelID": "",
+        "noProtoIgnoreDevices": [],
+        "checkDeleteMinutes": 0,
+        "infoMessageDeleteSeconds": 0,
+        "statusButtonsDeleteMinutes": 0,
+        "buttonLabelRemove": ["ATV"],
+        "displayOptions": {
+            "username": true,
+            "lastHost": false,
+            "location": true
+        }
+    },
+    "rdmDB": {
+        "host": "",
+        "port": 3306,
+        "user": "",
+        "password": "",
+        "database": ""
+    }
+}

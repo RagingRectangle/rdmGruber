@@ -1,0 +1,39 @@
+{
+  "name": "rdmgruber",
+  "version": "1.0.0",
+  "description": "Discord bot for controlling RMD, PM2 processes, and whatever else this idiot comes up with to add.",
+  "main": "rdmgruber.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RagingRectangle/rdmGruber.git"
+  },
+  "author": "RagingRectangle",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RagingRectangle/rdmGruber/issues"
+  },
+  "homepage": "https://github.com/RagingRectangle/rdmGruber#readme",
+  "dependencies": {
+    "@discordjs/rest": "1.1.0",
+    "ansi-parser": "^3.2.10",
+    "color-convert": "^2.0.1",
+    "cron": "^1.8.2",
+    "discord-api-types": "0.36.2",
+    "discord.js": "14.0.1",
+    "file-exists": "^5.0.1",
+    "fs": "0.0.1-security",
+    "geolocation-utils": "^1.2.5",
+    "moment": "^2.29.1",
+    "mysql2": "^2.3.3",
+    "node-fetch": "2.6.1",
+    "pm2": "^5.1.2",
+    "quickchart-js": "^2.0.3",
+    "request": "^2.88.2",
+    "reverse-line-reader": "^0.2.6",
+    "shelljs": "^0.8.4",
+    "sort-by": "^1.2.0"
+  }
+}

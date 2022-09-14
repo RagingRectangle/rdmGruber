@@ -1,0 +1,31 @@
+{
+    "custom": [{
+            "name": "Active Pokemon (All)",
+            "query": "SELECT count(*) FROM pokemon WHERE id IS NOT NULL AND expire_timestamp >= utc_timestamp();"
+        },
+        {
+            "name": "Active Pokemon (IV)",
+            "query": "SELECT count(*) FROM pokemon WHERE id IS NOT NULL AND cp IS NOT NULL AND expire_timestamp >= utc_timestamp();"
+        },
+        {
+            "name": "Gym Count",
+            "query": "SELECT count(*) FROM gym; SELECT count(*) FROM gym WHERE team_id = 0; SELECT count(*) FROM gym WHERE team_id = 1; SELECT count(*) FROM gym WHERE team_id = 2; SELECT count(*) FROM gym WHERE team_id = 3;"
+        },
+        {
+            "name": "Spawn History Count",
+            "query": "SELECT count(*) FROM pokemon;"
+        },
+        {
+            "name": "Pokestop Count",
+            "query": "SELECT count(*) FROM pokestop;"
+        },
+        {
+            "name": "Quest Count",
+            "query": "SELECT count(*) FROM pokestop WHERE quest_type IS NOT NULL;"
+        },
+        {
+            "name": "Spawnpoint Count",
+            "query": "SELECT count(*) FROM spawnpoint;"
+        }
+    ]
+}
