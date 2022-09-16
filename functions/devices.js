@@ -17,8 +17,6 @@ const fs = require('fs');
 const mysql = require('mysql2');
 const moment = require('moment');
 const config = require('../config/config.json');
-const serverInfo = require('../Server_Info.json');
-const noProtoJson = require('../config/noProto.json');
 
 module.exports = {
    deviceStatus: async function deviceStatus(channel, user) {

@@ -5,7 +5,6 @@ const fs = require('fs');
 const Roles = require('../functions/roles.js');
 const Devices = require('../functions/devices.js');
 const config = require('../config/config.json');
-let dbInfo = require('../Server_Info.json');
 
 module.exports = {
 	data: new SlashCommandBuilder()
