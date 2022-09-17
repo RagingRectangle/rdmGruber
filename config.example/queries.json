@@ -1,11 +1,11 @@
 {
     "custom": [{
             "name": "Active Pokemon (All)",
-            "query": "SELECT count(*) FROM pokemon WHERE id IS NOT NULL AND expire_timestamp >= utc_timestamp();"
+            "query": "SELECT count(*) FROM pokemon WHERE id IS NOT NULL AND expire_timestamp >= UNIX_TIMESTAMP();"
         },
         {
             "name": "Active Pokemon (IV)",
-            "query": "SELECT count(*) FROM pokemon WHERE id IS NOT NULL AND cp IS NOT NULL AND expire_timestamp >= utc_timestamp();"
+            "query": "SELECT count(*) FROM pokemon WHERE id IS NOT NULL AND cp IS NOT NULL AND expire_timestamp >= UNIX_TIMESTAMP();"
         },
         {
             "name": "Gym Count",
