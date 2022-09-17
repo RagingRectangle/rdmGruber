@@ -1,6 +1,6 @@
 {
   "name": "rdmgruber",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Discord bot for controlling RMD, PM2 processes, and whatever else this idiot comes up with to add.",
   "main": "rdmgruber.js",
   "scripts": {

@@ -9,7 +9,7 @@
         },
         {
             "name": "Gym Count",
-            "query": "SELECT count(*) FROM gym; SELECT count(*) FROM gym WHERE team_id = 0; SELECT count(*) FROM gym WHERE team_id = 1; SELECT count(*) FROM gym WHERE team_id = 2; SELECT count(*) FROM gym WHERE team_id = 3;"
+            "query": "SELECT `All Gyms`, `Neutral`, `Mystic`, `Valor`, `Instinct` FROM (SELECT count(*) AS `All Gyms`,COUNT(CASE WHEN team_id = 0 THEN 1 END) AS `Neutral`, COUNT(CASE WHEN team_id = 1 THEN 1 END) AS `Mystic`, COUNT(CASE WHEN team_id = 2 THEN 1 END) AS `Valor`, COUNT(CASE WHEN team_id = 3 THEN 1 END) AS `Instinct` FROM gym)AS latte;"
         },
         {
             "name": "Spawn History Count",
