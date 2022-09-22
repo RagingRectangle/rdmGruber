@@ -1,0 +1,301 @@
+{
+   "boards": {
+      "current": {
+         "pokemonOptions": [{
+               "label": "None",
+               "value": "None"
+            }, {
+               "label": "Total Pokemon",
+               "value": "current_total_pokemon"
+            },
+            {
+               "label": "Total IV",
+               "value": "current_iv_pokemon"
+            },
+            {
+               "label": "Average IV",
+               "value": "current_avg_iv"
+            },
+            {
+               "label": "Hundos",
+               "value": "current_100s"
+            },
+            {
+               "label": "Nundos",
+               "value": "current_0s"
+            },
+            {
+               "label": "Shinies",
+               "value": "current_shinies"
+            }
+         ],
+         "gymOptions": [{
+               "label": "None",
+               "value": "None"
+            }, {
+               "label": "Gyms",
+               "value": "current_total_gyms"
+            },
+            {
+               "label": "Battling",
+               "value": "current_battling"
+            },
+            {
+               "label": "Gym Teams",
+               "value": "current_gym_teams"
+            },
+            {
+               "label": "Raids",
+               "value": "current_total_raids"
+            },
+            {
+               "label": "Raid Tiers",
+               "value": "current_raid_tiers"
+            },
+            {
+               "label": "Eggs",
+               "value": "current_total_eggs"
+            },
+            {
+               "label": "Egg Tiers",
+               "value": "current_egg_tiers"
+            }
+         ],
+         "pokestopOptions": [{
+               "label": "None",
+               "value": "None"
+            }, {
+               "label": "Pokestops",
+               "value": "current_total_pokestops"
+            },
+            {
+               "label": "Quests",
+               "value": "current_total_quests"
+            },
+            {
+               "label": "Lures",
+               "value": "current_total_lures"
+            },
+            {
+               "label": "Lure Types",
+               "value": "current_lure_types"
+            },
+            {
+               "label": "Grunts",
+               "value": "current_total_grunts"
+            },
+            {
+               "label": "Leaders",
+               "value": "current_total_leaders"
+            },
+            {
+               "label": "Leader Names",
+               "value": "current_leader_names"
+            }
+         ],
+         "updateIntervals": [{
+               "label": "Every 5 Minutes",
+               "value": "*/5 * * * *"
+            },
+            {
+               "label": "Every 10 Minutes",
+               "value": "*/10 * * * *"
+            },
+            {
+               "label": "Every 15 Minutes",
+               "value": "*/15 * * * *"
+            },
+            {
+               "label": "Every 30 Minutes",
+               "value": "*/30 * * * *"
+            },
+            {
+               "label": "Every 60 Minutes",
+               "value": "*/60 * * * *"
+            }
+         ]
+      },
+      "history": {
+         "historyOptions": [{
+               "label": "Total Pokemon",
+               "value": "history_pokemon"
+            },
+            {
+               "label": "Total IV Scanned",
+               "value": "history_iv_pokemon"
+            },
+            {
+               "label": "Total Hundos",
+               "value": "history_hundos"
+            },
+            {
+               "label": "Total Shinies",
+               "value": "history_shinies"
+            },
+            {
+               "label": "Total Invasions",
+               "value": "history_invasions"
+            },
+            {
+               "label": "Total Quests",
+               "value": "history_quests"
+            }
+         ],
+         "updateIntervals": [{
+            "label": "Yesterday",
+            "value": "1 Day"
+         }, {
+            "label": "The Last 2 Days",
+            "value": "2 Day"
+         }, {
+            "label": "The Last 3 Days",
+            "value": "3 Day"
+         }, {
+            "label": "The Last 5 Days",
+            "value": "5 Day"
+         }, {
+            "label": "The Last Week",
+            "value": "1 Week"
+         }, {
+            "label": "The Last 2 Weeks",
+            "value": "2 Week"
+         }, {
+            "label": "The Last Month",
+            "value": "1 Month"
+         }, {
+            "label": "The Last 2 Months",
+            "value": "2 Month"
+         }, {
+            "label": "The Last 3 Months",
+            "value": "3 Month"
+         }, {
+            "label": "The Last 6 Months",
+            "value": "6 Month"
+         }, {
+            "label": "The Last Year",
+            "value": "1 Year"
+         }, {
+            "label": "The Last 2 Years",
+            "value": "2 Year"
+         }, {
+            "label": "The Last 3 Years",
+            "value": "3 Year"
+         }, {
+            "label": "Total History",
+            "value": "99 Year"
+         }]
+      }
+   },
+   "queries": {
+      "current_total_pokemon": {
+         "label": "{{pokemon}} Pokemon",
+         "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE id IS NOT NULL AND expire_timestamp >= UNIX_TIMESTAMP() AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
+      },
+      "current_iv_pokemon": {
+         "label": "{{iv}} With IV",
+         "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE id IS NOT NULL AND cp IS NOT NULL AND expire_timestamp >= UNIX_TIMESTAMP() AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
+      },
+      "current_avg_iv": {
+         "label": "{{average}} Average",
+         "query": "SELECT AVG(iv) as {{queryName}} FROM pokemon WHERE iv IS NOT null AND expire_timestamp >= UNIX_TIMESTAMP() AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
+      },
+      "current_100s": {
+         "label": "{{hundos}} Hundos",
+         "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE iv = 100 AND expire_timestamp >= UNIX_TIMESTAMP() AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
+      },
+      "current_0s": {
+         "label": "{{nundos}} Nundos",
+         "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE iv = 0 AND expire_timestamp >= UNIX_TIMESTAMP() AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
+      },
+      "current_shinies": {
+         "label": "{{shinies}} Shinies",
+         "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE shiny = 1 AND expire_timestamp >= UNIX_TIMESTAMP() AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
+      },
+      "current_total_gyms": {
+         "label": "{{gyms}} Gyms",
+         "query": "SELECT count(*) as {{queryName}} FROM gym WHERE ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon));"
+      },
+      "current_gym_teams": {
+         "label": "{{gyms}} Gyms",
+         "query": "SELECT `Mystic`, `Valor`, `Instinct`, `Neutral` FROM (SELECT COUNT(CASE WHEN team_id = 1 THEN 1 END) AS `Mystic`, COUNT(CASE WHEN team_id = 2 THEN 1 END) AS `Valor`, COUNT(CASE WHEN team_id = 3 THEN 1 END) AS `Instinct`, COUNT(CASE WHEN team_id = 0 THEN 1 END) AS `Neutral` FROM gym WHERE ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)))AS latte;"
+      },
+      "current_battling": {
+         "label": "{{battling}} Battling",
+         "query": "SELECT count(*) as {{queryName}} FROM gym WHERE in_battle = 1 AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon));"
+      },
+      "current_total_raids": {
+         "label": "{{raids}} Raids",
+         "query": "SELECT count(*) as {{queryName}} FROM gym WHERE UNIX_TIMESTAMP() <= raid_end_timestamp AND UNIX_TIMESTAMP() >= raid_battle_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon));"
+      },
+      "current_raid_tiers": {
+         "label": "{{raids}} Raids",
+         "query": "SELECT `tier_1`, `tier_2`, `tier_3`, `tier_4`, `tier_5`, `tier_6`, `tier_7`, `tier_8` FROM (SELECT COUNT(CASE WHEN raid_level = 1 THEN 1 END) AS `tier_1`, COUNT(CASE WHEN raid_level = 2 THEN 1 END) AS `tier_2`, COUNT(CASE WHEN raid_level = 3 THEN 1 END) AS `tier_3`, COUNT(CASE WHEN raid_level = 4 THEN 1 END) AS `tier_4`, COUNT(CASE WHEN raid_level = 5 THEN 1 END) AS `tier_5`, COUNT(CASE WHEN raid_level = 6 THEN 1 END) AS `tier_6`, COUNT(CASE WHEN raid_level = 7 THEN 1 END) AS `tier_7`, COUNT(CASE WHEN raid_level = 8 THEN 1 END) AS `tier_8` FROM gym WHERE UNIX_TIMESTAMP() < raid_end_timestamp AND UNIX_TIMESTAMP() > raid_battle_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)))AS latte;"
+      },
+      "current_total_eggs": {
+         "label": "{{eggs}} Eggs",
+         "query": "SELECT count(*) as {{queryName}} FROM gym WHERE UNIX_TIMESTAMP() >= raid_spawn_timestamp AND UNIX_TIMESTAMP() <= raid_battle_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon));"
+      },
+      "current_egg_tiers": {
+         "label": "{{eggs}} Eggs",
+         "query": "SELECT `tier_1`, `tier_2`, `tier_3`, `tier_4`, `tier_5`, `tier_6`, `tier_7`, `tier_8` FROM (SELECT COUNT(CASE WHEN raid_level = 1 THEN 1 END) AS `tier_1`, COUNT(CASE WHEN raid_level = 2 THEN 1 END) AS `tier_2`, COUNT(CASE WHEN raid_level = 3 THEN 1 END) AS `tier_3`, COUNT(CASE WHEN raid_level = 4 THEN 1 END) AS `tier_4`, COUNT(CASE WHEN raid_level = 5 THEN 1 END) AS `tier_5`, COUNT(CASE WHEN raid_level = 6 THEN 1 END) AS `tier_6`, COUNT(CASE WHEN raid_level = 7 THEN 1 END) AS `tier_7`, COUNT(CASE WHEN raid_level = 8 THEN 1 END) AS `tier_8` FROM gym WHERE UNIX_TIMESTAMP() < raid_battle_timestamp AND UNIX_TIMESTAMP() > raid_spawn_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)))AS latte;"
+      },
+      "current_total_pokestops": {
+         "label": "{{pokestops}} Pokestops",
+         "query": "SELECT count(*) as {{queryName}} from pokestop WHERE ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon));"
+      },
+      "current_total_quests": {
+         "label": "{{quests}} Quests",
+         "query": "SELECT COUNT(CASE WHEN quest_conditions IS NOT null THEN 1 END) AS ar, COUNT(CASE WHEN alternative_quest_conditions IS NOT null THEN 1 END) AS non_ar FROM pokestop WHERE ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon));"
+      },
+      "current_total_lures": {
+         "label": "{{lures}} Lures",
+         "query": "SELECT count(*) as {{queryName}} FROM pokestop WHERE UNIX_TIMESTAMP() <= lure_expire_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon));"
+      },
+      "current_lure_types": {
+         "label": "Lures",
+         "query": "SELECT `normal`, `glacial`, `mossy`, `magnetic`, `rainy` FROM (SELECT COUNT(CASE WHEN lure_id = 501 THEN 1 END) AS `normal`, COUNT(CASE WHEN lure_id = 502 THEN 1 END) AS `glacial`, COUNT(CASE WHEN lure_id = 503 THEN 1 END) AS `mossy`, COUNT(CASE WHEN lure_id = 504 THEN 1 END) AS `magnetic`, COUNT(CASE WHEN lure_id = 505 THEN 1 END) AS `rainy` FROM pokestop WHERE UNIX_TIMESTAMP() < lure_expire_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon)))AS latte;"
+      },
+      "current_total_grunts": {
+         "label": "{{grunts}} Grunts",
+         "query": "SELECT count(*) FROM incident a, pokestop b WHERE a.pokestop_id = b.id AND UNIX_TIMESTAMP() < a.expiration AND a.character NOT IN ('41','42','43','44') AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(b.lat, b.lon));"
+      },
+      "current_total_leaders": {
+         "label": "{{leaders}} Leaders",
+         "query": "SELECT count(*) FROM incident a, pokestop b WHERE a.pokestop_id = b.id AND UNIX_TIMESTAMP() < a.expiration AND a.character IN ('41','42','43','44') AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(b.lat, b.lon));"
+      },
+      "current_leader_names": {
+         "label": "Leaders",
+         "query": "SELECT a.character, count(*) FROM incident a, pokestop b WHERE a.pokestop_id = b.id AND UNIX_TIMESTAMP() < a.expiration AND a.character IN ('41','42','43','44') AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(b.lat, b.lon)) group by a.character;"
+      },
+      "history_pokemon": {
+         "label": "{{pokemon}} Pokemon",
+         "query": "SELECT SUM(count) FROM pokemon_stats WHERE DATE(date) > curdate() - interval {{interval}} AND DATE(date) != curdate();"
+      },
+      "history_iv_pokemon": {
+         "label": "{{iv}} With IV",
+         "query": "SELECT SUM(count) FROM pokemon_iv_stats WHERE DATE(date) > curdate() - interval {{interval}} AND DATE(date) != curdate();"
+      },
+      "history_hundos": {
+         "label": "{{hundos}} Hundos",
+         "query": "SELECT SUM(count) FROM pokemon_hundo_stats WHERE DATE(date) > curdate() - interval {{interval}} AND DATE(date) != curdate();"
+      },
+      "history_shinies": {
+         "label": "{{shinies}} Shinies",
+         "query": "SELECT SUM(count) FROM pokemon_shiny_stats WHERE DATE(date) > curdate() - interval {{interval}} AND DATE(date) != curdate();"
+      },
+      "history_invasions": {
+         "label": "{{grunts}} Invasions",
+         "query": "SELECT SUM(count) FROM invasion_stats WHERE DATE(date) > curdate() - interval {{interval}} AND DATE(date) != curdate();"
+      },
+      "history_quests": {
+         "label": "{{quests}} Quests",
+         "query": "SELECT SUM(count) FROM quest_stats WHERE DATE(date) > curdate() - interval {{interval}} AND DATE(date) != curdate();"
+      }
+   },
+   "protos": {
+      "41": "Cliff",
+      "42": "Arlo",
+      "43": "Sierra",
+      "44": "Giovanni"
+   }
+}

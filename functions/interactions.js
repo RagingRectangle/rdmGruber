@@ -17,15 +17,17 @@ const pm2 = require('pm2');
 const shell = require('shelljs');
 const ansiParser = require("ansi-parser");
 const config = require('../config/config.json');
+const boardConfig = require('../config/boards.json');
 const queryConfig = require('../config/queries.json');
 const scriptConfig = require('../config/scripts.json');
 const Pm2Buttons = require('./pm2.js');
 const Scripts = require('./scripts.js');
 const Queries = require('./queries.js');
 const Devices = require('./devices.js');
+const Boards = require('./boards.js');
 
 module.exports = {
-   listInteraction: async function listInteraction(interaction, interactionID, userPerms) {
+   listInteraction: async function listInteraction(client, interaction, interactionID, userPerms) {
       //Scripts
       if (userPerms.includes('scripts') || userPerms.includes('admin')) {
          if (interactionID === 'scriptList') {
@@ -52,22 +54,27 @@ module.exports = {
          if (interactionID === 'queryList') {
             let queryName = interaction.values[0].replace(`${config.serverName}~customQuery~`, '');
             interaction.update({});
-            for (var i in queryConfig.custom){
-               if (queryConfig.custom[i]['name'] === queryName){
+            for (var i in queryConfig.custom) {
+               if (queryConfig.custom[i]['name'] === queryName) {
                   Queries.customQuery(interaction.message.channel, interaction.user, queryName, queryConfig.custom[i]['query']);
                }
-            }//End of i loop
+            } //End of i loop
          }
       } //End of queries
 
-
+      //Boards
+      if (interactionID.startsWith('board~')) {
+         if (userPerms.includes('boards') || userPerms.includes('admin')) {
+            module.exports.boardInteractions(client, interaction, interactionID, userPerms);
+         }
+      } //End of board
    }, //End of listInteraction()
 
 
-   buttonInteraction: async function buttonInteraction(interaction, interactionID, userPerms) {
+   buttonInteraction: async function buttonInteraction(client, interaction, interactionID, userPerms) {
       //PM2
       if (userPerms.includes('pm2') || userPerms.includes('admin')) {
-         pm2MenuButtons = ["restart", "start", "stop"];
+         let pm2MenuButtons = ["restart", "start", "stop"];
          if (pm2MenuButtons.includes(interactionID)) {
             interaction.deferUpdate();
             Pm2Buttons.pm2MainMenu(interaction, interactionID)
@@ -172,5 +179,73 @@ module.exports = {
             Devices.getDeviceInfo(interaction.message.channel, interaction.user, deviceID);
          }
       } //End of devices
+
+      //Boards
+      if (interactionID.startsWith('board~')) {
+         if (userPerms.includes('boards') || userPerms.includes('admin')) {
+            module.exports.boardInteractions(client, interaction, interactionID, userPerms);
+         }
+      } //End of board
    }, //End of buttonInteraction()
+
+
+   boardInteractions: async function boardInteractions(client, interaction, interactionID, userPerms) {
+      interactionID = interactionID.replace('board~', '');
+      let splitID = interactionID.split('~');
+      //Cancel board
+      if (splitID[0] === 'cancel') {
+         interaction.update({
+            content: `Board cancelled, dismiss this anytime.`,
+            embeds: [],
+            components: [],
+            ephemeral: true
+         }).catch(console.error);
+      }
+      //Start new board
+      if (splitID[0] === 'start') {
+         Boards.startNewBoard(client, interaction);
+      }
+      //Add update interval and verify
+      if (splitID[1] === 'updateInterval') {
+         Boards.addBoardUpdateInterval(interaction, interaction.values[0]);
+      }
+      //Current board
+      if (splitID[0] === 'current') {
+         //Create/restart board
+         if (splitID[1] === 'create' || splitID[1] === 'restart') {
+            Boards.beginCurrentBoard(interaction);
+         }
+         //Add area
+         else if (splitID[1] === 'addArea') {
+            Boards.addBoardArea(interaction, splitID[0], interaction.values[0]);
+         }
+         //Add pokemon
+         else if (splitID[1] === 'addPokemon') {
+            Boards.addBoardPokemon(interaction, splitID[0], interaction.values);
+         }
+         //Add gyms
+         else if (splitID[1] === 'addGyms') {
+            Boards.addBoardGyms(interaction, splitID[0], interaction.values);
+         }
+         //Add pokestops
+         else if (splitID[1] === 'addPokestops') {
+            Boards.addBoardPokestops(interaction, splitID[0], interaction.values);
+         }
+      } //End of current
+      //History board
+      if (splitID[0] === 'history') {
+         //Create/restart board
+         if (splitID[1] === 'create' || splitID[1] === 'restart') {
+            Boards.startHistoryBoard(interaction);
+         }
+         //Add options
+         else if (splitID[1] === 'addOptions') {
+            Boards.addHistoryOptions(interaction, "history", interaction.values);
+         }
+         //Add length
+         else if (splitID[1] === 'addLength') {
+            Boards.addHistoryLength(interaction, "history", interaction.values[0]);
+         }
+      } //End of history
+   } //End of boardInteractions()
 }

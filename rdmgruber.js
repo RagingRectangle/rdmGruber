@@ -22,6 +22,7 @@ const fs = require('fs');
 const pm2 = require('pm2');
 const CronJob = require('cron').CronJob;
 const config = require('./config/config.json');
+const boardConfig = require('./config/boards.json');
 const GenerateServerInfo = require('./functions/generateServerInfo.js');
 const roleConfig = require('./config/roles.json');
 const SlashRegistry = require('./functions/slashRegistry.js');
@@ -32,6 +33,7 @@ const Pm2Buttons = require('./functions/pm2.js');
 const Links = require('./functions/links.js');
 const Scripts = require('./functions/scripts.js');
 const Queries = require('./functions/queries.js');
+const Boards = require('./functions/boards.js');
 
 var roleMessages = [];
 roleConfig.forEach(role => {
@@ -42,15 +44,12 @@ roleConfig.forEach(role => {
 
 client.on('ready', async () => {
 	console.log("rdmGruber Bot Logged In");
-
 	//Generate server info
 	await GenerateServerInfo.generate();
-
 	//Register Slash Commands
 	if (config.discord.useSlashCommands === true && config.discord.slashGuildIDs.length > 0) {
 		SlashRegistry.registerCommands(client);
 	}
-
 	//No Proto Checker
 	if (config.rdmDB.host && config.devices.noProtoCheckMinutes > 0) {
 		let noProtoJob = new CronJob(`*/${config.devices.noProtoCheckMinutes} * * * *`, function () {
@@ -58,6 +57,17 @@ client.on('ready', async () => {
 		}, null, true, null);
 		noProtoJob.start();
 	}
+	//Create board crons
+	for (const [msgID, boardData] of Object.entries(boardConfig)) {
+		try {
+			let boardJob = new CronJob(boardData.updateInterval, function () {
+				Boards.runBoardCron(client, msgID);
+			}, null, true, null);
+			boardJob.start();
+		} catch (err) {
+			console.log(err);
+		}
+	} //End of boards
 }); //End of ready()
 
 
@@ -84,7 +94,6 @@ client.on('messageCreate', async (receivedMessage) => {
 	if (userPerms === []) {
 		return;
 	}
-
 	//PM2
 	if (config.discord.pm2Command && message === `${config.discord.prefix}${config.discord.pm2Command}`) {
 		if (userPerms.includes('admin') || userPerms.includes('pm2')) {
@@ -126,7 +135,7 @@ client.on('messageCreate', async (receivedMessage) => {
 			}
 			//Specific device
 			else if (message.startsWith(`${config.discord.prefix}${config.discord.devicesCommand} `)) {
-				Devices.getDeviceInfo(receivedMessage.channel, receivedMessage.author, message.replace(`${config.discord.prefix}${config.discord.devicesCommand} `,''));
+				Devices.getDeviceInfo(receivedMessage.channel, receivedMessage.author, message.replace(`${config.discord.prefix}${config.discord.devicesCommand} `, ''));
 			}
 		} else {
 			receivedMessage.channel.send(`User *${receivedMessage.author.username}* does not have required device perms.`).catch(console.error);
@@ -161,7 +170,6 @@ client.on('interactionCreate', async interaction => {
 		interaction.reply(`Slash commands not allowed in channel *${interaction.channelId}*`);
 		return;
 	}
-
 	try {
 		let slashReturn = await command.execute(client, interaction);
 		try {
@@ -194,15 +202,13 @@ client.on('interactionCreate', async interaction => {
 	}
 	var interactionID = interaction.customId.replace(`${config.serverName}~`, '');
 	let userPerms = config.discord.adminIDs.includes(user.id) ? ['admin'] : await Roles.getUserCommandPerms(interaction.message.guild, user);
-
 	//Button interaction
 	if (interaction.isButton()) {
-		Interactions.buttonInteraction(interaction, interactionID, userPerms);
+		Interactions.buttonInteraction(client, interaction, interactionID, userPerms);
 	}
-
 	//List interaction
 	else if (interaction.isSelectMenu()) {
-		Interactions.listInteraction(interaction, interactionID, userPerms);
+		Interactions.listInteraction(client, interaction, interactionID, userPerms);
 	}
 }); //End of buttons/lists
 

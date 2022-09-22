@@ -15,7 +15,8 @@
         "linksCommand": "links",
         "devicesCommand": "devices",
         "noProtoCommand": "noproto",
-        "grepCommand": "grep"
+        "grepCommand": "grep",
+        "boardCommand": "board"
     },
     "pm2": {
         "ignore": [""],
@@ -28,8 +29,9 @@
             "pm2": [],
             "scripts": [],
             "queries": [],
-            "deviceInfo": [""],
-            "links": []
+            "deviceInfo": [],
+            "links": [],
+            "boards": []
         }
     },
     "scripts": {

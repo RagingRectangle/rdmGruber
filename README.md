@@ -12,6 +12,8 @@ Join the Discord server for any help and to keep up with updates: https://discor
 - Custom SQL queries for RDM database
 - Quickly access URL bookmarks
 - Grep files for search strings
+- Create custom boards for current and history stats
+- Use custom emojis with boards
 - Reaction role manager
 - See current status of RDM devices
 - Click device buttons to get basic info
@@ -43,7 +45,6 @@ cd rdmGruber
 cp -r config.example config
 npm install
 ```
-
  
   
 
@@ -66,6 +67,7 @@ Discord:
 - **devicesCommand:** Get status of all devices.
 - **noProtoCommand:** Get noProto devices.
 - **grepCommand:** Search uploaded file for string and return the lines where it's included (Slash command only).
+- **boardCommand:** Create current and historical stat boards (Slash command only).
 
 PM2:
 - **ignore:** List of PM2 processes/modules to ignore if you don't want buttons for them.
