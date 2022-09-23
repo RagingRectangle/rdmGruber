@@ -269,27 +269,27 @@
       },
       "history_pokemon": {
          "label": "{{pokemon}} Pokemon",
-         "query": "SELECT SUM(count) FROM pokemon_stats WHERE DATE(date) > curdate() - interval {{interval}} AND DATE(date) != curdate();"
+         "query": "SELECT SUM(count) FROM pokemon_stats WHERE DATE(date) > curdate() - interval {{interval}} - interval 1 day AND DATE(date) != curdate();"
       },
       "history_iv_pokemon": {
          "label": "{{iv}} With IV",
-         "query": "SELECT SUM(count) FROM pokemon_iv_stats WHERE DATE(date) > curdate() - interval {{interval}} AND DATE(date) != curdate();"
+         "query": "SELECT SUM(count) FROM pokemon_iv_stats WHERE DATE(date) > curdate() - interval {{interval}} - interval 1 day AND DATE(date) != curdate();"
       },
       "history_hundos": {
          "label": "{{hundos}} Hundos",
-         "query": "SELECT SUM(count) FROM pokemon_hundo_stats WHERE DATE(date) > curdate() - interval {{interval}} AND DATE(date) != curdate();"
+         "query": "SELECT SUM(count) FROM pokemon_hundo_stats WHERE DATE(date) > curdate() - interval {{interval}} - interval 1 day AND DATE(date) != curdate();"
       },
       "history_shinies": {
          "label": "{{shinies}} Shinies",
-         "query": "SELECT SUM(count) FROM pokemon_shiny_stats WHERE DATE(date) > curdate() - interval {{interval}} AND DATE(date) != curdate();"
+         "query": "SELECT SUM(count) FROM pokemon_shiny_stats WHERE DATE(date) > curdate() - interval {{interval}} - interval 1 day AND DATE(date) != curdate();"
       },
       "history_invasions": {
          "label": "{{grunts}} Invasions",
-         "query": "SELECT SUM(count) FROM invasion_stats WHERE DATE(date) > curdate() - interval {{interval}} AND DATE(date) != curdate();"
+         "query": "SELECT SUM(count) FROM invasion_stats WHERE DATE(date) > curdate() - interval {{interval}} - interval 1 day AND DATE(date) != curdate();"
       },
       "history_quests": {
          "label": "{{quests}} Quests",
-         "query": "SELECT SUM(count) FROM quest_stats WHERE DATE(date) > curdate() - interval {{interval}} AND DATE(date) != curdate();"
+         "query": "SELECT SUM(count) FROM quest_stats WHERE DATE(date) > curdate() - interval {{interval}} - interval 1 day AND DATE(date) != curdate();"
       }
    },
    "protos": {
