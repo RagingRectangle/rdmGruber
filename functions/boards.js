@@ -15,6 +15,7 @@ const {
 } = require('discord.js');
 const fs = require('fs');
 const mysql = require('mysql2');
+const moment = require('moment');
 const CronJob = require('cron').CronJob;
 const Handlebars = require("handlebars");
 var Table = require('easy-table');
