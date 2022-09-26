@@ -50,6 +50,7 @@ npm install
 
 ## Config Setup
 - **serverName:** Custom name for your server.
+- **timezoneOffsetHours:** For if your RDM server uses a different timezone than the DB server.
 
 Discord:
 - **token:** Discord bot token.

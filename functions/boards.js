@@ -249,7 +249,7 @@ module.exports = {
          if (boardData.pokemonOptions) {
             if (boardData.pokemonOptions[0] !== 'None') {
                for (var i in boardData.pokemonOptions) {
-                  var query = util.queries[boardData.pokemonOptions[i]]['query'].replace('{{queryName}}', boardData.pokemonOptions[i]).replace('{{area}}', boardData.geofence);
+                  var query = util.queries[boardData.pokemonOptions[i]]['query'].replace('{{queryName}}', boardData.pokemonOptions[i]).replace('{{area}}', boardData.geofence).replace('{{offset}}', config.timezoneOffsetHours);
                   let queryResult = await runQuery(query);
                   let emojiTemplate = Handlebars.compile(util.queries[boardData.pokemonOptions[i]]['label']);
                   let labelText = emojiTemplate(emojis);
@@ -264,7 +264,7 @@ module.exports = {
             if (boardData.gymOptions[0] !== 'None') {
                for (var i in boardData.gymOptions) {
                   var boardTable = new Table;
-                  var query = util.queries[boardData.gymOptions[i]]['query'].replace('{{queryName}}', boardData.gymOptions[i]).replace('{{area}}', boardData.geofence);
+                  var query = util.queries[boardData.gymOptions[i]]['query'].replace('{{queryName}}', boardData.gymOptions[i]).replace('{{area}}', boardData.geofence).replace('{{offset}}', config.timezoneOffsetHours);
                   let queryResult = await runQuery(query);
                   //Single result queries
                   if (boardData.gymOptions[i] === 'current_total_gyms' || boardData.gymOptions[i] === 'current_battling' || boardData.gymOptions[i] === 'current_total_raids' || boardData.gymOptions[i] === 'current_total_eggs') {
@@ -304,7 +304,7 @@ module.exports = {
                   let emojiTemplate = Handlebars.compile(util.queries[boardData.pokestopOptions[i]]['label']);
                   let labelText = emojiTemplate(emojis);
                   var boardTable = new Table;
-                  var query = util.queries[boardData.pokestopOptions[i]]['query'].replace('{{queryName}}', boardData.pokestopOptions[i]).replace('{{area}}', boardData.geofence);
+                  var query = util.queries[boardData.pokestopOptions[i]]['query'].replace('{{queryName}}', boardData.pokestopOptions[i]).replace('{{area}}', boardData.geofence).replace('{{offset}}', config.timezoneOffsetHours);
                   let queryResult = await runQuery(query);
                   //Single result queries
                   if (boardData.pokestopOptions[i] === 'current_total_pokestops' || boardData.pokestopOptions[i] === 'current_total_grunts' || boardData.pokestopOptions[i] === 'current_total_leaders') {
@@ -353,7 +353,7 @@ module.exports = {
       //History boards
       else if (boardType === 'history') {
          for (var i in boardData.historyOptions) {
-            var query = util.queries[boardData.historyOptions[i]]['query'].replace('{{interval}}', boardData.historyLength);
+            var query = util.queries[boardData.historyOptions[i]]['query'].replace('{{interval}}', boardData.historyLength).replace('{{offset}}', config.timezoneOffsetHours);
             let queryResult = await runQuery(query);
             let emojiTemplate = Handlebars.compile(util.queries[boardData.historyOptions[i]]['label']);
             let labelText = emojiTemplate(emojis);

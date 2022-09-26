@@ -1,6 +1,6 @@
 {
     "serverName": "RDM Server",
-    "delaySeconds": 0,
+    "timezoneOffsetHours": 0,
     "discord": {
         "token": "",
         "prefix": "!",
