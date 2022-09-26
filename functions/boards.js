@@ -366,7 +366,7 @@ module.exports = {
       boardMessage.edit({
          content: ``,
          embeds: [new EmbedBuilder().setTitle(boardData.title).setDescription(`${boardDescription.join('\n')}`).setFooter({
-            text: boardType == 'current' ? `${boardData.area.replace('~everywhere~','everywhere')} ~ ${new Date().toLocaleString()}` : `${new Date().toLocaleString()}`
+            text: boardType == 'current' ? `${boardData.area.replace('~everywhere~','everywhere')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format("L, LTS")}` : `${moment().add(config.timezoneOffsetHours, 'hours').format("L, LTS")}`
          })]
       }).catch(console.error);
    }, //End of runBoardCron()

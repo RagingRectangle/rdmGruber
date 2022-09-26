@@ -189,27 +189,27 @@
    "queries": {
       "current_total_pokemon": {
          "label": "{{pokemon}} Pokemon",
-         "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE id IS NOT NULL AND expire_timestamp >= (UNIX_TIMESTAMP() - ({{offset}} * 3600)) AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
+         "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE id IS NOT NULL AND expire_timestamp >= UNIX_TIMESTAMP() AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
       },
       "current_iv_pokemon": {
          "label": "{{iv}} With IV",
-         "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE id IS NOT NULL AND cp IS NOT NULL AND expire_timestamp >= (UNIX_TIMESTAMP() - ({{offset}} * 3600)) AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
+         "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE id IS NOT NULL AND cp IS NOT NULL AND expire_timestamp >= UNIX_TIMESTAMP() AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
       },
       "current_avg_iv": {
          "label": "{{average}} Average",
-         "query": "SELECT AVG(iv) as {{queryName}} FROM pokemon WHERE iv IS NOT null AND expire_timestamp >= (UNIX_TIMESTAMP() - ({{offset}} * 3600)) AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
+         "query": "SELECT AVG(iv) as {{queryName}} FROM pokemon WHERE iv IS NOT null AND expire_timestamp >= UNIX_TIMESTAMP() AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
       },
       "current_100s": {
          "label": "{{hundos}} Hundos",
-         "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE iv = 100 AND expire_timestamp >= (UNIX_TIMESTAMP() - ({{offset}} * 3600)) AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
+         "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE iv = 100 AND expire_timestamp >= UNIX_TIMESTAMP() AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
       },
       "current_0s": {
          "label": "{{nundos}} Nundos",
-         "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE iv = 0 AND expire_timestamp >= (UNIX_TIMESTAMP() - ({{offset}} * 3600)) AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
+         "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE iv = 0 AND expire_timestamp >= UNIX_TIMESTAMP() AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
       },
       "current_shinies": {
          "label": "{{shinies}} Shinies",
-         "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE shiny = 1 AND expire_timestamp >= (UNIX_TIMESTAMP() - ({{offset}} * 3600)) AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
+         "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE shiny = 1 AND expire_timestamp >= UNIX_TIMESTAMP() AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
       },
       "current_total_gyms": {
          "label": "{{gyms}} Gyms",
@@ -225,19 +225,19 @@
       },
       "current_total_raids": {
          "label": "{{raids}} Raids",
-         "query": "SELECT count(*) as {{queryName}} FROM gym WHERE (UNIX_TIMESTAMP() - ({{offset}} * 3600)) <= raid_end_timestamp AND (UNIX_TIMESTAMP() - ({{offset}} * 3600)) >= raid_battle_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon));"
+         "query": "SELECT count(*) as {{queryName}} FROM gym WHERE UNIX_TIMESTAMP() <= raid_end_timestamp AND UNIX_TIMESTAMP() >= raid_battle_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon));"
       },
       "current_raid_tiers": {
          "label": "{{raids}} Raids",
-         "query": "SELECT `tier_1`, `tier_2`, `tier_3`, `tier_4`, `tier_5`, `tier_6`, `tier_7`, `tier_8` FROM (SELECT COUNT(CASE WHEN raid_level = 1 THEN 1 END) AS `tier_1`, COUNT(CASE WHEN raid_level = 2 THEN 1 END) AS `tier_2`, COUNT(CASE WHEN raid_level = 3 THEN 1 END) AS `tier_3`, COUNT(CASE WHEN raid_level = 4 THEN 1 END) AS `tier_4`, COUNT(CASE WHEN raid_level = 5 THEN 1 END) AS `tier_5`, COUNT(CASE WHEN raid_level = 6 THEN 1 END) AS `tier_6`, COUNT(CASE WHEN raid_level = 7 THEN 1 END) AS `tier_7`, COUNT(CASE WHEN raid_level = 8 THEN 1 END) AS `tier_8` FROM gym WHERE (UNIX_TIMESTAMP() - ({{offset}} * 3600)) < raid_end_timestamp AND (UNIX_TIMESTAMP() - ({{offset}} * 3600)) > raid_battle_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)))AS latte;"
+         "query": "SELECT `tier_1`, `tier_2`, `tier_3`, `tier_4`, `tier_5`, `tier_6`, `tier_7`, `tier_8` FROM (SELECT COUNT(CASE WHEN raid_level = 1 THEN 1 END) AS `tier_1`, COUNT(CASE WHEN raid_level = 2 THEN 1 END) AS `tier_2`, COUNT(CASE WHEN raid_level = 3 THEN 1 END) AS `tier_3`, COUNT(CASE WHEN raid_level = 4 THEN 1 END) AS `tier_4`, COUNT(CASE WHEN raid_level = 5 THEN 1 END) AS `tier_5`, COUNT(CASE WHEN raid_level = 6 THEN 1 END) AS `tier_6`, COUNT(CASE WHEN raid_level = 7 THEN 1 END) AS `tier_7`, COUNT(CASE WHEN raid_level = 8 THEN 1 END) AS `tier_8` FROM gym WHERE UNIX_TIMESTAMP() < raid_end_timestamp AND UNIX_TIMESTAMP() > raid_battle_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)))AS latte;"
       },
       "current_total_eggs": {
          "label": "{{eggs}} Eggs",
-         "query": "SELECT count(*) as {{queryName}} FROM gym WHERE (UNIX_TIMESTAMP() - ({{offset}} * 3600)) >= raid_spawn_timestamp AND (UNIX_TIMESTAMP() - ({{offset}} * 3600)) <= raid_battle_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon));"
+         "query": "SELECT count(*) as {{queryName}} FROM gym WHERE UNIX_TIMESTAMP() >= raid_spawn_timestamp AND UNIX_TIMESTAMP() <= raid_battle_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon));"
       },
       "current_egg_tiers": {
          "label": "{{eggs}} Eggs",
-         "query": "SELECT `tier_1`, `tier_2`, `tier_3`, `tier_4`, `tier_5`, `tier_6`, `tier_7`, `tier_8` FROM (SELECT COUNT(CASE WHEN raid_level = 1 THEN 1 END) AS `tier_1`, COUNT(CASE WHEN raid_level = 2 THEN 1 END) AS `tier_2`, COUNT(CASE WHEN raid_level = 3 THEN 1 END) AS `tier_3`, COUNT(CASE WHEN raid_level = 4 THEN 1 END) AS `tier_4`, COUNT(CASE WHEN raid_level = 5 THEN 1 END) AS `tier_5`, COUNT(CASE WHEN raid_level = 6 THEN 1 END) AS `tier_6`, COUNT(CASE WHEN raid_level = 7 THEN 1 END) AS `tier_7`, COUNT(CASE WHEN raid_level = 8 THEN 1 END) AS `tier_8` FROM gym WHERE (UNIX_TIMESTAMP() - ({{offset}} * 3600)) < raid_battle_timestamp AND (UNIX_TIMESTAMP() - ({{offset}} * 3600)) > raid_spawn_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)))AS latte;"
+         "query": "SELECT `tier_1`, `tier_2`, `tier_3`, `tier_4`, `tier_5`, `tier_6`, `tier_7`, `tier_8` FROM (SELECT COUNT(CASE WHEN raid_level = 1 THEN 1 END) AS `tier_1`, COUNT(CASE WHEN raid_level = 2 THEN 1 END) AS `tier_2`, COUNT(CASE WHEN raid_level = 3 THEN 1 END) AS `tier_3`, COUNT(CASE WHEN raid_level = 4 THEN 1 END) AS `tier_4`, COUNT(CASE WHEN raid_level = 5 THEN 1 END) AS `tier_5`, COUNT(CASE WHEN raid_level = 6 THEN 1 END) AS `tier_6`, COUNT(CASE WHEN raid_level = 7 THEN 1 END) AS `tier_7`, COUNT(CASE WHEN raid_level = 8 THEN 1 END) AS `tier_8` FROM gym WHERE UNIX_TIMESTAMP() < raid_battle_timestamp AND UNIX_TIMESTAMP() > raid_spawn_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)))AS latte;"
       },
       "current_total_pokestops": {
          "label": "{{pokestops}} Pokestops",
@@ -249,23 +249,23 @@
       },
       "current_total_lures": {
          "label": "{{lures}} Lures",
-         "query": "SELECT count(*) as {{queryName}} FROM pokestop WHERE (UNIX_TIMESTAMP() - ({{offset}} * 3600)) <= lure_expire_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon));"
+         "query": "SELECT count(*) as {{queryName}} FROM pokestop WHERE UNIX_TIMESTAMP() <= lure_expire_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon));"
       },
       "current_lure_types": {
          "label": "Lures",
-         "query": "SELECT `normal`, `glacial`, `mossy`, `magnetic`, `rainy` FROM (SELECT COUNT(CASE WHEN lure_id = 501 THEN 1 END) AS `normal`, COUNT(CASE WHEN lure_id = 502 THEN 1 END) AS `glacial`, COUNT(CASE WHEN lure_id = 503 THEN 1 END) AS `mossy`, COUNT(CASE WHEN lure_id = 504 THEN 1 END) AS `magnetic`, COUNT(CASE WHEN lure_id = 505 THEN 1 END) AS `rainy` FROM pokestop WHERE (UNIX_TIMESTAMP() - ({{offset}} * 3600)) < lure_expire_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon)))AS latte;"
+         "query": "SELECT `normal`, `glacial`, `mossy`, `magnetic`, `rainy` FROM (SELECT COUNT(CASE WHEN lure_id = 501 THEN 1 END) AS `normal`, COUNT(CASE WHEN lure_id = 502 THEN 1 END) AS `glacial`, COUNT(CASE WHEN lure_id = 503 THEN 1 END) AS `mossy`, COUNT(CASE WHEN lure_id = 504 THEN 1 END) AS `magnetic`, COUNT(CASE WHEN lure_id = 505 THEN 1 END) AS `rainy` FROM pokestop WHERE UNIX_TIMESTAMP() < lure_expire_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon)))AS latte;"
       },
       "current_total_grunts": {
          "label": "{{grunts}} Grunts",
-         "query": "SELECT count(*) FROM incident a, pokestop b WHERE a.pokestop_id = b.id AND (UNIX_TIMESTAMP() - ({{offset}} * 3600)) < a.expiration AND a.character NOT IN ('41','42','43','44') AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(b.lat, b.lon));"
+         "query": "SELECT count(*) FROM incident a, pokestop b WHERE a.pokestop_id = b.id AND UNIX_TIMESTAMP() < a.expiration AND a.character NOT IN ('41','42','43','44') AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(b.lat, b.lon));"
       },
       "current_total_leaders": {
          "label": "{{leaders}} Leaders",
-         "query": "SELECT count(*) FROM incident a, pokestop b WHERE a.pokestop_id = b.id AND (UNIX_TIMESTAMP() - ({{offset}} * 3600)) < a.expiration AND a.character IN ('41','42','43','44') AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(b.lat, b.lon));"
+         "query": "SELECT count(*) FROM incident a, pokestop b WHERE a.pokestop_id = b.id AND UNIX_TIMESTAMP() < a.expiration AND a.character IN ('41','42','43','44') AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(b.lat, b.lon));"
       },
       "current_leader_names": {
          "label": "Leaders",
-         "query": "SELECT a.character, count(*) FROM incident a, pokestop b WHERE a.pokestop_id = b.id AND (UNIX_TIMESTAMP() - ({{offset}} * 3600)) < a.expiration AND a.character IN ('41','42','43','44') AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(b.lat, b.lon)) group by a.character;"
+         "query": "SELECT a.character, count(*) FROM incident a, pokestop b WHERE a.pokestop_id = b.id AND UNIX_TIMESTAMP() < a.expiration AND a.character IN ('41','42','43','44') AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(b.lat, b.lon)) group by a.character;"
       },
       "history_pokemon": {
          "label": "{{pokemon}} Pokemon",
