@@ -174,15 +174,15 @@ module.exports = {
                embeds: [new EmbedBuilder().setTitle(boardData.title).setDescription(`Board will be created soon...`)]
             }).catch(console.error)
             .then(msg => {
-               boardList[msg.id] = boardData
+               boardList['current'][msg.id] = boardData;
                fs.writeFileSync('./config/boards.json', JSON.stringify(boardList));
                //Start cron job
                let boardJob = new CronJob(boardData.updateInterval, function () {
-                  module.exports.runBoardCron(client, msg.id);
+                  module.exports.runBoardCron(client, msg.id, 'current');
                }, null, true, null);
                boardJob.start();
                //Run first time
-               module.exports.runBoardCron(client, msg.id);
+               module.exports.runBoardCron(client, msg.id, 'current');
             });
       } //End of current
       else if (boardType === 'history') {
@@ -198,14 +198,14 @@ module.exports = {
                embeds: [new EmbedBuilder().setTitle(boardData.title).setDescription(`Board will be created soon...`)]
             }).catch(console.error)
             .then(msg => {
-               boardList[msg.id] = boardData
+               boardList['history'][msg.id] = boardData;
                fs.writeFileSync('./config/boards.json', JSON.stringify(boardList));
                //Start cron job
                let boardJob = new CronJob(boardData.updateInterval, function () {
-                  module.exports.runBoardCron(client, msg.id);
+                  module.exports.runBoardCron(client, msg.id, 'history');
                }, null, true, null);
                boardJob.start();
-               module.exports.runBoardCron(client, msg.id);
+               module.exports.runBoardCron(client, msg.id, 'history');
             });
       } //End of history
 
@@ -217,18 +217,8 @@ module.exports = {
    }, //End of startNewBoard()
 
 
-   runBoardCron: async function runBoardCron(client, messageID) {
+   runBoardCron: async function runBoardCron(client, messageID, boardType) {
       let boardList = JSON.parse(fs.readFileSync('./config/boards.json'));
-      let boardData = boardList[messageID];
-      let boardType = boardData['type'];
-      let boardChannel = await client.channels.cache.get(boardData.channelID);
-      var boardMessage;
-      try {
-         boardMessage = await boardChannel.messages.fetch(messageID);
-      } catch (err) {
-         console.log(`Board message ${messageID} not found.`);
-         return;
-      }
       runQuery = (query) => {
          let connection = mysql.createConnection(config.rdmDB);
          return new Promise((resolve, reject) => {
@@ -243,132 +233,164 @@ module.exports = {
          });
       };
       var boardDescription = [];
-
+      var boardMessage;
+      var boardInfo;
       //Curent boards
       if (boardType === 'current') {
-         //Pokemon options
-         if (boardData.pokemonOptions) {
-            if (boardData.pokemonOptions[0] !== 'None') {
-               for (var i in boardData.pokemonOptions) {
-                  var query = util.queries[boardData.pokemonOptions[i]]['query'].replace('{{queryName}}', boardData.pokemonOptions[i]).replace('{{area}}', boardData.geofence).replace('{{offset}}', config.timezoneOffsetHours);
-                  let queryResult = await runQuery(query);
-                  let translationTemplate = Handlebars.compile(util.queries[boardData.pokemonOptions[i]]['label']);
-                  let labelText = translationTemplate(translations);
-                  let resultValue = Number(Object.values(queryResult[0])).toFixed(2).replace(/[.,]00$/, "");
-                  boardDescription.push(`${labelText}: **${resultValue ? resultValue : 0}**`);
-               } //End of i loop
-               boardDescription.push(' ');
+         for (const [msgID, boardData] of Object.entries(boardList.current)) {
+            if (messageID !== msgID) {
+               continue;
             }
-         } //End of pokemonOptions
-         //Gym Options
-         if (boardData.gymOptions) {
-            if (boardData.gymOptions[0] !== 'None') {
-               for (var i in boardData.gymOptions) {
-                  var boardTable = new Table;
-                  var query = util.queries[boardData.gymOptions[i]]['query'].replace('{{queryName}}', boardData.gymOptions[i]).replace('{{area}}', boardData.geofence).replace('{{offset}}', config.timezoneOffsetHours);
-                  let queryResult = await runQuery(query);
-                  //Single result queries
-                  if (boardData.gymOptions[i] === 'current_total_gyms' || boardData.gymOptions[i] === 'current_battling' || boardData.gymOptions[i] === 'current_total_raids' || boardData.gymOptions[i] === 'current_total_eggs') {
-                     let translationTemplate = Handlebars.compile(util.queries[boardData.gymOptions[i]]['label']);
+            boardInfo = boardData;
+            let boardChannel = await client.channels.cache.get(boardData.channelID);
+            try {
+               boardMessage = await boardChannel.messages.fetch(messageID);
+            } catch (err) {
+               console.log(`Board message ${messageID} not found.`);
+               return;
+            }
+            //Pokemon options
+            if (boardData.pokemonOptions) {
+               if (boardData.pokemonOptions[0] !== 'None') {
+                  for (var i in boardData.pokemonOptions) {
+                     var query = util.queries[boardData.pokemonOptions[i]]['query'].replace('{{queryName}}', boardData.pokemonOptions[i]).replace('{{area}}', boardData.geofence).replace('{{offset}}', config.timezoneOffsetHours);
+                     let queryResult = await runQuery(query);
+                     let translationTemplate = Handlebars.compile(util.queries[boardData.pokemonOptions[i]]['label']);
                      let labelText = translationTemplate(translations);
-                     boardDescription.push(`${labelText}: **${Object.values(queryResult[0]) ? Object.values(queryResult[0]) : 0}**`);
-                  }
-                  //Multi result queries
-                  else if (boardData.gymOptions[i] === 'current_gym_teams') {
-                     queryResult.forEach(function (gym) {
-                        boardTable.cell(translations.Mystic, gym.Mystic ? gym.Mystic : 0);
-                        boardTable.cell(translations.Valor, gym.Valor ? gym.Valor : 0);
-                        boardTable.cell(translations.Instinct, gym.Instinct ? gym.Instinct : 0);
-                        boardTable.cell(translations.Neutral, gym.Neutral ? gym.Neutral : 0);
+                     let resultValue = Number(Object.values(queryResult[0])).toFixed(2).replace(/[.,]00$/, "");
+                     boardDescription.push(`${labelText}: **${resultValue ? resultValue : 0}**`);
+                  } //End of i loop
+                  boardDescription.push(' ');
+               }
+            } //End of pokemonOptions
+            //Gym Options
+            if (boardData.gymOptions) {
+               if (boardData.gymOptions[0] !== 'None') {
+                  for (var i in boardData.gymOptions) {
+                     var boardTable = new Table;
+                     var query = util.queries[boardData.gymOptions[i]]['query'].replace('{{queryName}}', boardData.gymOptions[i]).replace('{{area}}', boardData.geofence).replace('{{offset}}', config.timezoneOffsetHours);
+                     let queryResult = await runQuery(query);
+                     //Single result queries
+                     if (boardData.gymOptions[i] === 'current_total_gyms' || boardData.gymOptions[i] === 'current_battling' || boardData.gymOptions[i] === 'current_total_raids' || boardData.gymOptions[i] === 'current_total_eggs') {
+                        let translationTemplate = Handlebars.compile(util.queries[boardData.gymOptions[i]]['label']);
+                        let labelText = translationTemplate(translations);
+                        boardDescription.push(`${labelText}: **${Object.values(queryResult[0]) ? Object.values(queryResult[0]) : 0}**`);
+                     }
+                     //Multi result queries
+                     else if (boardData.gymOptions[i] === 'current_gym_teams') {
+                        queryResult.forEach(function (gym) {
+                           boardTable.cell(translations.Mystic, gym.Mystic ? gym.Mystic : 0);
+                           boardTable.cell(translations.Valor, gym.Valor ? gym.Valor : 0);
+                           boardTable.cell(translations.Instinct, gym.Instinct ? gym.Instinct : 0);
+                           boardTable.cell(translations.Neutral, gym.Neutral ? gym.Neutral : 0);
+                           boardTable.newRow();
+                        });
+                        boardDescription.push(`${`\``}${boardTable.toString()}${`\``}`);
+                     } else if (boardData.gymOptions[i] === 'current_raid_tiers' || boardData.gymOptions[i] === 'current_egg_tiers') {
+                        for (var i = 1; i < 9; i++) {
+                           if (queryResult[0][`tier_${i}`] != 0) {
+                              boardTable.cell(`${translations.Tier} ${i}`, queryResult[0][`tier_${i}`] ? queryResult[0][`tier_${i}`] : 0);
+                           }
+                        } //End of i loop
                         boardTable.newRow();
-                     });
-                     boardDescription.push(`${`\``}${boardTable.toString()}${`\``}`);
-                  } else if (boardData.gymOptions[i] === 'current_raid_tiers' || boardData.gymOptions[i] === 'current_egg_tiers') {
-                     for (var i = 1; i < 9; i++) {
-                        if (queryResult[0][`tier_${i}`] != 0) {
-                           boardTable.cell(`${translations.Tier} ${i}`, queryResult[0][`tier_${i}`] ? queryResult[0][`tier_${i}`] : 0);
+                        if (boardTable.toString() !== '\n\n\n') {
+                           boardDescription.push(`${`\``}${boardTable.toString()}${`\``}`);
                         }
-                     } //End of i loop
-                     boardTable.newRow();
-                     if (boardTable.toString() !== '\n\n\n') {
-                        boardDescription.push(`${`\``}${boardTable.toString()}${`\``}`);
                      }
-                  }
-               } //End of i loop
-            }
-         } //End of gymOptions
+                  } //End of i loop
+               }
+            } //End of gymOptions
 
-         //Pokestop Options
-         if (boardData.pokestopOptions) {
-            if (boardData.pokestopOptions[0] !== 'None') {
-               for (var i in boardData.pokestopOptions) {
-                  let translationTemplate = Handlebars.compile(util.queries[boardData.pokestopOptions[i]]['label']);
-                  let labelText = translationTemplate(translations);
-                  var boardTable = new Table;
-                  var query = util.queries[boardData.pokestopOptions[i]]['query'].replace('{{queryName}}', boardData.pokestopOptions[i]).replace('{{area}}', boardData.geofence).replace('{{offset}}', config.timezoneOffsetHours);
-                  let queryResult = await runQuery(query);
-                  //Single result queries
-                  if (boardData.pokestopOptions[i] === 'current_total_pokestops' || boardData.pokestopOptions[i] === 'current_total_grunts' || boardData.pokestopOptions[i] === 'current_total_leaders') {
-                     boardDescription.push(`${labelText}: **${Object.values(queryResult[0]) ? Object.values(queryResult[0]) : 0}**`);
-                  }
-                  //Multi result queries
-                  else if (boardData.pokestopOptions[i] === 'current_total_quests') {
-                     boardDescription.push(`${labelText}: **${(queryResult[0][`ar`] + queryResult[0][`non_ar`])}**`);
-                  } else if (boardData.pokestopOptions[i] === 'current_total_lures') {
-                     boardDescription.push(`${labelText}: **${Object.values(queryResult[0]) ? Object.values(queryResult[0]) : 0}**`);
-                  } else if (boardData.pokestopOptions[i] === 'current_lure_types') {
-                     if (queryResult[0][`normal`] != 0) {
-                        boardTable.cell(translations.Normal, queryResult[0][`normal`] ? queryResult[0][`normal`] : 0);
+            //Pokestop Options
+            if (boardData.pokestopOptions) {
+               if (boardData.pokestopOptions[0] !== 'None') {
+                  for (var i in boardData.pokestopOptions) {
+                     let translationTemplate = Handlebars.compile(util.queries[boardData.pokestopOptions[i]]['label']);
+                     let labelText = translationTemplate(translations);
+                     var boardTable = new Table;
+                     var query = util.queries[boardData.pokestopOptions[i]]['query'].replace('{{queryName}}', boardData.pokestopOptions[i]).replace('{{area}}', boardData.geofence).replace('{{offset}}', config.timezoneOffsetHours);
+                     let queryResult = await runQuery(query);
+                     //Single result queries
+                     if (boardData.pokestopOptions[i] === 'current_total_pokestops' || boardData.pokestopOptions[i] === 'current_total_grunts' || boardData.pokestopOptions[i] === 'current_total_leaders') {
+                        boardDescription.push(`${labelText}: **${Object.values(queryResult[0]) ? Object.values(queryResult[0]) : 0}**`);
                      }
-                     if (queryResult[0][`glacial`] != 0) {
-                        boardTable.cell(translations.Glacial, queryResult[0][`glacial`] ? queryResult[0][`glacial`] : 0);
-                     }
-                     if (queryResult[0][`mossy`] != 0) {
-                        boardTable.cell(translations.Mossy, queryResult[0][`mossy`] ? queryResult[0][`mossy`] : 0);
-                     }
-                     if (queryResult[0][`magnetic`] != 0) {
-                        boardTable.cell(translations.Magnetic, queryResult[0][`magnetic`] ? queryResult[0][`magnetic`] : 0);
-                     }
-                     if (queryResult[0][`rainy`] != 0) {
-                        boardTable.cell(translations.Rainy, queryResult[0][`rainy`] ? queryResult[0][`rainy`] : 0);
-                     }
-                     boardTable.newRow();
-                     if (boardTable.toString() !== '\n\n\n') {
-                        boardDescription.push(`${`\``}${boardTable.toString()}${`\``}`);
-                     }
-                  } else if (boardData.pokestopOptions[i] === 'current_leader_names') {
-                     for (var i = 0; i < queryResult.length; i++) {
-                        if (queryResult[i][`count(*)`] != 0) {
-                           boardTable.cell(util.protos[queryResult[i][`character`]], queryResult[i][`count(*)`]);
+                     //Multi result queries
+                     else if (boardData.pokestopOptions[i] === 'current_total_quests') {
+                        boardDescription.push(`${labelText}: **${(queryResult[0][`ar`] + queryResult[0][`non_ar`])}**`);
+                     } else if (boardData.pokestopOptions[i] === 'current_total_lures') {
+                        boardDescription.push(`${labelText}: **${Object.values(queryResult[0]) ? Object.values(queryResult[0]) : 0}**`);
+                     } else if (boardData.pokestopOptions[i] === 'current_lure_types') {
+                        if (queryResult[0][`normal`] != 0) {
+                           boardTable.cell(translations.Normal, queryResult[0][`normal`] ? queryResult[0][`normal`] : 0);
                         }
-                     } //End of i loop
-                     boardTable.newRow();
-                     if (boardTable.toString() !== '\n\n\n') {
-                        boardDescription.push(`${`\``}${boardTable.toString()}${`\``}`);
+                        if (queryResult[0][`glacial`] != 0) {
+                           boardTable.cell(translations.Glacial, queryResult[0][`glacial`] ? queryResult[0][`glacial`] : 0);
+                        }
+                        if (queryResult[0][`mossy`] != 0) {
+                           boardTable.cell(translations.Mossy, queryResult[0][`mossy`] ? queryResult[0][`mossy`] : 0);
+                        }
+                        if (queryResult[0][`magnetic`] != 0) {
+                           boardTable.cell(translations.Magnetic, queryResult[0][`magnetic`] ? queryResult[0][`magnetic`] : 0);
+                        }
+                        if (queryResult[0][`rainy`] != 0) {
+                           boardTable.cell(translations.Rainy, queryResult[0][`rainy`] ? queryResult[0][`rainy`] : 0);
+                        }
+                        boardTable.newRow();
+                        if (boardTable.toString() !== '\n\n\n') {
+                           boardDescription.push(`${`\``}${boardTable.toString()}${`\``}`);
+                        }
+                     } else if (boardData.pokestopOptions[i] === 'current_leader_names') {
+                        for (var i = 0; i < queryResult.length; i++) {
+                           if (queryResult[i][`count(*)`] != 0) {
+                              boardTable.cell(util.protos[queryResult[i][`character`]], queryResult[i][`count(*)`]);
+                           }
+                        } //End of i loop
+                        boardTable.newRow();
+                        if (boardTable.toString() !== '\n\n\n') {
+                           boardDescription.push(`${`\``}${boardTable.toString()}${`\``}`);
+                        }
                      }
-                  }
-               } //End of i loop
-            }
-         } //End of pokestopOptions
-      } //End of current
+                  } //End of i loop
+               }
+            } //End of pokestopOptions
+         } //End of currentLoop
+      } //End of current boards
+
       //History boards
-      else if (boardType === 'history') {
-         for (var i in boardData.historyOptions) {
-            var query = util.queries[boardData.historyOptions[i]]['query'].replace('{{interval}}', boardData.historyLength).replace('{{offset}}', config.timezoneOffsetHours);
-            let queryResult = await runQuery(query);
-            let translationTemplate = Handlebars.compile(util.queries[boardData.historyOptions[i]]['label']);
-            let labelText = translationTemplate(translations);
-            let resultValue = Number(Object.values(queryResult[0])).toLocaleString();
-            boardDescription.push(`${labelText}: **${resultValue}**\n`);
-         } //End of i loop
-         boardDescription.push(' ');
-      } //End of history
+      if (boardType === 'history') {
+         for (const [msgID, boardData] of Object.entries(boardList.history)) {
+            if (messageID !== msgID) {
+               continue;
+            }
+            boardInfo = boardData;
+            let boardChannel = await client.channels.cache.get(boardData.channelID);
+            try {
+               boardMessage = await boardChannel.messages.fetch(messageID);
+            } catch (err) {
+               console.log(`Board message ${messageID} not found.`);
+               return;
+            }
+            for (var i in boardData.historyOptions) {
+               var query = util.queries[boardData.historyOptions[i]]['query'].replace('{{interval}}', boardData.historyLength).replace('{{offset}}', config.timezoneOffsetHours);
+               let queryResult = await runQuery(query);
+               let translationTemplate = Handlebars.compile(util.queries[boardData.historyOptions[i]]['label']);
+               let labelText = translationTemplate(translations);
+               let resultValue = Number(Object.values(queryResult[0])).toLocaleString();
+               boardDescription.push(`${labelText}: **${resultValue}**\n`);
+            } //End of i loop
+            boardDescription.push(' ');
+         } //End of history loop
+      } //End of history boards
+      if (!boardInfo) {
+         console.log(`Board message ${messageID} not found.`);
+         return;
+      }
       let translationTemplate = Handlebars.compile(boardDescription.join('\n'));
       let translatedBoard = translationTemplate(translations);
       boardMessage.edit({
          content: ``,
-         embeds: [new EmbedBuilder().setTitle(boardData.title).setDescription(translatedBoard).setFooter({
-            text: boardType == 'current' ? `${boardData.area.replace('~everywhere~','everywhere')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format("L, LTS")}` : `${moment().add(config.timezoneOffsetHours, 'hours').format("L, LTS")}`
+         embeds: [new EmbedBuilder().setTitle(boardInfo.title).setDescription(translatedBoard).setFooter({
+            text: boardInfo.type == 'current' ? `${boardInfo.area.replace('~everywhere~','everywhere')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format("L, LTS")}` : `${moment().add(config.timezoneOffsetHours, 'hours').format("L, LTS")}`
          })]
       }).catch(console.error);
    }, //End of runBoardCron()
@@ -441,4 +463,24 @@ module.exports = {
       }
       return geofence;
    }, //End of generateGeofence()
+
+
+   updateBoardFormat: async function updateBoardFormat(oldBoards) {
+      var currentBoards = {};
+      var historyBoards = {};
+      for (const [msgID, boardData] of Object.entries(oldBoards)) {
+         if (boardData['type'] === 'current') {
+            currentBoards[msgID] = boardData;
+         } else if (boardData['type'] === 'history') {
+            historyBoards[msgID] = boardData;
+         }
+      }
+      let newBoards = {
+         "current": currentBoards,
+         "history": historyBoards,
+         "raid": {}
+      }
+      fs.writeFileSync('./config/boards.json', JSON.stringify(newBoards));
+      return newBoards;
+   }, //End of updateBoardFormat()
 }

@@ -17,12 +17,27 @@ const client = new Client({
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildScheduledEvents, GatewayIntentBits.DirectMessages],
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 });
-
 const fs = require('fs');
+var boardConfig = require('./config/boards.json');
+//Update boards.json format
+if (!boardConfig.current || !boardConfig.history) {
+	async function updateBoards() {
+		boardConfig = await Boards.updateBoardFormat(boardConfig);
+	}
+	updateBoards();
+}
+//translations.json check
+try {
+	if (!fs.existsSync('./config/translations.json')) {
+		fs.copyFileSync('./config.example/translations.json','./config/translations.json');
+	}
+} catch (err) {
+	console.log(`Error creating copy of translations.json config: ${err}`);
+}
+
 const pm2 = require('pm2');
 const CronJob = require('cron').CronJob;
 const config = require('./config/config.json');
-const boardConfig = require('./config/boards.json');
 const GenerateServerInfo = require('./functions/generateServerInfo.js');
 const roleConfig = require('./config/roles.json');
 const SlashRegistry = require('./functions/slashRegistry.js');
@@ -57,17 +72,28 @@ client.on('ready', async () => {
 		}, null, true, null);
 		noProtoJob.start();
 	}
-	//Create board crons
-	for (const [msgID, boardData] of Object.entries(boardConfig)) {
+	//Create current board crons
+	for (const [msgID, boardData] of Object.entries(boardConfig.current)) {
 		try {
 			let boardJob = new CronJob(boardData.updateInterval, function () {
-				Boards.runBoardCron(client, msgID);
+				Boards.runBoardCron(client, msgID, 'current');
 			}, null, true, null);
 			boardJob.start();
 		} catch (err) {
 			console.log(err);
 		}
-	} //End of boards
+	} //End of current boards
+	//Create history board crons
+	for (const [msgID, boardData] of Object.entries(boardConfig.history)) {
+		try {
+			let boardJob = new CronJob(boardData.updateInterval, function () {
+				Boards.runBoardCron(client, msgID, 'history');
+			}, null, true, null);
+			boardJob.start();
+		} catch (err) {
+			console.log(err);
+		}
+	} //End of history boards
 }); //End of ready()
 
 
