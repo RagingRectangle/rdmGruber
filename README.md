@@ -13,7 +13,7 @@ Join the Discord server for any help and to keep up with updates: https://discor
 - Quickly access URL bookmarks
 - Grep files for search strings
 - Create custom boards for current and history stats
-- Use custom emojis with boards
+- Custom emojis/translations available for boards
 - Reaction role manager
 - See current status of RDM devices
 - Click device buttons to get basic info

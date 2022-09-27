@@ -22,7 +22,7 @@ var Table = require('easy-table');
 const config = require('../config/config.json');
 const geoConfig = require('../config/geofence.json');
 const util = require('../util.json');
-const emojis = require('../config/emojis.json');
+const translations = require('../config/translations.json');
 
 module.exports = {
    beginCurrentBoard: async function beginCurrentBoard(interaction) {
@@ -252,8 +252,8 @@ module.exports = {
                for (var i in boardData.pokemonOptions) {
                   var query = util.queries[boardData.pokemonOptions[i]]['query'].replace('{{queryName}}', boardData.pokemonOptions[i]).replace('{{area}}', boardData.geofence).replace('{{offset}}', config.timezoneOffsetHours);
                   let queryResult = await runQuery(query);
-                  let emojiTemplate = Handlebars.compile(util.queries[boardData.pokemonOptions[i]]['label']);
-                  let labelText = emojiTemplate(emojis);
+                  let translationTemplate = Handlebars.compile(util.queries[boardData.pokemonOptions[i]]['label']);
+                  let labelText = translationTemplate(translations);
                   let resultValue = Number(Object.values(queryResult[0])).toFixed(2).replace(/[.,]00$/, "");
                   boardDescription.push(`${labelText}: **${resultValue ? resultValue : 0}**`);
                } //End of i loop
@@ -269,24 +269,24 @@ module.exports = {
                   let queryResult = await runQuery(query);
                   //Single result queries
                   if (boardData.gymOptions[i] === 'current_total_gyms' || boardData.gymOptions[i] === 'current_battling' || boardData.gymOptions[i] === 'current_total_raids' || boardData.gymOptions[i] === 'current_total_eggs') {
-                     let emojiTemplate = Handlebars.compile(util.queries[boardData.gymOptions[i]]['label']);
-                     let labelText = emojiTemplate(emojis);
+                     let translationTemplate = Handlebars.compile(util.queries[boardData.gymOptions[i]]['label']);
+                     let labelText = translationTemplate(translations);
                      boardDescription.push(`${labelText}: **${Object.values(queryResult[0]) ? Object.values(queryResult[0]) : 0}**`);
                   }
                   //Multi result queries
                   else if (boardData.gymOptions[i] === 'current_gym_teams') {
                      queryResult.forEach(function (gym) {
-                        boardTable.cell('Mystic', gym.Mystic ? gym.Mystic : 0);
-                        boardTable.cell('Valor', gym.Valor ? gym.Valor : 0);
-                        boardTable.cell('Instinct', gym.Instinct ? gym.Instinct : 0);
-                        boardTable.cell('Neutral', gym.Neutral ? gym.Neutral : 0);
+                        boardTable.cell(translations.Mystic, gym.Mystic ? gym.Mystic : 0);
+                        boardTable.cell(translations.Valor, gym.Valor ? gym.Valor : 0);
+                        boardTable.cell(translations.Instinct, gym.Instinct ? gym.Instinct : 0);
+                        boardTable.cell(translations.Neutral, gym.Neutral ? gym.Neutral : 0);
                         boardTable.newRow();
                      });
                      boardDescription.push(`${`\``}${boardTable.toString()}${`\``}`);
                   } else if (boardData.gymOptions[i] === 'current_raid_tiers' || boardData.gymOptions[i] === 'current_egg_tiers') {
                      for (var i = 1; i < 9; i++) {
                         if (queryResult[0][`tier_${i}`] != 0) {
-                           boardTable.cell(`Tier ${i}`, queryResult[0][`tier_${i}`] ? queryResult[0][`tier_${i}`] : 0);
+                           boardTable.cell(`${translations.Tier} ${i}`, queryResult[0][`tier_${i}`] ? queryResult[0][`tier_${i}`] : 0);
                         }
                      } //End of i loop
                      boardTable.newRow();
@@ -302,8 +302,8 @@ module.exports = {
          if (boardData.pokestopOptions) {
             if (boardData.pokestopOptions[0] !== 'None') {
                for (var i in boardData.pokestopOptions) {
-                  let emojiTemplate = Handlebars.compile(util.queries[boardData.pokestopOptions[i]]['label']);
-                  let labelText = emojiTemplate(emojis);
+                  let translationTemplate = Handlebars.compile(util.queries[boardData.pokestopOptions[i]]['label']);
+                  let labelText = translationTemplate(translations);
                   var boardTable = new Table;
                   var query = util.queries[boardData.pokestopOptions[i]]['query'].replace('{{queryName}}', boardData.pokestopOptions[i]).replace('{{area}}', boardData.geofence).replace('{{offset}}', config.timezoneOffsetHours);
                   let queryResult = await runQuery(query);
@@ -318,19 +318,19 @@ module.exports = {
                      boardDescription.push(`${labelText}: **${Object.values(queryResult[0]) ? Object.values(queryResult[0]) : 0}**`);
                   } else if (boardData.pokestopOptions[i] === 'current_lure_types') {
                      if (queryResult[0][`normal`] != 0) {
-                        boardTable.cell(`Normal`, queryResult[0][`normal`] ? queryResult[0][`normal`] : 0);
+                        boardTable.cell(translations.Normal, queryResult[0][`normal`] ? queryResult[0][`normal`] : 0);
                      }
                      if (queryResult[0][`glacial`] != 0) {
-                        boardTable.cell(`Glacial`, queryResult[0][`glacial`] ? queryResult[0][`glacial`] : 0);
+                        boardTable.cell(translations.Glacial, queryResult[0][`glacial`] ? queryResult[0][`glacial`] : 0);
                      }
                      if (queryResult[0][`mossy`] != 0) {
-                        boardTable.cell(`Mossy`, queryResult[0][`mossy`] ? queryResult[0][`mossy`] : 0);
+                        boardTable.cell(translations.Mossy, queryResult[0][`mossy`] ? queryResult[0][`mossy`] : 0);
                      }
                      if (queryResult[0][`magnetic`] != 0) {
-                        boardTable.cell(`Magnetic`, queryResult[0][`magnetic`] ? queryResult[0][`magnetic`] : 0);
+                        boardTable.cell(translations.Magnetic, queryResult[0][`magnetic`] ? queryResult[0][`magnetic`] : 0);
                      }
                      if (queryResult[0][`rainy`] != 0) {
-                        boardTable.cell(`Rainy`, queryResult[0][`rainy`] ? queryResult[0][`rainy`] : 0);
+                        boardTable.cell(translations.Rainy, queryResult[0][`rainy`] ? queryResult[0][`rainy`] : 0);
                      }
                      boardTable.newRow();
                      if (boardTable.toString() !== '\n\n\n') {
@@ -356,17 +356,18 @@ module.exports = {
          for (var i in boardData.historyOptions) {
             var query = util.queries[boardData.historyOptions[i]]['query'].replace('{{interval}}', boardData.historyLength).replace('{{offset}}', config.timezoneOffsetHours);
             let queryResult = await runQuery(query);
-            let emojiTemplate = Handlebars.compile(util.queries[boardData.historyOptions[i]]['label']);
-            let labelText = emojiTemplate(emojis);
+            let translationTemplate = Handlebars.compile(util.queries[boardData.historyOptions[i]]['label']);
+            let labelText = translationTemplate(translations);
             let resultValue = Number(Object.values(queryResult[0])).toLocaleString();
             boardDescription.push(`${labelText}: **${resultValue}**\n`);
          } //End of i loop
          boardDescription.push(' ');
       } //End of history
-
+      let translationTemplate = Handlebars.compile(boardDescription.join('\n'));
+      let translatedBoard = translationTemplate(translations);
       boardMessage.edit({
          content: ``,
-         embeds: [new EmbedBuilder().setTitle(boardData.title).setDescription(`${boardDescription.join('\n')}`).setFooter({
+         embeds: [new EmbedBuilder().setTitle(boardData.title).setDescription(translatedBoard).setFooter({
             text: boardType == 'current' ? `${boardData.area.replace('~everywhere~','everywhere')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format("L, LTS")}` : `${moment().add(config.timezoneOffsetHours, 'hours').format("L, LTS")}`
          })]
       }).catch(console.error);
