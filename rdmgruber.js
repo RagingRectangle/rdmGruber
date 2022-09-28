@@ -29,11 +29,20 @@ if (!boardConfig.current || !boardConfig.history) {
 //translations.json check
 try {
 	if (!fs.existsSync('./config/translations.json')) {
-		fs.copyFileSync('./config.example/translations.json','./config/translations.json');
+		fs.copyFileSync('./config.example/translations.json', './config/translations.json');
 	}
 } catch (err) {
 	console.log(`Error creating copy of translations.json config: ${err}`);
 }
+//Update masterfile
+const request = require('request');
+request('https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/master-latest-poracle.json', (error, response, html) => {
+	if (!error && response.statusCode == 200) {
+		fs.writeFileSync('./masterfile.json', html);
+	} else {
+		console.log(`Error updating masterfile.json: ${error}`);
+	}
+});
 
 const pm2 = require('pm2');
 const CronJob = require('cron').CronJob;
@@ -88,6 +97,17 @@ client.on('ready', async () => {
 		try {
 			let boardJob = new CronJob(boardData.updateInterval, function () {
 				Boards.runBoardCron(client, msgID, 'history');
+			}, null, true, null);
+			boardJob.start();
+		} catch (err) {
+			console.log(err);
+		}
+	} //End of history boards
+	//Create raid board crons
+	for (const [msgID, boardData] of Object.entries(boardConfig.raid)) {
+		try {
+			let boardJob = new CronJob(boardData.updateInterval, function () {
+				Boards.runBoardCron(client, msgID, 'raid');
 			}, null, true, null);
 			boardJob.start();
 		} catch (err) {

@@ -205,15 +205,15 @@ module.exports = {
       if (splitID[0] === 'start') {
          Boards.startNewBoard(client, interaction);
       }
-      //Add update interval and verify
-      if (splitID[1] === 'updateInterval') {
-         Boards.addBoardUpdateInterval(interaction, interaction.values[0]);
-      }
       //Current board
       if (splitID[0] === 'current') {
          //Create/restart board
          if (splitID[1] === 'create' || splitID[1] === 'restart') {
             Boards.beginCurrentBoard(interaction);
+         }
+         //Add update interval and verify
+         else if (splitID[1] === 'updateInterval') {
+            Boards.addBoardUpdateInterval(interaction, interaction.values[0]);
          }
          //Add area
          else if (splitID[1] === 'addArea') {
@@ -247,5 +247,17 @@ module.exports = {
             Boards.addHistoryLength(interaction, "history", interaction.values[0]);
          }
       } //End of history
+      //History board
+      if (splitID[0] === 'raid') {
+         if (splitID[1] === 'restart') {
+            Boards.startRaidBoard(interaction);
+         } else if (splitID[1] === 'addArea') {
+            Boards.addRaidArea(interaction, interaction.values[0]);
+         } else if (splitID[1] === 'addTiers') {
+            Boards.addRaidTiers(interaction, interaction.values);
+         } else if (splitID[1] === 'updateInterval') {
+            Boards.addRaidUpdateInterval(interaction, interaction.values[0]);
+         }
+      } //End of raids
    } //End of boardInteractions()
 }

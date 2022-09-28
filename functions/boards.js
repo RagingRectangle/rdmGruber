@@ -127,7 +127,7 @@ module.exports = {
       var newComponents = [];
       //Current - add update intervals
       if (boardType === 'current') {
-         newComponents = [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Update Interval').setCustomId(`${config.serverName}~board~${boardType}~updateInterval`).addOptions(util.boards.current.updateIntervals))]
+         newComponents = [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Update Interval').setCustomId(`${config.serverName}~board~${boardType}~updateInterval`).addOptions(util.boards.current.updateIntervals))];
       }
       interaction.update({
          embeds: [newEmbed],
@@ -208,6 +208,30 @@ module.exports = {
                module.exports.runBoardCron(client, msg.id, 'history');
             });
       } //End of history
+      else if (boardType === 'raid') {
+         var boardData = {};
+         boardData.type = 'raid';
+         boardData.channelID = interaction.message.channel.id;
+         boardData.area = boardFields[1]['value'];
+         boardData.tiers = boardFields[2]['value'].split('\n');
+         boardData.title = `${translations.Tier} ${boardData.tiers.join(' + ')} ${translations.Raids}`;
+         boardData.updateInterval = `*/${boardFields[3]['value'].replace('every ', '').replace(' minutes', '')} * * * *`;
+         boardData.geofence = await module.exports.generateGeofence(boardData.area);
+         interaction.channel.send({
+               embeds: [new EmbedBuilder().setTitle(boardData.title).setDescription(`Board will be created soon...`)]
+            }).catch(console.error)
+            .then(msg => {
+               boardList['raid'][msg.id] = boardData;
+               fs.writeFileSync('./config/boards.json', JSON.stringify(boardList));
+               //Start cron job
+               let boardJob = new CronJob(boardData.updateInterval, function () {
+                  module.exports.runBoardCron(client, msg.id, 'raid');
+               }, null, true, null);
+               boardJob.start();
+               //Run first time
+               module.exports.runBoardCron(client, msg.id, 'raid');
+            });
+      } //End of raid
 
       interaction.update({
          content: `Board created, you can dismiss this message now.`,
@@ -235,6 +259,7 @@ module.exports = {
       var boardDescription = [];
       var boardMessage;
       var boardInfo;
+      var footerText;
       //Curent boards
       if (boardType === 'current') {
          for (const [msgID, boardData] of Object.entries(boardList.current)) {
@@ -353,11 +378,12 @@ module.exports = {
                   } //End of i loop
                }
             } //End of pokestopOptions
+            footerText = `${boardInfo.area.replace('~everywhere~','everywhere')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format("L, LTS")}`;
          } //End of currentLoop
       } //End of current boards
 
       //History boards
-      if (boardType === 'history') {
+      else if (boardType === 'history') {
          for (const [msgID, boardData] of Object.entries(boardList.history)) {
             if (messageID !== msgID) {
                continue;
@@ -371,7 +397,7 @@ module.exports = {
                return;
             }
             for (var i in boardData.historyOptions) {
-               var query = util.queries[boardData.historyOptions[i]]['query'].replace('{{interval}}', boardData.historyLength).replace('{{offset}}', config.timezoneOffsetHours);
+               let query = util.queries[boardData.historyOptions[i]]['query'].replace('{{interval}}', boardData.historyLength).replace('{{offset}}', config.timezoneOffsetHours);
                let queryResult = await runQuery(query);
                let translationTemplate = Handlebars.compile(util.queries[boardData.historyOptions[i]]['label']);
                let labelText = translationTemplate(translations);
@@ -379,8 +405,36 @@ module.exports = {
                boardDescription.push(`${labelText}: **${resultValue}**\n`);
             } //End of i loop
             boardDescription.push(' ');
+            footerText = `${moment().add(config.timezoneOffsetHours, 'hours').format("L, LTS")}`;
          } //End of history loop
       } //End of history boards
+
+      //Raid boards
+      else if (boardType === 'raid') {
+         for (const [msgID, boardData] of Object.entries(boardList.raid)) {
+            if (messageID !== msgID) {
+               continue;
+            }
+            boardInfo = boardData;
+            let boardChannel = await client.channels.cache.get(boardData.channelID);
+            try {
+               boardMessage = await boardChannel.messages.fetch(messageID);
+            } catch (err) {
+               console.log(`Board message ${messageID} not found.`);
+               return;
+            }
+            let query = util.queries.raids.query.replace('{{tiers}}', boardInfo.tiers.join(',')).replace('{{area}}', boardInfo.geofence);
+
+            let queryResult = await runQuery(query);
+            if (queryResult.length == 0) {
+               boardDescription.push(translations.No_Raids);
+            } else {
+               let updatedBoard = await module.exports.updateRaidBoard(boardInfo, queryResult);
+               boardDescription.push(updatedBoard);
+            }
+            footerText = `${boardInfo.area.replace('~everywhere~','everywhere')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format("L, LTS")}`;
+         } //End of history loop
+      } //End of raid boards
       if (!boardInfo) {
          console.log(`Board message ${messageID} not found.`);
          return;
@@ -390,7 +444,7 @@ module.exports = {
       boardMessage.edit({
          content: ``,
          embeds: [new EmbedBuilder().setTitle(boardInfo.title).setDescription(translatedBoard).setFooter({
-            text: boardInfo.type == 'current' ? `${boardInfo.area.replace('~everywhere~','everywhere')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format("L, LTS")}` : `${moment().add(config.timezoneOffsetHours, 'hours').format("L, LTS")}`
+            text: footerText
          })]
       }).catch(console.error);
    }, //End of runBoardCron()
@@ -444,6 +498,123 @@ module.exports = {
       }).catch(console.error);
    }, //End of addHistoryLength()
 
+
+   startRaidBoard: async function startRaidBoard(interaction) {
+      var newEmbed = new EmbedBuilder().setTitle(`Creating Raid Board:`).addFields({
+         name: 'Board Type:',
+         value: 'raid'
+      });
+      var geofenceList = [];
+      for (var g in geoConfig) {
+         geofenceList.push(geoConfig[g]['name']);
+      } //End of g loop
+      geofenceList.sort();
+      geofenceList.unshift('~everywhere~');
+      let dropdownsNeeded = Math.min(5, Math.ceil(geofenceList.length / 25));
+      var geoCount = 0;
+      var componentList = [];
+      for (var d = 0; d < dropdownsNeeded; d++) {
+         var listOptions = [];
+         for (var i = 0; i < 25 && geoCount < geofenceList.length; i++, geoCount++) {
+            listOptions.push({
+               label: geofenceList[geoCount],
+               value: geofenceList[geoCount]
+            });
+         } //End of i loop
+         componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~board~raid~addArea~${d}`).setPlaceholder('Select geofence name').addOptions(listOptions)));
+      } //End of d loop
+      interaction.reply({
+         embeds: [newEmbed],
+         components: componentList,
+         ephemeral: true
+      }).catch(console.error);
+   }, //End of startRaidBoard()
+
+
+   addRaidArea: async function addRaidArea(interaction, areaName) {
+      let oldEmbed = interaction.message.embeds[0]['data'];
+      var newEmbed = new EmbedBuilder().setTitle(oldEmbed.title).addFields(oldEmbed['fields']);
+      newEmbed.addFields({
+         name: 'Area Name:',
+         value: areaName
+      });
+      var componentList = [];
+      componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~board~raid~addTiers`).setPlaceholder('Select raid tiers').addOptions(util.boards.raid.raidTiers).setMaxValues(util.boards.raid.raidTiers.length)));
+      interaction.update({
+         embeds: [newEmbed],
+         components: componentList,
+         ephemeral: true
+      }).catch(console.error);
+   }, //End of addRaidArea()
+
+
+   addRaidTiers: async function addRaidTiers(interaction, tiers) {
+      let oldEmbed = interaction.message.embeds[0]['data'];
+      var newEmbed = new EmbedBuilder().setTitle(oldEmbed.title).addFields(oldEmbed['fields']);
+      newEmbed.addFields({
+         name: 'Tiers:',
+         value: tiers.join('\n')
+      });
+      let newComponents = [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Update Interval').setCustomId(`${config.serverName}~board~raid~updateInterval`).addOptions(util.boards.current.updateIntervals))];
+      interaction.update({
+         embeds: [newEmbed],
+         components: newComponents,
+         ephemeral: true
+      }).catch(console.error);
+   }, //End of addRaidTiers()
+
+
+   addRaidUpdateInterval: async function addRaidUpdateInterval(interaction, updateInterval) {
+      let oldEmbed = interaction.message.embeds[0]['data'];
+      var newEmbed = new EmbedBuilder().setTitle(oldEmbed.title).addFields(oldEmbed['fields']);
+      newEmbed.addFields({
+         name: 'Update Interval:',
+         value: `every ${updateInterval.replace('*/','').replaceAll(' *','')} minutes`
+      });
+      //Add verify buttons
+      let newComponents = [new ActionRowBuilder().addComponents(new ButtonBuilder().setLabel('Start').setCustomId(`${config.serverName}~board~start`).setStyle(ButtonStyle.Success), new ButtonBuilder().setLabel('Restart').setCustomId(`${config.serverName}~board~raid~restart`).setStyle(ButtonStyle.Secondary), new ButtonBuilder().setLabel('Cancel').setCustomId(`${config.serverName}~board~cancel`).setStyle(ButtonStyle.Danger))];
+      interaction.update({
+         embeds: [newEmbed],
+         components: newComponents,
+         ephemeral: true
+      }).catch(console.error);
+   }, //End of addRaidUpdateInterval()
+
+
+   updateRaidBoard: async function updateRaidBoard(boardInfo, raids) {
+      let masterfile = await JSON.parse(fs.readFileSync('./masterfile.json'));
+      let monsters = masterfile.monsters;
+      let moves = masterfile.moves;
+      let raidBoardInfo = [];
+      for (var r in raids) {
+         try {
+            var nameID = `${raids[r]['raid_pokemon_id']}_${raids[r]['raid_pokemon_form']}`;
+            let monInfo = monsters[nameID] ? monsters[nameID] : monsters[`${raids[r]['raid_pokemon_id']}_0`];
+            let monName = monInfo['form']['name'] == 'Normal' ? monInfo['name'] : `${monInfo['name']} ${monInfo['form']['name']}`;
+            var monTypes = translations[`${monInfo['types'][0]['name'].toLowerCase()}Emoji`];
+            if (monInfo['types'][1]) {
+               monTypes = monTypes.concat(translations[`${monInfo['types'][1]['name'].toLowerCase()}Emoji`])
+            }
+            let move1 = moves[raids[r].raid_pokemon_move_1] ? `${moves[raids[r].raid_pokemon_move_1]['name']}${translations[`${moves[raids[r].raid_pokemon_move_1]['type'].toLowerCase()}Emoji`]}` : '?';
+            let move2 = moves[raids[r].raid_pokemon_move_2] ? `${moves[raids[r].raid_pokemon_move_2]['name']}${translations[`${moves[raids[r].raid_pokemon_move_2]['type'].toLowerCase()}Emoji`]}` : '?';
+            var gymName = raids[r]['name'] ? raids[r]['name'].length > 30 ? `${raids[r]['name'].slice(0, 28)}..` : raids[r]['name'] : translations.Unknown
+            if (config.raidBoardOptions.mapLink == true) {
+               gymName = `[${gymName}](${config.raidBoardOptions.linkFormat.replace('{{lat}}',raids[r]['lat'].toFixed(4)).replace('{{lon}}',raids[r]['lon'].toFixed(4))})`;
+            }
+            if (config.raidBoardOptions.gymTeamEmoji == true) {
+               gymName = gymName.concat(raids[r]['team_id'].toString().replace('0', translations.neutralEmoji).replace('1', translations.mysticEmoji).replace('2', translations.valorEmoji).replace('3', translations.instinctEmoji));
+            }
+            raidBoardInfo.push(`**${monName}**${monTypes} *(${move1}/${move2})*\n${gymName} (${translations.Ends} <t:${raids[r]['raid_end_timestamp']}:R>)\n`);
+            if (raidBoardInfo.join('\n').length > 4096) {
+               raidBoardInfo.pop();
+               break;
+            }
+         } catch (err) {
+            console.log(`Error collecting raid data: ${err}`);
+         }
+      } //End of r loop
+      return raidBoardInfo.join('\n');
+   }, //End of updateRaidBoard()
 
    generateGeofence: async function generateGeofence(areaName) {
       var geofence = [];

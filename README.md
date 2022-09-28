@@ -12,8 +12,9 @@ Join the Discord server for any help and to keep up with updates: https://discor
 - Custom SQL queries for RDM database
 - Quickly access URL bookmarks
 - Grep files for search strings
-- Create custom boards for current and history stats
-- Custom emojis/translations available for boards
+- Boards for current and history stats
+- Raid boards
+- Emojis/translations available for boards
 - Reaction role manager
 - See current status of RDM devices
 - Click device buttons to get basic info
@@ -97,6 +98,11 @@ Devices:
 rdmDB:
 - Enter your basic RDM database info. Make sure your user has access if the database is not local.
 
+RaidBoardOptions:
+- **mapLink:** Turn gym names into map hyperlinks (true/false).
+- **linkFormat:** Use custom links to point towards your own map.
+- **gymTeamEmoji:** Include emoji for controlling team (true/false).
+
  
   
 
@@ -145,6 +151,13 @@ rdmDB:
  
   
   
+## Board Setup
+- Send `/<boardCommand>`and follow the prompts for the board you'd like to create.
+- To remove a board or edit the title you can do so in the boards.json config file.
+
+ 
+  
+  
 ## Usage
 - Start the bot in a console with `node rdmgruber.js`
 - Can (*should*) use PM2 to run instead with `pm2 start rdmgruber.js`
@@ -159,7 +172,7 @@ rdmDB:
 - Get info about specific device with `<prefix><device_name/origin>`
 - See any naughty devices with `<prefix><noProtoCommand>`
 - Search file for string and return matching lines with `/<grepCommand>` (slash only)
-
+- Create current/history/raid boards with `/<boardCommand>` (slash only)
   
   
 
