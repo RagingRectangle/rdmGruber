@@ -18,6 +18,7 @@ const client = new Client({
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 });
 const fs = require('fs');
+const Boards = require('./functions/boards.js');
 var boardConfig = require('./config/boards.json');
 //Update boards.json format
 if (!boardConfig.current || !boardConfig.history) {
@@ -57,7 +58,6 @@ const Pm2Buttons = require('./functions/pm2.js');
 const Links = require('./functions/links.js');
 const Scripts = require('./functions/scripts.js');
 const Queries = require('./functions/queries.js');
-const Boards = require('./functions/boards.js');
 
 var roleMessages = [];
 roleConfig.forEach(role => {
