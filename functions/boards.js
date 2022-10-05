@@ -595,17 +595,17 @@ module.exports = {
             if (monInfo['types'][1]) {
                monTypes = monTypes.concat(translations[`${monInfo['types'][1]['name'].toLowerCase()}Emoji`])
             }
-            let move1 = moves[raids[r].raid_pokemon_move_1] ? `${moves[raids[r].raid_pokemon_move_1]['name']}${translations[`${moves[raids[r].raid_pokemon_move_1]['type'].toLowerCase()}Emoji`]}` : '?';
-            let move2 = moves[raids[r].raid_pokemon_move_2] ? `${moves[raids[r].raid_pokemon_move_2]['name']}${translations[`${moves[raids[r].raid_pokemon_move_2]['type'].toLowerCase()}Emoji`]}` : '?';
+            let move1 = moves[raids[r].raid_pokemon_move_1] ? `${moves[raids[r].raid_pokemon_move_1]['name']} ${translations[`${moves[raids[r].raid_pokemon_move_1]['type'].toLowerCase()}Emoji`]}` : '?';
+            let move2 = moves[raids[r].raid_pokemon_move_2] ? `${moves[raids[r].raid_pokemon_move_2]['name']} ${translations[`${moves[raids[r].raid_pokemon_move_2]['type'].toLowerCase()}Emoji`]}` : '?';
             var gymName = raids[r]['name'] ? raids[r]['name'].length > 30 ? `${raids[r]['name'].slice(0, 28)}..` : raids[r]['name'] : translations.Unknown
             if (config.raidBoardOptions.mapLink == true) {
                gymName = `[${gymName}](${config.raidBoardOptions.linkFormat.replace('{{lat}}',raids[r]['lat'].toFixed(4)).replace('{{lon}}',raids[r]['lon'].toFixed(4))})`;
             }
             if (config.raidBoardOptions.gymTeamEmoji == true) {
                let gymEmoji = raids[r]['team_id'] = 1 ? translations.mysticEmoji : raids[r]['team_id'] = 2 ? translations.valorEmoji : raids[r]['team_id'] = 3 ? translations.instinctEmoji : translations.neutralEmoji;
-               gymName = gymName.concat(gymEmoji);
+               gymName = gymName.concat(` ${gymEmoji}`);
             }
-            raidBoardInfo.push(`**${monName}**${monTypes} *(${move1}/${move2})*\n${gymName} (${translations.Ends} <t:${raids[r]['raid_end_timestamp']}:R>)\n`);
+            raidBoardInfo.push(`**${monName}** ${monTypes} *(${move1}/${move2})*\n${gymName} (${translations.Ends} <t:${raids[r]['raid_end_timestamp']}:R>)\n`);
             if (raidBoardInfo.join('\n').length > 4096) {
                raidBoardInfo.pop();
                break;
