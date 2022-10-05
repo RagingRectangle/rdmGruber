@@ -154,7 +154,8 @@ RaidBoardOptions:
 ## Board Setup
 - Send `/<boardCommand>`and follow the prompts for the board you'd like to create.
 - To remove a board or edit the title you can do so in the boards.json config file.
-
+- To limit boards to specific areas use */config/geofence.json*.
+- Can use either the geojson or geo.jasparke format (Only single polygons supported).
  
   
   

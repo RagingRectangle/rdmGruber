@@ -31,9 +31,18 @@ module.exports = {
          value: 'current'
       });
       var geofenceList = [];
-      for (var g in geoConfig) {
-         geofenceList.push(geoConfig[g]['name']);
-      } //End of g loop
+      //geojson
+      if (geoConfig.features) {
+         for (var f in geoConfig.features) {
+            geofenceList.push(geoConfig.features[f]['properties']['name']);
+         } //End of f loop
+      }
+      //geo.jasparke
+      else {
+         for (var g in geoConfig) {
+            geofenceList.push(geoConfig[g]['name']);
+         } //End of g loop
+      }
       geofenceList.sort();
       geofenceList.unshift('~everywhere~');
       let dropdownsNeeded = Math.min(5, Math.ceil(geofenceList.length / 25));
@@ -620,17 +629,33 @@ module.exports = {
    generateGeofence: async function generateGeofence(areaName) {
       var geofence = [];
       if (areaName === '~everywhere~') {
-         geofence = `(90.0 -180.0, 90.0 180.0,-90.0 180.0, -90.0 -180.0, 90.0 -180.0)`;
+         geofence = ["90.0 -180.0", "90.0 180.0", "-90.0 180.0", "-90.0 -180.0", "90.0 -180.0"];
       } else {
-         for (var g in geoConfig) {
-            if (geoConfig[g]['name'] === areaName) {
-               for (var p in geoConfig[g]['path']) {
-                  geofence.push(`${geoConfig[g]['path'][p][0]} ${geoConfig[g]['path'][p][1]}`);
+         //geojson
+         if (geoConfig.features) {
+            for (var f in geoConfig.features) {
+               if (geoConfig.features[f]['properties']['name'] === areaName) {
+                  for (var c in geoConfig.features[f]['geometry']['coordinates'][0]) {
+                     let coord = geoConfig.features[f]['geometry']['coordinates'][0][c]
+                     geofence.push(`${coord[1]} ${coord[0]}`);
+                  } //End of c loop
                }
-               break;
-            }
-         } //End of g loop
-         geofence.push(`${geoConfig[g]['path'][0][0]} ${geoConfig[g]['path'][0][1]}`);
+            } //End of f loop
+         }
+         //geo.jasparke
+         else {
+            for (var g in geoConfig) {
+               if (geoConfig[g]['name'] === areaName) {
+                  for (var p in geoConfig[g]['path']) {
+                     geofence.push(`${geoConfig[g]['path'][p][0]} ${geoConfig[g]['path'][p][1]}`);
+                  }
+                  break;
+               }
+            } //End of g loop
+            geofence.push(`${geoConfig[g]['path'][0][0]} ${geoConfig[g]['path'][0][1]}`);
+         }
+      }
+      if (geofence !== []){
          geofence = `(${geofence.join(', ')})`;
       }
       return geofence;
