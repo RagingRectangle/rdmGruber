@@ -602,7 +602,7 @@ module.exports = {
                gymName = `[${gymName}](${config.raidBoardOptions.linkFormat.replace('{{lat}}',raids[r]['lat'].toFixed(4)).replace('{{lon}}',raids[r]['lon'].toFixed(4))})`;
             }
             if (config.raidBoardOptions.gymTeamEmoji == true) {
-               let gymEmoji = raids[r]['team_id'] = 1 ? translations.mysticEmoji : raids[r]['team_id'] = 2 ? translations.valorEmoji : raids[r]['team_id'] = 3 ? translations.instinctEmoji : translations.neutralEmoji;
+               let gymEmoji = raids[r]['team_id'] == 1 ? translations.mysticEmoji : raids[r]['team_id'] == 2 ? translations.valorEmoji : raids[r]['team_id'] == 3 ? translations.instinctEmoji : translations.neutralEmoji;
                gymName = gymName.concat(` ${gymEmoji}`);
             }
             raidBoardInfo.push(`**${monName}** ${monTypes} *(${move1}/${move2})*\n${gymName} (${translations.Ends} <t:${raids[r]['raid_end_timestamp']}:R>)\n`);
