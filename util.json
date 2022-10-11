@@ -25,8 +25,12 @@
                "value": "current_0s"
             },
             {
-               "label": "Shinies",
+               "label": "Total Shinies",
                "value": "current_shinies"
+            },
+            {
+               "label": "Distinct Shinies",
+               "value": "distinct_shinies"
             }
          ],
          "gymOptions": [{
@@ -217,6 +221,10 @@
             {
                "label": "Tier 8 (Ultra Beast)",
                "value": "8"
+            },
+            {
+               "label": "Tier 9 (Elite)",
+               "value": "9"
             }
          ]
       }
@@ -246,6 +254,10 @@
          "label": "{{{shiniesEmoji}}} {{Shinies}}",
          "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE shiny = 1 AND expire_timestamp >= UNIX_TIMESTAMP() AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
       },
+      "distinct_shinies": {
+         "label": "{{{shiniesEmoji}}} {{ShinySpecies}}",
+         "query": "SELECT count(distinct(pokemon_id)) as {{queryName}} FROM pokemon WHERE shiny = 1 AND expire_timestamp >= UNIX_TIMESTAMP() AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
+      },
       "current_total_gyms": {
          "label": "{{{gymsEmoji}}} {{Gyms}}",
          "query": "SELECT count(*) as {{queryName}} FROM gym WHERE ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon));"
@@ -260,11 +272,11 @@
       },
       "current_total_raids": {
          "label": "{{{raidsEmoji}}} {{Raids}}",
-         "query": "SELECT count(*) as {{queryName}} FROM gym WHERE UNIX_TIMESTAMP() <= raid_end_timestamp AND UNIX_TIMESTAMP() >= raid_battle_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon));"
+         "query": "SELECT count(*) as {{queryName}} FROM gym WHERE UNIX_TIMESTAMP() <= raid_end_timestamp AND UNIX_TIMESTAMP() >= raid_battle_timestamp AND raid_pokemon_move_1 > 0 AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon));"
       },
       "current_raid_tiers": {
          "label": "{{{raidsEmoji}}} {{Raids}}",
-         "query": "SELECT `tier_1`, `tier_2`, `tier_3`, `tier_4`, `tier_5`, `tier_6`, `tier_7`, `tier_8` FROM (SELECT COUNT(CASE WHEN raid_level = 1 THEN 1 END) AS `tier_1`, COUNT(CASE WHEN raid_level = 2 THEN 1 END) AS `tier_2`, COUNT(CASE WHEN raid_level = 3 THEN 1 END) AS `tier_3`, COUNT(CASE WHEN raid_level = 4 THEN 1 END) AS `tier_4`, COUNT(CASE WHEN raid_level = 5 THEN 1 END) AS `tier_5`, COUNT(CASE WHEN raid_level = 6 THEN 1 END) AS `tier_6`, COUNT(CASE WHEN raid_level = 7 THEN 1 END) AS `tier_7`, COUNT(CASE WHEN raid_level = 8 THEN 1 END) AS `tier_8` FROM gym WHERE UNIX_TIMESTAMP() < raid_end_timestamp AND UNIX_TIMESTAMP() > raid_battle_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)))AS latte;"
+         "query": "SELECT `tier_1`, `tier_2`, `tier_3`, `tier_4`, `tier_5`, `tier_6`, `tier_7`, `tier_8` FROM (SELECT COUNT(CASE WHEN raid_level = 1 THEN 1 END) AS `tier_1`, COUNT(CASE WHEN raid_level = 2 THEN 1 END) AS `tier_2`, COUNT(CASE WHEN raid_level = 3 THEN 1 END) AS `tier_3`, COUNT(CASE WHEN raid_level = 4 THEN 1 END) AS `tier_4`, COUNT(CASE WHEN raid_level = 5 THEN 1 END) AS `tier_5`, COUNT(CASE WHEN raid_level = 6 THEN 1 END) AS `tier_6`, COUNT(CASE WHEN raid_level = 7 THEN 1 END) AS `tier_7`, COUNT(CASE WHEN raid_level = 8 THEN 1 END) AS `tier_8` FROM gym WHERE UNIX_TIMESTAMP() < raid_end_timestamp AND UNIX_TIMESTAMP() > raid_battle_timestamp AND raid_pokemon_move_1 > 0 AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)))AS latte;"
       },
       "current_total_eggs": {
          "label": "{{{eggsEmoji}}} {{Eggs}}",
@@ -328,7 +340,7 @@
       },
       "raids": {
          "label": "",
-         "query": "SELECT lat, lon, name, raid_spawn_timestamp, raid_battle_timestamp, raid_end_timestamp, raid_pokemon_id, team_id, raid_level, raid_pokemon_move_1, raid_pokemon_move_2, raid_pokemon_form, raid_pokemon_gender, raid_pokemon_costume, raid_pokemon_evolution FROM gym WHERE UNIX_TIMESTAMP() < raid_end_timestamp AND UNIX_TIMESTAMP() > raid_battle_timestamp AND raid_level in ({{tiers}}) AND raid_pokemon_id != 0 AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)) ORDER BY raid_end_timestamp DESC"
+         "query": "SELECT lat, lon, name, raid_spawn_timestamp, raid_battle_timestamp, raid_end_timestamp, raid_pokemon_id, team_id, raid_level, raid_pokemon_move_1, raid_pokemon_move_2, raid_pokemon_form, raid_pokemon_gender, raid_pokemon_costume, raid_pokemon_evolution FROM gym WHERE UNIX_TIMESTAMP() < raid_end_timestamp AND UNIX_TIMESTAMP() > raid_battle_timestamp AND raid_level in ({{tiers}}) AND raid_pokemon_id != 0 AND raid_pokemon_move_1 > 0 AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)) ORDER BY raid_end_timestamp DESC"
       }
    },
    "protos": {

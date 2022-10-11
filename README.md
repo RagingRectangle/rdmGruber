@@ -102,6 +102,9 @@ RaidBoardOptions:
 - **mapLink:** Turn gym names into map hyperlinks (true/false).
 - **linkFormat:** Use custom links to point towards your own map.
 - **gymTeamEmoji:** Include emoji for controlling team (true/false).
+- **use24Hour:** Use 24 hour format in footer (true/false).
+- **useDayMonthYear:** Use Day/Month/Year format in footer (true/false).
+- **language:** Translate Pokemon and their moves (See options in */locale*).
 
  
   

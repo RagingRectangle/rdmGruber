@@ -63,6 +63,9 @@
     "raidBoardOptions": {
         "mapLink": true,
         "linkFormat": "http://maps.google.com/maps?q={{lat}},{{lon}}",
-        "gymTeamEmoji": true
+        "gymTeamEmoji": true,
+        "use24Hour": false,
+        "useDayMonthYear": false,
+        "language": "en"
     }
 }

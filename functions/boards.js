@@ -23,6 +23,10 @@ const config = require('../config/config.json');
 const geoConfig = require('../config/geofence.json');
 const util = require('../util.json');
 const translations = require('../config/translations.json');
+var locale = require('../locale/en.json');
+if (config.raidBoardOptions.language){
+   locale = require(`../locale/${config.raidBoardOptions.language}.json`);
+}
 
 module.exports = {
    beginCurrentBoard: async function beginCurrentBoard(interaction) {
@@ -269,6 +273,9 @@ module.exports = {
       var boardMessage;
       var boardInfo;
       var footerText;
+      let footerFormatDate = config.raidBoardOptions.useDayMonthYear == true ? 'DD/MM/YY' : 'MM/DD/YY';
+      let footerFormatTime = config.raidBoardOptions.use24Hour == true ? 'H:mm:ss' : 'h:mm:ss A';
+      let footerFormat = `${footerFormatDate}, ${footerFormatTime}`;
       //Curent boards
       if (boardType === 'current') {
          for (const [msgID, boardData] of Object.entries(boardList.current)) {
@@ -387,7 +394,7 @@ module.exports = {
                   } //End of i loop
                }
             } //End of pokestopOptions
-            footerText = `${boardInfo.area.replace('~everywhere~','everywhere')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format("L, LTS")}`;
+            footerText = `${boardInfo.area.replace('~everywhere~','everywhere')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}`;
          } //End of currentLoop
       } //End of current boards
 
@@ -414,7 +421,7 @@ module.exports = {
                boardDescription.push(`${labelText}: **${resultValue}**\n`);
             } //End of i loop
             boardDescription.push(' ');
-            footerText = `${moment().add(config.timezoneOffsetHours, 'hours').format("L, LTS")}`;
+            footerText = `${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}`;
          } //End of history loop
       } //End of history boards
 
@@ -433,7 +440,6 @@ module.exports = {
                return;
             }
             let query = util.queries.raids.query.replace('{{tiers}}', boardInfo.tiers.join(',')).replace('{{area}}', boardInfo.geofence);
-
             let queryResult = await runQuery(query);
             if (queryResult.length == 0) {
                boardDescription.push(translations.No_Raids);
@@ -441,7 +447,7 @@ module.exports = {
                let updatedBoard = await module.exports.updateRaidBoard(boardInfo, queryResult);
                boardDescription.push(updatedBoard);
             }
-            footerText = `${boardInfo.area.replace('~everywhere~','everywhere')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format("L, LTS")}`;
+            footerText = `${boardInfo.area.replace('~everywhere~','everywhere')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}`;
          } //End of history loop
       } //End of raid boards
       if (!boardInfo) {
@@ -514,9 +520,15 @@ module.exports = {
          value: 'raid'
       });
       var geofenceList = [];
-      for (var g in geoConfig) {
-         geofenceList.push(geoConfig[g]['name']);
-      } //End of g loop
+      if (geoConfig.features) {
+         for (var g in geoConfig.features) {
+            geofenceList.push(geoConfig.features[g]['properties']['name']);
+         }
+      } else {
+         for (var g in geoConfig) {
+            geofenceList.push(geoConfig[g]['name']);
+         }
+      }
       geofenceList.sort();
       geofenceList.unshift('~everywhere~');
       let dropdownsNeeded = Math.min(5, Math.ceil(geofenceList.length / 25));
@@ -599,13 +611,37 @@ module.exports = {
          try {
             var nameID = `${raids[r]['raid_pokemon_id']}_${raids[r]['raid_pokemon_form']}`;
             let monInfo = monsters[nameID] ? monsters[nameID] : monsters[`${raids[r]['raid_pokemon_id']}_0`];
-            let monName = monInfo['form']['name'] == 'Normal' ? monInfo['name'] : `${monInfo['name']} ${monInfo['form']['name']}`;
+            var monName = monInfo['name'];
+            var monForm = monInfo['form']['name'];
+            if (locale[monName]){
+               monName = locale[monName];
+            }
+            if (monForm != 'Normal'){
+               if (locale[monForm]){
+                  monName = monName.concat(` ${locale[monForm]}`);
+               }
+               else {
+                  monName = monName.concat(` ${monForm}`);
+               }
+            }
             var monTypes = translations[`${monInfo['types'][0]['name'].toLowerCase()}Emoji`];
             if (monInfo['types'][1]) {
                monTypes = monTypes.concat(translations[`${monInfo['types'][1]['name'].toLowerCase()}Emoji`])
             }
-            let move1 = moves[raids[r].raid_pokemon_move_1] ? `${moves[raids[r].raid_pokemon_move_1]['name']} ${translations[`${moves[raids[r].raid_pokemon_move_1]['type'].toLowerCase()}Emoji`]}` : '?';
-            let move2 = moves[raids[r].raid_pokemon_move_2] ? `${moves[raids[r].raid_pokemon_move_2]['name']} ${translations[`${moves[raids[r].raid_pokemon_move_2]['type'].toLowerCase()}Emoji`]}` : '?';
+            var move1 = moves[raids[r].raid_pokemon_move_1] ? `${moves[raids[r].raid_pokemon_move_1]['name']}` : '?';
+            if (move1 !== '?'){
+               if (locale[move1]){
+                  move1 = locale[move1];
+               }
+            }
+            move1 = move1.concat(` ${translations[`${moves[raids[r].raid_pokemon_move_1]['type'].toLowerCase()}Emoji`]}`);
+            var move2 = moves[raids[r].raid_pokemon_move_2] ? `${moves[raids[r].raid_pokemon_move_2]['name']}` : '?';
+            if (move2 !== '?'){
+               if (locale[move2]){
+                  move2 = locale[move2];
+               }
+            }
+            move2 = move2.concat(` ${translations[`${moves[raids[r].raid_pokemon_move_2]['type'].toLowerCase()}Emoji`]}`);
             var gymName = raids[r]['name'] ? raids[r]['name'].length > 30 ? `${raids[r]['name'].slice(0, 28)}..` : raids[r]['name'] : translations.Unknown
             if (config.raidBoardOptions.mapLink == true) {
                gymName = `[${gymName}](${config.raidBoardOptions.linkFormat.replace('{{lat}}',raids[r]['lat'].toFixed(4)).replace('{{lon}}',raids[r]['lon'].toFixed(4))})`;
@@ -655,7 +691,7 @@ module.exports = {
             geofence.push(`${geoConfig[g]['path'][0][0]} ${geoConfig[g]['path'][0][1]}`);
          }
       }
-      if (geofence !== []){
+      if (geofence !== []) {
          geofence = `(${geofence.join(', ')})`;
       }
       return geofence;
