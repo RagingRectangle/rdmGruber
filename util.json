@@ -319,7 +319,7 @@
          "query": "SELECT SUM(count) FROM pokemon_stats WHERE DATE(date) > curdate() - interval {{interval}} - interval 1 day AND DATE(date) != curdate();"
       },
       "history_iv_pokemon": {
-         "label": "{{{ivEmoji}}} {{With IV}}",
+         "label": "{{{ivEmoji}}} {{With_IV}}",
          "query": "SELECT SUM(count) FROM pokemon_iv_stats WHERE DATE(date) > curdate() - interval {{interval}} - interval 1 day AND DATE(date) != curdate();"
       },
       "history_hundos": {
