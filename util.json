@@ -284,7 +284,7 @@
       },
       "current_egg_tiers": {
          "label": "{{{eggsEmoji}}} {{Eggs}}",
-         "query": "SELECT `tier_1`, `tier_2`, `tier_3`, `tier_4`, `tier_5`, `tier_6`, `tier_7`, `tier_8` FROM (SELECT COUNT(CASE WHEN raid_level = 1 THEN 1 END) AS `tier_1`, COUNT(CASE WHEN raid_level = 2 THEN 1 END) AS `tier_2`, COUNT(CASE WHEN raid_level = 3 THEN 1 END) AS `tier_3`, COUNT(CASE WHEN raid_level = 4 THEN 1 END) AS `tier_4`, COUNT(CASE WHEN raid_level = 5 THEN 1 END) AS `tier_5`, COUNT(CASE WHEN raid_level = 6 THEN 1 END) AS `tier_6`, COUNT(CASE WHEN raid_level = 7 THEN 1 END) AS `tier_7`, COUNT(CASE WHEN raid_level = 8 THEN 1 END) AS `tier_8` FROM gym WHERE UNIX_TIMESTAMP() < raid_battle_timestamp AND UNIX_TIMESTAMP() > raid_spawn_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)))AS latte;"
+         "query": "SELECT `tier_1`, `tier_2`, `tier_3`, `tier_4`, `tier_5`, `tier_6`, `tier_7`, `tier_8` FROM (SELECT COUNT(CASE WHEN raid_level = 1 THEN 1 END) AS `tier_1`, COUNT(CASE WHEN raid_level = 2 THEN 1 END) AS `tier_2`, COUNT(CASE WHEN raid_level = 3 THEN 1 END) AS `tier_3`, COUNT(CASE WHEN raid_level = 4 THEN 1 END) AS `tier_4`, COUNT(CASE WHEN raid_level = 5 THEN 1 END) AS `tier_5`, COUNT(CASE WHEN raid_level = 6 THEN 1 END) AS `tier_6`, COUNT(CASE WHEN raid_level = 7 THEN 1 END) AS `tier_7`, COUNT(CASE WHEN raid_level = 8 THEN 1 END) AS `tier_8`, COUNT(CASE WHEN raid_level = 9 THEN 1 END) AS `tier_9` FROM gym WHERE UNIX_TIMESTAMP() < raid_battle_timestamp AND UNIX_TIMESTAMP() > raid_spawn_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)))AS latte;"
       },
       "current_total_pokestops": {
          "label": "{{{pokestopsEmoji}}} {{Pokestops}}",
