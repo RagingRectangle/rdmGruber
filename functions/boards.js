@@ -328,7 +328,7 @@ module.exports = {
                         });
                         boardDescription.push(`${`\``}${boardTable.toString()}${`\``}`);
                      } else if (boardData.gymOptions[i] === 'current_raid_tiers' || boardData.gymOptions[i] === 'current_egg_tiers') {
-                        for (var i = 1; i < 9; i++) {
+                        for (var i = 1; i < 10; i++) {
                            if (queryResult[0][`tier_${i}`] != 0) {
                               boardTable.cell(`${translations.Tier} ${i}`, queryResult[0][`tier_${i}`] ? queryResult[0][`tier_${i}`] : 0);
                            }
