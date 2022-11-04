@@ -340,7 +340,25 @@
       },
       "raids": {
          "label": "",
-         "query": "SELECT lat, lon, name, raid_spawn_timestamp, raid_battle_timestamp, raid_end_timestamp, raid_pokemon_id, team_id, raid_level, raid_pokemon_move_1, raid_pokemon_move_2, raid_pokemon_form, raid_pokemon_gender, raid_pokemon_costume, raid_pokemon_evolution FROM gym WHERE UNIX_TIMESTAMP() < raid_end_timestamp AND UNIX_TIMESTAMP() > raid_battle_timestamp AND raid_level in ({{tiers}}) AND raid_pokemon_id != 0 AND raid_pokemon_move_1 > 0 AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)) ORDER BY raid_end_timestamp DESC"
+         "query": "SELECT lat, lon, name, raid_spawn_timestamp, raid_battle_timestamp, raid_end_timestamp, raid_pokemon_id, team_id, raid_level, raid_pokemon_move_1, raid_pokemon_move_2, raid_pokemon_form, raid_pokemon_gender, raid_pokemon_costume, raid_pokemon_evolution FROM gym WHERE UNIX_TIMESTAMP() < raid_end_timestamp AND UNIX_TIMESTAMP() > raid_battle_timestamp AND raid_level in ({{tiers}}) AND raid_pokemon_id != 0 AND raid_pokemon_move_1 > 0 AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)) ORDER BY raid_end_timestamp ASC;"
+      },
+      "availableQuests": {
+         "items": "select distinct quest_item_id as itemID, quest_reward_amount as rewardAmount from pokestop where quest_reward_type = 2 and quest_timestamp > {{dayStart}} and quest_timestamp < {{dayEnd}} order by quest_item_id asc;",
+         "xp": "select distinct quest_reward_amount as rewardAmount from pokestop where quest_reward_type = 1 and quest_timestamp > {{dayStart}} and quest_timestamp < {{dayEnd}} order by quest_reward_amount asc;",
+         "stardust": "select distinct quest_reward_amount as rewardAmount from pokestop where quest_reward_type = 3 and quest_timestamp > {{dayStart}} and quest_timestamp < {{dayEnd}} order by quest_reward_amount asc;",
+         "stickers": "select distinct quest_reward_amount as rewardAmount from pokestop where quest_reward_type = 11 and quest_timestamp > {{dayStart}} and quest_timestamp < {{dayEnd}} order by quest_reward_amount asc;",
+         "pokemon": "select distinct quest_pokemon_id as pokemonID from pokestop where quest_reward_type = 7 and quest_timestamp > {{dayStart}} and quest_timestamp < {{dayEnd}} order by quest_pokemon_id asc;",
+         "megaEnergy": "select distinct quest_pokemon_id as pokemonID, quest_reward_amount as rewardAmount from pokestop where quest_reward_type = 12 and quest_timestamp > {{dayStart}} and quest_timestamp < {{dayEnd}} order by quest_pokemon_id asc, quest_reward_amount asc;",
+         "candy": "select distinct quest_pokemon_id as pokemonID, quest_reward_amount as rewardAmount from pokestop where quest_reward_type = 4 and quest_timestamp > {{dayStart}} and quest_timestamp < {{dayEnd}} order by quest_pokemon_id asc, quest_reward_amount asc;"
+      },
+      "areaQuests": {
+         "items": "select lat, lon, name from pokestop where quest_reward_type = 2 and quest_item_id = {{itemType}} and quest_reward_amount = {{itemAmount}} and ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon)) and quest_timestamp > {{dayStart}} and quest_timestamp < {{dayEnd}} order by name;",
+         "xp": "select lat, lon, name from pokestop where quest_reward_type = 1 and quest_reward_amount = {{xpAmount}} and ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon)) and quest_timestamp > {{dayStart}} and quest_timestamp < {{dayEnd}} order by name;",
+         "stardust": "select lat, lon, name from pokestop where quest_reward_type = 3 and quest_reward_amount = {{stardustAmount}} and ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon)) and quest_timestamp > {{dayStart}} and quest_timestamp < {{dayEnd}} order by name;",
+         "stickers": "",
+         "pokemon": "select lat, lon, name from pokestop where quest_reward_type = 7 and quest_pokemon_id = {{pokemonID}} and ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon)) and quest_timestamp > {{dayStart}} and quest_timestamp < {{dayEnd}} order by name;",
+         "megaEnergy": "select lat, lon, name from pokestop where quest_reward_type = 12 and quest_pokemon_id = {{pokemonID}} and quest_reward_amount = {{energyAmount}} and ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon)) and quest_timestamp > {{dayStart}} and quest_timestamp < {{dayEnd}} order by name;",
+         "candy": "select lat, lon, name from pokestop where quest_reward_type = 4 and quest_pokemon_id = {{pokemonID}} and quest_reward_amount = {{candyAmount}} and ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon)) and quest_timestamp > {{dayStart}} and quest_timestamp < {{dayEnd}} order by name;"
       }
    },
    "protos": {

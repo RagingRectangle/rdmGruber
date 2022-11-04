@@ -14,7 +14,8 @@ Join the Discord server for any help and to keep up with updates: https://discor
 - Grep files for search strings
 - Boards for current and history stats
 - Raid boards
-- Emojis/translations available for boards
+- Quest boards
+- Custom emojis/translations
 - Reaction role manager
 - See current status of RDM devices
 - Click device buttons to get basic info
@@ -70,6 +71,7 @@ Discord:
 - **noProtoCommand:** Get noProto devices.
 - **grepCommand:** Search uploaded file for string and return the lines where it's included (Slash command only).
 - **boardCommand:** Create current and historical stat boards (Slash command only).
+- **questCommand:** Get list of Pokestop with quest reward in an area (Slash command only).
 
 PM2:
 - **ignore:** List of PM2 processes/modules to ignore if you don't want buttons for them.
@@ -100,11 +102,17 @@ rdmDB:
 
 RaidBoardOptions:
 - **mapLink:** Turn gym names into map hyperlinks (true/false).
-- **linkFormat:** Use custom links to point towards your own map.
+- **linkFormat:** Use custom links to point towards your own map. (Also for quests)
 - **gymTeamEmoji:** Include emoji for controlling team (true/false).
 - **use24Hour:** Use 24 hour format in footer (true/false).
-- **useDayMonthYear:** Use Day/Month/Year format in footer (true/false).
-- **language:** Translate Pokemon and their moves (See options in */locale*).
+- **useDayMonthYear:** Use Day/Month/Year format in footer (true/false).  (Also for quests)
+- **language:** Translate Pokemon and their moves (See options in */locale*).  (Also for quests)
+
+questBoardOptions:
+- **dmResponse:** Keep server channels clean by sending quest list directly to user.
+- **iconRepo:** UICON repo for quest images.
+- **roleRestriction:** If set to false then users with roles listed in the quest commandPermRoles config can request quests for all areas in *config/geofence.json*. If set to true then areas will be limited to only users with specific roles. 
+- **questRoles:** Limit areas according to roles. Role IDs with an array of usable geofence names.
 
  
   
@@ -177,6 +185,7 @@ RaidBoardOptions:
 - See any naughty devices with `<prefix><noProtoCommand>`
 - Search file for string and return matching lines with `/<grepCommand>` (slash only)
 - Create current/history/raid boards with `/<boardCommand>` (slash only)
+- Get list of specific quest rewards in an area with `/<questCommand>` (slash only)
   
   
 

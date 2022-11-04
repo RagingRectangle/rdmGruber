@@ -16,7 +16,8 @@
         "devicesCommand": "devices",
         "noProtoCommand": "noproto",
         "grepCommand": "grep",
-        "boardCommand": "board"
+        "boardCommand": "board",
+        "questCommand": "quests"
     },
     "pm2": {
         "ignore": [""],
@@ -31,7 +32,8 @@
             "queries": [],
             "deviceInfo": [],
             "links": [],
-            "boards": []
+            "boards": [],
+            "quests": []
         }
     },
     "scripts": {
@@ -67,5 +69,14 @@
         "use24Hour": false,
         "useDayMonthYear": false,
         "language": "en"
+    },
+    "questBoardOptions": {
+        "dmResponse": false,
+        "iconRepo": "https://raw.githubusercontent.com/nileplumb/PkmnHomeIcons/master/UICONS",
+        "roleRestriction": false,
+        "questRoles": {
+            "<roleID1>": ["fence1", "fence2"],
+            "<roleID2>": ["fence3", "fence4"]
+        }
     }
 }

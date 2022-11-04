@@ -24,7 +24,7 @@ const geoConfig = require('../config/geofence.json');
 const util = require('../util.json');
 const translations = require('../config/translations.json');
 var locale = require('../locale/en.json');
-if (config.raidBoardOptions.language){
+if (config.raidBoardOptions.language) {
    locale = require(`../locale/${config.raidBoardOptions.language}.json`);
 }
 
@@ -62,7 +62,7 @@ module.exports = {
          } //End of i loop
          componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~board~current~addArea~${d}`).setPlaceholder('Select geofence name').addOptions(listOptions)));
       } //End of d loop
-      interaction.reply({
+      await interaction.reply({
          embeds: [newEmbed],
          components: componentList,
          ephemeral: true
@@ -82,7 +82,7 @@ module.exports = {
       if (boardType === 'current') {
          newComponents = [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Pokemon Options').setCustomId(`${config.serverName}~board~${boardType}~addPokemon`).addOptions(util.boards.current.pokemonOptions).setMaxValues(util.boards.current.pokemonOptions.length))]
       }
-      interaction.update({
+      await interaction.update({
          embeds: [newEmbed],
          components: newComponents,
          ephemeral: true
@@ -102,7 +102,7 @@ module.exports = {
       if (boardType === 'current') {
          newComponents = [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Gym Options').setCustomId(`${config.serverName}~board~${boardType}~addGyms`).addOptions(util.boards.current.gymOptions).setMaxValues(util.boards.current.gymOptions.length))]
       }
-      interaction.update({
+      await interaction.update({
          embeds: [newEmbed],
          components: newComponents,
          ephemeral: true
@@ -122,7 +122,7 @@ module.exports = {
       if (boardType === 'current') {
          newComponents = [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Pokestop Options').setCustomId(`${config.serverName}~board~${boardType}~addPokestops`).addOptions(util.boards.current.pokestopOptions).setMaxValues(util.boards.current.pokestopOptions.length))]
       }
-      interaction.update({
+      await interaction.update({
          embeds: [newEmbed],
          components: newComponents,
          ephemeral: true
@@ -142,7 +142,7 @@ module.exports = {
       if (boardType === 'current') {
          newComponents = [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Update Interval').setCustomId(`${config.serverName}~board~${boardType}~updateInterval`).addOptions(util.boards.current.updateIntervals))];
       }
-      interaction.update({
+      await interaction.update({
          embeds: [newEmbed],
          components: newComponents,
          ephemeral: true
@@ -159,7 +159,7 @@ module.exports = {
       });
       //Add verify buttons
       let newComponents = [new ActionRowBuilder().addComponents(new ButtonBuilder().setLabel('Start').setCustomId(`${config.serverName}~board~start`).setStyle(ButtonStyle.Success), new ButtonBuilder().setLabel('Restart').setCustomId(`${config.serverName}~board~current~restart`).setStyle(ButtonStyle.Secondary), new ButtonBuilder().setLabel('Cancel').setCustomId(`${config.serverName}~board~cancel`).setStyle(ButtonStyle.Danger))];
-      interaction.update({
+      await interaction.update({
          embeds: [newEmbed],
          components: newComponents,
          ephemeral: true
@@ -207,7 +207,7 @@ module.exports = {
          boardData.area = '~everywhere~';
          boardData.historyOptions = boardFields[1]['value'].split('\n');
          boardData.updateInterval = '1 0 * * *';
-         interaction.channel.send({
+         await interaction.channel.send({
                embeds: [new EmbedBuilder().setTitle(boardData.title).setDescription(`Board will be created soon...`)]
             }).catch(console.error)
             .then(msg => {
@@ -230,7 +230,7 @@ module.exports = {
          boardData.title = `${translations.Tier} ${boardData.tiers.join(' + ')} ${translations.Raids}`;
          boardData.updateInterval = `*/${boardFields[3]['value'].replace('every ', '').replace(' minutes', '')} * * * *`;
          boardData.geofence = await module.exports.generateGeofence(boardData.area);
-         interaction.channel.send({
+         await interaction.channel.send({
                embeds: [new EmbedBuilder().setTitle(boardData.title).setDescription(`Board will be created soon...`)]
             }).catch(console.error)
             .then(msg => {
@@ -245,12 +245,12 @@ module.exports = {
                module.exports.runBoardCron(client, msg.id, 'raid');
             });
       } //End of raid
-
-      interaction.update({
-         content: `Board created, you can dismiss this message now.`,
+      await interaction.update({
+         content: `Board created!`,
          embeds: [],
          components: []
       }).catch(console.error);
+      await interaction.deleteReply().catch(console.error);
    }, //End of startNewBoard()
 
 
@@ -472,7 +472,7 @@ module.exports = {
       });
       var componentList = [];
       componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~board~history~addOptions`).setPlaceholder('Select stat history options').addOptions(util.boards.history.historyOptions).setMaxValues(util.boards.history.historyOptions.length)));
-      interaction.reply({
+      await interaction.reply({
          embeds: [newEmbed],
          components: componentList,
          ephemeral: true
@@ -489,7 +489,7 @@ module.exports = {
       });
       var componentList = [];
       componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~board~${boardType}~addLength`).setPlaceholder('Select stat history length').addOptions(util.boards.history.updateIntervals).setMaxValues(1)));
-      interaction.update({
+      await interaction.update({
          embeds: [newEmbed],
          components: componentList,
          ephemeral: true
@@ -506,7 +506,7 @@ module.exports = {
       });
       //Add verify buttons
       let newComponents = [new ActionRowBuilder().addComponents(new ButtonBuilder().setLabel('Start').setCustomId(`${config.serverName}~board~start`).setStyle(ButtonStyle.Success), new ButtonBuilder().setLabel('Restart').setCustomId(`${config.serverName}~board~restart`).setStyle(ButtonStyle.Secondary), new ButtonBuilder().setLabel('Cancel').setCustomId(`${config.serverName}~board~cancel`).setStyle(ButtonStyle.Danger))];
-      interaction.update({
+      await interaction.update({
          embeds: [newEmbed],
          components: newComponents,
          ephemeral: true
@@ -544,7 +544,7 @@ module.exports = {
          } //End of i loop
          componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~board~raid~addArea~${d}`).setPlaceholder('Select geofence name').addOptions(listOptions)));
       } //End of d loop
-      interaction.reply({
+      await interaction.reply({
          embeds: [newEmbed],
          components: componentList,
          ephemeral: true
@@ -561,7 +561,7 @@ module.exports = {
       });
       var componentList = [];
       componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~board~raid~addTiers`).setPlaceholder('Select raid tiers').addOptions(util.boards.raid.raidTiers).setMaxValues(util.boards.raid.raidTiers.length)));
-      interaction.update({
+      await interaction.update({
          embeds: [newEmbed],
          components: componentList,
          ephemeral: true
@@ -577,7 +577,7 @@ module.exports = {
          value: tiers.join('\n')
       });
       let newComponents = [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Update Interval').setCustomId(`${config.serverName}~board~raid~updateInterval`).addOptions(util.boards.current.updateIntervals))];
-      interaction.update({
+      await interaction.update({
          embeds: [newEmbed],
          components: newComponents,
          ephemeral: true
@@ -594,7 +594,7 @@ module.exports = {
       });
       //Add verify buttons
       let newComponents = [new ActionRowBuilder().addComponents(new ButtonBuilder().setLabel('Start').setCustomId(`${config.serverName}~board~start`).setStyle(ButtonStyle.Success), new ButtonBuilder().setLabel('Restart').setCustomId(`${config.serverName}~board~raid~restart`).setStyle(ButtonStyle.Secondary), new ButtonBuilder().setLabel('Cancel').setCustomId(`${config.serverName}~board~cancel`).setStyle(ButtonStyle.Danger))];
-      interaction.update({
+      await interaction.update({
          embeds: [newEmbed],
          components: newComponents,
          ephemeral: true
@@ -613,14 +613,13 @@ module.exports = {
             let monInfo = monsters[nameID] ? monsters[nameID] : monsters[`${raids[r]['raid_pokemon_id']}_0`];
             var monName = monInfo['name'];
             var monForm = monInfo['form']['name'];
-            if (locale[monName]){
+            if (locale[monName]) {
                monName = locale[monName];
             }
-            if (monForm != 'Normal'){
-               if (locale[monForm]){
+            if (monForm != 'Normal') {
+               if (locale[monForm]) {
                   monName = monName.concat(` ${locale[monForm]}`);
-               }
-               else {
+               } else {
                   monName = monName.concat(` ${monForm}`);
                }
             }
@@ -629,15 +628,15 @@ module.exports = {
                monTypes = monTypes.concat(translations[`${monInfo['types'][1]['name'].toLowerCase()}Emoji`])
             }
             var move1 = moves[raids[r].raid_pokemon_move_1] ? `${moves[raids[r].raid_pokemon_move_1]['name']}` : '?';
-            if (move1 !== '?'){
-               if (locale[move1]){
+            if (move1 !== '?') {
+               if (locale[move1]) {
                   move1 = locale[move1];
                }
             }
             move1 = move1.concat(` ${translations[`${moves[raids[r].raid_pokemon_move_1]['type'].toLowerCase()}Emoji`]}`);
             var move2 = moves[raids[r].raid_pokemon_move_2] ? `${moves[raids[r].raid_pokemon_move_2]['name']}` : '?';
-            if (move2 !== '?'){
-               if (locale[move2]){
+            if (move2 !== '?') {
+               if (locale[move2]) {
                   move2 = locale[move2];
                }
             }

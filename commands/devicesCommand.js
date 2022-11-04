@@ -19,7 +19,7 @@ module.exports = {
 		let channel = await client.channels.fetch(interaction.channelId).catch(console.error);
 		let guild = await client.guilds.fetch(interaction.guildId).catch(console.error);
 		let userPerms = await Roles.getUserCommandPerms(guild, interaction.user);
-		if (userPerms.includes('admin') || userPerms.includes('deviceInfoControl')) {
+		if (userPerms.includes('admin') || userPerms.includes('deviceInfo') || userPerms.includes('deviceInfoControl')) {
 			interaction.deferReply();
 			var deviceID = '';
 			var specificCheck = false;

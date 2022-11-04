@@ -25,6 +25,7 @@ const Scripts = require('./scripts.js');
 const Queries = require('./queries.js');
 const Devices = require('./devices.js');
 const Boards = require('./boards.js');
+const Quests = require('./quests.js');
 
 module.exports = {
    listInteraction: async function listInteraction(client, interaction, interactionID, userPerms) {
@@ -68,6 +69,15 @@ module.exports = {
             module.exports.boardInteractions(client, interaction, interactionID, userPerms);
          }
       } //End of board
+
+      //Quests
+      if (interactionID.startsWith('quests~geofence~')) {
+         Quests.getRewardType(client, interaction);
+      } else if (interactionID.startsWith('quests~reward~')) {
+         let splitID = interactionID.replace('quests~reward~', '').split('~');
+         let rewardType = interaction.values[0];
+         Quests.getAreaQuests(client, interaction, splitID[0], rewardType);
+      }
    }, //End of listInteraction()
 
 

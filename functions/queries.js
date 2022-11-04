@@ -19,7 +19,6 @@ const queryConfig = require('../config/queries.json');
 
 module.exports = {
    queries: async function queries(channel) {
-      let countList = queryConfig.count;
       var selectList = [];
       queryConfig.custom.forEach(query => {
          let listOption = {

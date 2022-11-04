@@ -65,5 +65,9 @@
     "Ends": "Ends",
     "Unknown": "Unknown",
     "No_Raids": "Currently no raids. Check back later.",
-    "ShinySpecies": "Shiny Species"
+    "ShinySpecies": "Shiny Species",
+    "Other": "Other",
+    "AR": "AR",
+    "nonAR": "nonAR",
+    "noQuests": "No quests found!"
 }

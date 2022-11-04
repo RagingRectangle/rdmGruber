@@ -58,6 +58,7 @@ const Pm2Buttons = require('./functions/pm2.js');
 const Links = require('./functions/links.js');
 const Scripts = require('./functions/scripts.js');
 const Queries = require('./functions/queries.js');
+const Quests = require('./functions/quests.js');
 
 var roleMessages = [];
 roleConfig.forEach(role => {
@@ -114,6 +115,14 @@ client.on('ready', async () => {
 			console.log(err);
 		}
 	} //End of history boards
+	//Update available quests
+	if (config.discord.questCommand) {
+		Quests.updateQuests();
+		let questJob = new CronJob(`*/30 * * * *`, function () {
+			Quests.updateQuests();
+		}, null, true, null);
+		questJob.start();
+	}
 }); //End of ready()
 
 
@@ -213,7 +222,10 @@ client.on('interactionCreate', async interaction => {
 	}
 	//Not in channel list
 	if (!config.discord.channelIDs.includes(interaction.channelId)) {
-		interaction.reply(`Slash commands not allowed in channel *${interaction.channelId}*`);
+		await interaction.reply({
+			content: `Slash commands not allowed in channel *${interaction.channelId}*`,
+			ephemeral: true
+		}).catch(console.error);
 		return;
 	}
 	try {
