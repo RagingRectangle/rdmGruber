@@ -257,7 +257,7 @@ module.exports = {
             Boards.addHistoryLength(interaction, "history", interaction.values[0]);
          }
       } //End of history
-      //History board
+      //Raid board
       if (splitID[0] === 'raid') {
          if (splitID[1] === 'restart') {
             Boards.startRaidBoard(interaction);
@@ -265,6 +265,8 @@ module.exports = {
             Boards.addRaidArea(interaction, interaction.values[0]);
          } else if (splitID[1] === 'addTiers') {
             Boards.addRaidTiers(interaction, interaction.values);
+         }else if (splitID[1] === 'addEggs') {
+            Boards.addRaidEggs(interaction, interaction.values[0]);
          } else if (splitID[1] === 'updateInterval') {
             Boards.addRaidUpdateInterval(interaction, interaction.values[0]);
          }

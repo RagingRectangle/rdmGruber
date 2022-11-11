@@ -46970,8 +46970,8 @@
       "id": 799,
       "types": [
         {
-          "id": 8,
-          "name": "Ghost"
+          "id": 16,
+          "name": "Dragon"
         },
         {
           "id": 17,
@@ -50468,6 +50468,8 @@
         "baseDefense": 181,
         "baseStamina": 277
       },
+      "thirdMoveStardust": 50000,
+      "thirdMoveCandy": 50,
       "unreleased": true
     },
     "901_2817": {
@@ -50492,6 +50494,8 @@
         "baseDefense": 181,
         "baseStamina": 277
       },
+      "thirdMoveStardust": 50000,
+      "thirdMoveCandy": 50,
       "unreleased": true
     },
     "902_0": {
@@ -52035,6 +52039,9 @@
     "1107": {
       "name": "Unova Stone"
     },
+    "1150": {
+      "name": "Item Other Evolution Stone A"
+    },
     "1201": {
       "name": "Fast TM"
     },
@@ -53148,6 +53155,10 @@
     "376": {
       "name": "Poltergeist",
       "type": "Ghost"
+    },
+    "377": {
+      "name": "High Horsepower",
+      "type": "Ground"
     }
   },
   "questTypes": {

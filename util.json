@@ -342,6 +342,10 @@
          "label": "",
          "query": "SELECT lat, lon, name, raid_spawn_timestamp, raid_battle_timestamp, raid_end_timestamp, raid_pokemon_id, team_id, raid_level, raid_pokemon_move_1, raid_pokemon_move_2, raid_pokemon_form, raid_pokemon_gender, raid_pokemon_costume, raid_pokemon_evolution FROM gym WHERE UNIX_TIMESTAMP() < raid_end_timestamp AND UNIX_TIMESTAMP() > raid_battle_timestamp AND raid_level in ({{tiers}}) AND raid_pokemon_id != 0 AND raid_pokemon_move_1 > 0 AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)) ORDER BY raid_end_timestamp ASC;"
       },
+      "eggs": {
+         "label": "",
+         "query": "SELECT lat, lon, name, raid_spawn_timestamp, raid_battle_timestamp, raid_end_timestamp, raid_pokemon_id, team_id, raid_level, raid_pokemon_move_1, raid_pokemon_move_2, raid_pokemon_form, raid_pokemon_gender, raid_pokemon_costume, raid_pokemon_evolution FROM gym WHERE UNIX_TIMESTAMP() < raid_battle_timestamp AND UNIX_TIMESTAMP() > raid_spawn_timestamp AND raid_level in ({{tiers}}) AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)) ORDER BY raid_end_timestamp ASC;"
+      },
       "availableQuests": {
          "items": "select distinct quest_item_id as itemID, quest_reward_amount as rewardAmount from pokestop where quest_reward_type = 2 and quest_timestamp > {{dayStart}} and quest_timestamp < {{dayEnd}} order by quest_item_id asc;",
          "xp": "select distinct quest_reward_amount as rewardAmount from pokestop where quest_reward_type = 1 and quest_timestamp > {{dayStart}} and quest_timestamp < {{dayEnd}} order by quest_reward_amount asc;",
