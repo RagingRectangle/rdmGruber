@@ -34,19 +34,21 @@ module.exports = {
       if (commands.queryCommand) {
          commandList.push(`Queries: \`${prefix}${commands.queryCommand}\``);
       }
-      if (commands.linksCommand) {
-         commandList.push(`Links: \`${prefix}${commands.linksCommand}\``);
-      }
       if (commands.devicesCommand) {
          commandList.push(`Devices: \`${prefix}${commands.devicesCommand}\``);
       }
       if (commands.noProtoCommand) {
          commandList.push(`No Proto: \`${prefix}${commands.noProtoCommand}\``);
       }
-      if (commands.systemStatsCommand) {
-         commandList.push(`Stats: \`${prefix}${commands.systemStatsCommand}\``);
+      if (commands.linksCommand) {
+         commandList.push(`Links: \`${prefix}${commands.linksCommand}\``);
       }
-
+      if (commands.boardCommand) {
+         commandList.push(`Boards: \`${prefix}${commands.boardCommand}\``);
+      }
+      if (commands.questCommand) {
+         commandList.push(`Quests: \`${prefix}${commands.questCommand}\``);
+      }
       let userPerms = await Roles.getUserCommandPerms(guild, user);
       let authorName = user.username;
       var allowedCommands = `**${authorName} Permissions:**\n- ${userPerms.join('\n- ')}`;

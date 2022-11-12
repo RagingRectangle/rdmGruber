@@ -51,6 +51,7 @@ const config = require('./config/config.json');
 const GenerateServerInfo = require('./functions/generateServerInfo.js');
 const roleConfig = require('./config/roles.json');
 const SlashRegistry = require('./functions/slashRegistry.js');
+const Help = require('./functions/help.js');
 const Interactions = require('./functions/interactions.js');
 const Roles = require('./functions/roles.js');
 const Devices = require('./functions/devices.js');
@@ -207,6 +208,9 @@ client.on('messageCreate', async (receivedMessage) => {
 		} else {
 			receivedMessage.channel.send(`User *${receivedMessage.author.username}* does not have required no proto perms.`).catch(console.error);
 		}
+	}
+	else if (message === `${config.discord.prefix}${config.discord.helpCommand}`){
+		Help.helpMenu(client, receivedMessage.channel, receivedMessage.guild, receivedMessage.author);
 	}
 }); //End of messageCreate()
 
