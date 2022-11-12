@@ -1,6 +1,6 @@
 {
   "name": "rdmgruber",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "description": "Discord bot for controlling RDM, PM2 processes, and whatever else this idiot comes up with to add.",
   "main": "rdmgruber.js",
   "scripts": {
@@ -20,7 +20,6 @@
     "@discordjs/rest": "1.1.0",
     "ansi-parser": "^3.2.10",
     "color-convert": "^2.0.1",
-    "cron": "^1.8.2",
     "discord-api-types": "0.36.2",
     "discord.js": "14.6.0",
     "easy-table": "^1.2.0",
@@ -31,6 +30,7 @@
     "moment": "^2.29.1",
     "mysql2": "^2.3.3",
     "node-fetch": "2.6.1",
+    "node-schedule": "^2.1.0",
     "pm2": "^5.1.2",
     "quickchart-js": "^2.0.3",
     "request": "^2.88.2",

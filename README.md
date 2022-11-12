@@ -164,10 +164,12 @@ questBoardOptions:
   
 ## Board Setup
 - Send `/<boardCommand>`and follow the prompts for the board you'd like to create.
-- To remove a board or edit the title you can do so in the boards.json config file.
+- To remove a board or edit the title you can do so in */config/geofence.json*.
+- Delete boards by thier message ID with `/<boardCommand> delete`.
 - To limit boards to specific areas use */config/geofence.json*.
 - Can use either the geojson or geo.jasparke format (Only single polygons supported).
- 
+
+
   
   
 ## Usage
@@ -187,6 +189,7 @@ questBoardOptions:
 - Create current/history/raid boards with `/<boardCommand>` (slash only)
 - Get list of specific quest rewards in an area with `/<questCommand>` (slash only)
   
+  
   
 
 ## Examples

@@ -16,7 +16,7 @@ const {
 const fs = require('fs');
 const mysql = require('mysql2');
 const moment = require('moment');
-const CronJob = require('cron').CronJob;
+const schedule = require('node-schedule');
 const Handlebars = require("handlebars");
 var Table = require('easy-table');
 const config = require('../config/config.json');
@@ -190,10 +190,13 @@ module.exports = {
                boardList['current'][msg.id] = boardData;
                fs.writeFileSync('./config/boards.json', JSON.stringify(boardList));
                //Start cron job
-               let boardJob = new CronJob(boardData.updateInterval, function () {
-                  module.exports.runBoardCron(client, msg.id, 'current');
-               }, null, true, null);
-               boardJob.start();
+               try {
+                  const boardJob = schedule.scheduleJob(msg.id, boardData.updateInterval, function () {
+                     module.exports.runBoardCron(client, msg.id, 'current');
+                  });
+               } catch (err) {
+                  console.log(err);
+               }
                //Run first time
                module.exports.runBoardCron(client, msg.id, 'current');
             });
@@ -214,10 +217,14 @@ module.exports = {
                boardList['history'][msg.id] = boardData;
                fs.writeFileSync('./config/boards.json', JSON.stringify(boardList));
                //Start cron job
-               let boardJob = new CronJob(boardData.updateInterval, function () {
-                  module.exports.runBoardCron(client, msg.id, 'history');
-               }, null, true, null);
-               boardJob.start();
+               try {
+                  const boardJob = schedule.scheduleJob(msg.id, boardData.updateInterval, function () {
+                     module.exports.runBoardCron(client, msg.id, 'history');
+                  });
+               } catch (err) {
+                  console.log(err);
+               }
+               //Run first time
                module.exports.runBoardCron(client, msg.id, 'history');
             });
       } //End of history
@@ -238,10 +245,13 @@ module.exports = {
                boardList['raid'][msg.id] = boardData;
                fs.writeFileSync('./config/boards.json', JSON.stringify(boardList));
                //Start cron job
-               let boardJob = new CronJob(boardData.updateInterval, function () {
-                  module.exports.runBoardCron(client, msg.id, 'raid');
-               }, null, true, null);
-               boardJob.start();
+               try {
+                  const boardJob = schedule.scheduleJob(msg.id, boardData.updateInterval, function () {
+                     module.exports.runBoardCron(client, msg.id, 'raid');
+                  });
+               } catch (err) {
+                  console.log(err);
+               }
                //Run first time
                module.exports.runBoardCron(client, msg.id, 'raid');
             });
@@ -786,4 +796,48 @@ module.exports = {
       fs.writeFileSync('./config/boards.json', JSON.stringify(newBoards));
       return newBoards;
    }, //End of updateBoardFormat()
+
+
+   deleteBoard: async function deleteBoard(client, interaction, boardID) {
+      var Boards = require('../config/boards.json');
+      for (const [typeKey, boardList] of Object.entries(Boards)) {
+         if (Boards[typeKey][boardID]) {
+            try {
+               let boardChannel = await client.channels.cache.get(Boards[typeKey][boardID]['channelID']);
+               try {
+                  let boardMessage = await boardChannel.messages.fetch(boardID);
+                  boardDelete(boardChannel, boardMessage, Boards[typeKey][boardID]['type']);
+               } catch (err) {
+                  console.log("Unable to fetch board message for board deletion:", err);
+               }
+            } catch (err) {
+               console.log("Unable to fetch board channel for board deletion:", err);
+            }
+         }
+      } //End of board loop
+
+      async function boardDelete(boardChannel, boardMessage, type) {
+         console.log(`${interaction.user.username} deleted ${type} board ${boardID}`);
+         //Delete cron
+         try {
+            let boardJob = schedule.scheduledJobs[boardMessage.id];
+            boardJob.cancel();
+         } catch (err) {
+            console.log(`Failed to remove cron job for board ${boardMessage.id}: ${err}`);
+         }
+         //Delete message
+         setTimeout(() => boardMessage.delete().catch(err => console.log(`Error deleting board message:`, err)), (1));
+         //Delete from boards.json
+         try {
+            delete Boards[type][boardID];
+            fs.writeFileSync('./config/boards.json', JSON.stringify(Boards));
+            await interaction.reply({
+               content: `${type.replace('raid','Raid').replace('history','History').replace('current','Current')} board \`${boardID}\` deleted`,
+               ephemeral: true
+            }).catch(console.error);
+         } catch (err) {
+            console.log(`Failed to remove ${type} board from config: ${err}`);
+         }
+      } //End of boardDelete()
+   }, //End of deleteBoard()
 }

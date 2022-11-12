@@ -18,7 +18,7 @@ const client = new Client({
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 });
 const fs = require('fs');
-const Boards = require('./functions/boards.js');
+var Boards = require('./functions/boards.js');
 var boardConfig = require('./config/boards.json');
 //Update boards.json format
 if (!boardConfig.current || !boardConfig.history) {
@@ -46,7 +46,7 @@ request('https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master
 });
 
 const pm2 = require('pm2');
-const CronJob = require('cron').CronJob;
+const schedule = require('node-schedule');
 const config = require('./config/config.json');
 const GenerateServerInfo = require('./functions/generateServerInfo.js');
 const roleConfig = require('./config/roles.json');
@@ -77,29 +77,31 @@ client.on('ready', async () => {
 	}
 	//No Proto Checker
 	if (config.rdmDB.host && config.devices.noProtoCheckMinutes > 0) {
-		let noProtoJob = new CronJob(`*/${config.devices.noProtoCheckMinutes} * * * *`, function () {
-			Devices.noProtoDevices(client, '', '', 'cron');
-		}, null, true, null);
-		noProtoJob.start();
+		try {
+			const boardJob = schedule.scheduleJob("noProtoCheck", `*/${config.devices.noProtoCheckMinutes} * * * *`, function () {
+				Devices.noProtoDevices(client, '', '', 'cron');
+			});
+		} catch (err) {
+			console.log(err);
+		}
 	}
 	//Create current board crons
 	for (const [msgID, boardData] of Object.entries(boardConfig.current)) {
 		try {
-			let boardJob = new CronJob(boardData.updateInterval, function () {
+			const boardJob = schedule.scheduleJob(msgID, boardData.updateInterval, function () {
 				Boards.runBoardCron(client, msgID, 'current');
-			}, null, true, null);
-			boardJob.start();
+			});
 		} catch (err) {
 			console.log(err);
 		}
 	} //End of current boards
+
 	//Create history board crons
 	for (const [msgID, boardData] of Object.entries(boardConfig.history)) {
 		try {
-			let boardJob = new CronJob(boardData.updateInterval, function () {
+			const boardJob = schedule.scheduleJob(msgID, boardData.updateInterval, function () {
 				Boards.runBoardCron(client, msgID, 'history');
-			}, null, true, null);
-			boardJob.start();
+			});
 		} catch (err) {
 			console.log(err);
 		}
@@ -107,10 +109,9 @@ client.on('ready', async () => {
 	//Create raid board crons
 	for (const [msgID, boardData] of Object.entries(boardConfig.raid)) {
 		try {
-			let boardJob = new CronJob(boardData.updateInterval, function () {
+			const boardJob = schedule.scheduleJob(msgID, boardData.updateInterval, function () {
 				Boards.runBoardCron(client, msgID, 'raid');
-			}, null, true, null);
-			boardJob.start();
+			});
 		} catch (err) {
 			console.log(err);
 		}
@@ -118,10 +119,13 @@ client.on('ready', async () => {
 	//Update available quests
 	if (config.discord.questCommand) {
 		Quests.updateQuests();
-		let questJob = new CronJob(`*/30 * * * *`, function () {
-			Quests.updateQuests();
-		}, null, true, null);
-		questJob.start();
+		try {
+			const boardJob = schedule.scheduleJob("updateQuests", `*/30 * * * *`, function () {
+				Quests.updateQuests();
+			});
+		} catch (err) {
+			console.log(err);
+		}
 	}
 }); //End of ready()
 
@@ -309,6 +313,22 @@ client.on('messageReactionRemove', async (reaction, user) => {
 		Roles.roles(reaction, user, "remove");
 	}
 }); //End of messageReactionRemove
+
+
+//AutoComplete
+client.on('interactionCreate', async interaction => {
+	if (!interaction.isAutocomplete()) return;
+	let Boards = require('./config/boards.json');
+	let focusedValue = interaction.options.getFocused();
+	let boardList = Object.keys(Boards.raid).concat(Object.keys(Boards.current), Object.keys(Boards.history));
+	let filteredList = boardList.filter(choice => choice.includes(focusedValue)).slice(0, 25);
+	await interaction.respond(
+		filteredList.map(choice => ({
+			name: choice,
+			value: choice
+		}))
+	).catch(console.error);
+}); //End of autoComplete
 
 
 client.on("error", (e) => console.error(e));

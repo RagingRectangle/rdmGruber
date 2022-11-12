@@ -21,7 +21,15 @@ module.exports = {
 		.addSubcommand(subcommand =>
 			subcommand
 			.setName('raid')
-			.setDescription('Create raid board')),
+			.setDescription('Create raid board'))
+		.addSubcommand(subcommand =>
+			subcommand
+			.setName('delete')
+			.setDescription('Delete board by ID').addStringOption(option =>
+				option.setName('message_id')
+				.setDescription(`Enter ID of board message`)
+				.setRequired(true)
+				.setAutocomplete(true))),
 
 	async execute(client, interaction) {
 		let channel = await client.channels.fetch(interaction.channelId).catch(console.error);
@@ -35,8 +43,13 @@ module.exports = {
 			} else if (interaction.options.getSubcommand() === 'raid') {
 				Boards.startRaidBoard(interaction);
 			}
-		}
-		else {
+			if (userPerms.includes('admin')) {
+				if (interaction.options.getSubcommand() === 'delete') {
+					let boardID = interaction.options.getString('message_id');
+					Boards.deleteBoard(client, interaction, boardID);
+				}
+			}
+		} else {
 			channel.send(`User *${interaction.user.username}* does not have required board perms`).catch(console.error);
 		}
 	},
