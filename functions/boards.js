@@ -14,8 +14,12 @@ const {
    ChannelType
 } = require('discord.js');
 const fs = require('fs');
+const {
+   find
+} = require('geo-tz');
 const mysql = require('mysql2');
 const moment = require('moment');
+const momentTZ = require('moment-timezone');
 const schedule = require('node-schedule');
 const Handlebars = require("handlebars");
 var Table = require('easy-table');
@@ -406,7 +410,10 @@ module.exports = {
                   } //End of i loop
                }
             } //End of pokestopOptions
-            footerText = `${boardInfo.area.replace('~everywhere~','everywhere')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}`;
+            let geoSplit = boardData.geofence.split(',');
+            let geoStart = geoSplit[0].split(' ');
+            let tzName = find(geoStart[0].replace('(', ''), geoStart[1]);
+            footerText = boardData.area == '~everywhere~' ? `${boardInfo.area.replaceAll('~','')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}` : `${boardInfo.area} ~ ${moment().tz(tzName[0]).format(footerFormat)}`;
          } //End of currentLoop
       } //End of current boards
 
@@ -459,7 +466,10 @@ module.exports = {
             let updatedBoard = await module.exports.updateRaidBoard(boardInfo, raidResult, eggResult);
             boardDescription.push(updatedBoard.raids);
             boardDescriptionEggs.push(updatedBoard.eggs);
-            footerText = `${boardInfo.area.replace('~everywhere~','everywhere')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}`;
+            let geoSplit = boardData.geofence.split(',');
+            let geoStart = geoSplit[0].split(' ');
+            let tzName = find(geoStart[0].replace('(', ''), geoStart[1]);
+            footerText = boardData.area == '~everywhere~' ? `${boardInfo.area.replaceAll('~','')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}` : `${boardInfo.area} ~ ${moment().tz(tzName[0]).format(footerFormat)}`;
          } //End of history loop
       } //End of raid boards
       if (!boardInfo) {
@@ -654,7 +664,6 @@ module.exports = {
       let moves = masterfile.moves;
       let raidBoardInfo = raids != '' ? await createRaidBoard(raids) : [translations.No_Raids];
       let eggBoardInfo = eggs != '' ? await createEggBoard(eggs) : translations.No_Eggs ? [translations.No_Eggs] : "Currently no eggs. Check back later.";
-
       async function createRaidBoard(raids) {
          var raidInfo = [];
          for (var r in raids) {
@@ -713,6 +722,7 @@ module.exports = {
 
       async function createEggBoard(eggs) {
          var eggInfo = [];
+         let tzName = find(eggs[0]['lat'], eggs[0]['lon']);
          for (var e in eggs) {
             try {
                var gymName = eggs[e]['name'] ? eggs[e]['name'].length > 30 ? `${eggs[e]['name'].slice(0, 28)}..` : eggs[e]['name'] : translations.Unknown
@@ -724,7 +734,7 @@ module.exports = {
                   gymName = gymName.concat(` ${gymEmoji}`);
                }
                let formatTime = config.raidBoardOptions.use24Hour == true ? 'H:mm:ss' : 'h:mm:ss A';
-               eggInfo.push(`${gymName}\n${moment.unix(eggs[e]['raid_battle_timestamp']).add(config.timezoneOffsetHours, 'hours').format(formatTime)} <t:${eggs[e]['raid_battle_timestamp']}:R>\n\n`);
+               eggInfo.push(`${gymName}\n${moment.unix(eggs[e]['raid_battle_timestamp']).tz(tzName[0]).format(formatTime)} (<t:${eggs[e]['raid_battle_timestamp']}:R>)\n\n`);
                if (eggInfo.join('\n\n').length > 2900) {
                   eggInfo.pop();
                   break;

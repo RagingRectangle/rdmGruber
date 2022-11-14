@@ -209,7 +209,8 @@ client.on('messageCreate', async (receivedMessage) => {
 			receivedMessage.channel.send(`User *${receivedMessage.author.username}* does not have required no proto perms.`).catch(console.error);
 		}
 	}
-	else if (message === `${config.discord.prefix}${config.discord.helpCommand}`){
+	//Help menu
+	else if (message === `${config.discord.prefix}${config.discord.helpCommand}`) {
 		Help.helpMenu(client, receivedMessage.channel, receivedMessage.guild, receivedMessage.author);
 	}
 }); //End of messageCreate()

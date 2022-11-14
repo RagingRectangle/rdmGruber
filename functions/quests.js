@@ -14,7 +14,11 @@ const {
 } = require('discord.js');
 const Handlebars = require("handlebars");
 const fs = require('fs');
+const {
+   find
+} = require('geo-tz');
 const moment = require('moment');
+const momentTZ = require('moment-timezone');
 const mysql = require('mysql2');
 const config = require('../config/config.json');
 const geoConfig = require('../config/geofence.json');
@@ -367,6 +371,9 @@ module.exports = {
             }).catch(console.error);
          }
       } else {
+         let geoSplit = geofenceArea.split(',');
+         let geoStart = geoSplit[0].split(' ');
+         let tzName = find(geoStart[0].replace('(', ''), geoStart[1]);
          //Quests
          if (questResults[0].length > 0) {
             var embedList = [];
@@ -382,7 +389,7 @@ module.exports = {
             embedList.splice(4, embedList.length - 1);
             embedList[0].setTitle(`${rewardName} ${translations.AR} ${translations.Quests}:`).setThumbnail(rewardPic);
             embedList[embedList.length - 1].setFooter({
-               text: `${geofenceName} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}`
+               text: `${geofenceName} ~ ${moment().tz(tzName[0]).format(footerFormat)}`
             });
             if (config.questBoardOptions.dmResponse == true) {
                await interaction.user.send({
@@ -409,7 +416,7 @@ module.exports = {
             embedList.splice(4, embedList.length - 1);
             embedList[0].setTitle(`${rewardName} ${translations.nonAR} ${translations.Quests}:`).setThumbnail(rewardPic);
             embedList[embedList.length - 1].setFooter({
-               text: `${geofenceName} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}`
+               text: `${geofenceName} ~ ${moment().tz(tzName[0]).format(footerFormat)}`
             });
             if (config.questBoardOptions.dmResponse == true) {
                await interaction.user.send({
