@@ -18,11 +18,11 @@ const mysql = require('mysql2');
 const QuickChart = require('quickchart-js');
 const convert = require('color-convert');
 const config = require('../config/config.json');
-const statConfig = require('../stats.json');
 const util = require('../util.json');
 
 module.exports = {
    statsMain: async function statsMain(client, channel, interaction, statType, statDuration, area) {
+      let statConfig = require('../stats.json');
       console.log(`${interaction.user.username} looked up stats: ${area} ${statDuration} ${statType}`);
       let statAreas = area == 'All Areas' ? `'${statConfig.areas.join("', '")}'` : `'${area}'`;
       //Hourly values
@@ -63,6 +63,7 @@ module.exports = {
 
 
    monsScanned: async function monsScanned(client, interaction, statDuration, footerText, statAreas, options) {
+      let statConfig = require('../stats.json');
       let scannedResultsTemp = await this.runStatQuery(util.queries.stats.monsScanned.replace("{{rpl}}", options.rpl).replace("{{areas}}", statAreas).replace("{{rplLength}}", options.rplLength));
       let scannedResults = scannedResultsTemp[0].reverse();
       var labels = [];
@@ -202,6 +203,7 @@ module.exports = {
 
 
    statResets: async function statResets(client, interaction, statDuration, footerText, statAreas, options) {
+      let statConfig = require('../stats.json');
       let resetResultsTemp = await this.runStatQuery(util.queries.stats.statResets.replace("{{rpl}}", options.rpl).replace("{{areas}}", statAreas).replace("{{rplLength}}", options.rplLength));
       let resetResults = resetResultsTemp[0].reverse();
       var labels = [];
@@ -290,6 +292,7 @@ module.exports = {
 
 
    spawnpoints: async function spawnpoints(client, interaction, statDuration, footerText, statAreas, options) {
+      let statConfig = require('../stats.json');
       let spawnpointResultsTemp = await this.runStatQuery(util.queries.stats.spawnpoints.replace("{{rpl}}", options.rpl).replace("{{areas}}", statAreas).replace("{{rplLength}}", options.rplLength));
       let spawnpointResults = spawnpointResultsTemp[0].reverse();
       var labels = [];
