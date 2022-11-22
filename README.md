@@ -24,6 +24,7 @@ Join the Discord server for any help and to keep up with updates: https://discor
 - Optional slash commands available
 - Options to verify certain actions first
 - Limit commands to only certain roles
+- [dkmur's rdmStats](https://github.com/dkmur/rdmStats) integration
 
   
   
@@ -72,6 +73,7 @@ Discord:
 - **grepCommand:** Search uploaded file for string and return the lines where it's included (Slash command only).
 - **boardCommand:** Create current and historical stat boards (Slash command only).
 - **questCommand:** Get list of Pokestop with quest reward in an area (Slash command only).
+- **statsCommand:** Get list of Pokestop with quest reward in an area (Slash command only).
 
 PM2:
 - **ignore:** List of PM2 processes/modules to ignore if you don't want buttons for them.
@@ -113,6 +115,14 @@ questBoardOptions:
 - **iconRepo:** UICON repo for quest images.
 - **roleRestriction:** If set to false then users with roles listed in the quest commandPermRoles config can request quests for all areas in *config/geofence.json*. If set to true then areas will be limited to only users with specific roles. 
 - **questRoles:** Limit areas according to roles. Role IDs with an array of usable geofence names.
+
+rdmStats:
+- [Install info](https://github.com/dkmur/rdmStats)
+- **database:** Basic stats database info.
+- **dataPointCount:** How many individual points on graphs for each type.
+- **colorPalette:** Colors used for stat graphs. Accepts all common color names.
+- **graphDeleteSeconds:** How long to wait until graphs are deleted (Set to 0 to never delete).
+
 
  
   
@@ -188,6 +198,7 @@ questBoardOptions:
 - Search file for string and return matching lines with `/<grepCommand>` (slash only)
 - Create current/history/raid boards with `/<boardCommand>` (slash only)
 - Get list of specific quest rewards in an area with `/<questCommand>` (slash only)
+- Get rdmStats graphs with `/<statsCommand>` (slash only)
   
   
   
@@ -199,3 +210,9 @@ questBoardOptions:
 ![Scripts](https://media.giphy.com/media/KVzaguhH4o99CLZs09/giphy.gif)
 ###### Quick Links:
 ![Links](https://media.giphy.com/media/Mz1mf6OJyL727WnkGe/giphy.gif)
+
+###### dkmur rdmStats:
+![Despawn Left](https://i.imgur.com/g2yBK0t.png)
+![Mons Scanned](https://i.imgur.com/sJF2HV9.png)
+![Stat Resets](https://i.imgur.com/pZ0roz1.png)
+![Spawnpoints](https://i.imgur.com/Qk8OMni.png)

@@ -40,6 +40,7 @@ module.exports = {
       if (allQuests == 'ERROR') {
          return;
       }
+      allQuests.shift();
       var buttonValues = [];
       var questList = {};
 
@@ -438,7 +439,7 @@ module.exports = {
       dbConfig.multipleStatements = true;
       let questConnection = mysql.createConnection(dbConfig);
       return new Promise((resolve, reject) => {
-         questConnection.query(query, (error, results) => {
+         questConnection.query(`${util.queries.dirtyRead} ${query}`, (error, results) => {
             if (error) {
                questConnection.end();
                console.log(error)

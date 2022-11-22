@@ -17,7 +17,8 @@
         "noProtoCommand": "noproto",
         "grepCommand": "grep",
         "boardCommand": "board",
-        "questCommand": "quests"
+        "questCommand": "quests",
+        "statsCommand": "stats"
     },
     "pm2": {
         "ignore": [""],
@@ -33,7 +34,8 @@
             "deviceInfo": [],
             "links": [],
             "boards": [],
-            "quests": []
+            "quests": [],
+            "stats": []
         }
     },
     "scripts": {
@@ -78,5 +80,24 @@
             "<roleID1>": ["fence1", "fence2"],
             "<roleID2>": ["fence3", "fence4"]
         }
+    },
+    "rdmStats": {
+        "database": {
+            "host": "",
+            "port": 3306,
+            "user": "",
+            "password": "",
+            "database": ""
+        },
+        "dataPointCount": {
+            "hourly": 72,
+            "daily": 30
+        },
+        "colorPalette": {
+            "color1": "maroon",
+            "color2": "green",
+            "color3": "navy"
+        },
+        "graphDeleteSeconds": 0
     }
 }

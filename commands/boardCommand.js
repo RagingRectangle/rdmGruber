@@ -25,7 +25,8 @@ module.exports = {
 		.addSubcommand(subcommand =>
 			subcommand
 			.setName('delete')
-			.setDescription('Delete board by ID').addStringOption(option =>
+			.setDescription('Delete board by ID')
+			.addStringOption(option =>
 				option.setName('message_id')
 				.setDescription(`Enter ID of board message`)
 				.setRequired(true)

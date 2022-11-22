@@ -230,6 +230,7 @@
       }
    },
    "queries": {
+      "dirtyRead": "SET SESSION tx_isolation = 'READ-UNCOMMITTED';",
       "current_total_pokemon": {
          "label": "{{{pokemonEmoji}}} {{Pokemon}}",
          "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE id IS NOT NULL AND expire_timestamp >= UNIX_TIMESTAMP() AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
@@ -363,6 +364,13 @@
          "pokemon": "select lat, lon, name from pokestop where quest_reward_type = 7 and quest_pokemon_id = {{pokemonID}} and ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon)) and quest_timestamp > {{dayStart}} and quest_timestamp < {{dayEnd}} order by name;",
          "megaEnergy": "select lat, lon, name from pokestop where quest_reward_type = 12 and quest_pokemon_id = {{pokemonID}} and quest_reward_amount = {{energyAmount}} and ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon)) and quest_timestamp > {{dayStart}} and quest_timestamp < {{dayEnd}} order by name;",
          "candy": "select lat, lon, name from pokestop where quest_reward_type = 4 and quest_pokemon_id = {{pokemonID}} and quest_reward_amount = {{candyAmount}} and ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon)) and quest_timestamp > {{dayStart}} and quest_timestamp < {{dayEnd}} order by name;"
+      },
+      "stats": {
+         "getAreas": "select distinct area FROM stats_mon_area order by area asc;",
+         "monsScanned": "select datetime 'time', sum(totMon) 'mons', 100*sum(ivMon)/sum(totMon) 'iv' from stats_mon_area where rpl = {{rpl}} and area in ({{areas}}) group by 1 order by datetime desc limit {{rplLength}};",
+         "despawnLeft": "select datetime 'time', (sum(wildSecLeft)/sum(verifiedWild))/60 'wild', (sum(encSecLeft)/sum(verifiedEnc))/60 'encounter' from stats_mon_area where rpl = {{rpl}} and area in ({{areas}}) group by 1 order by datetime desc limit {{rplLength}};",
+         "statResets": "select datetime 'time', sum(resetMon) 'resetMons', sum(verifiedReEnc) 'reEncounter', (sum(re_encSecLeft)/sum(verifiedReEnc))/60 'despawnLeft' from stats_mon_area where rpl = {{rpl}} and area in ({{areas}}) group by 1 order by datetime desc limit {{rplLength}};",
+         "spawnpoints": "select datetime 'time', sum(spawnpoints) 'spawnpoints', 100*sum(verified)/sum(spawnpoints) 'verified', sum(seen) 'seen' from stats_spawnpoint where rpl = {{rpl}} and area in ({{areas}}) group by 1 order by datetime desc limit {{rplLength}};"
       }
    },
    "protos": {

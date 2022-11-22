@@ -18,8 +18,10 @@ const client = new Client({
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 });
 const fs = require('fs');
-var Boards = require('./functions/boards.js');
-var boardConfig = require('./config/boards.json');
+const config = require('./config/config.json');
+const Boards = require('./functions/boards.js');
+const boardConfig = require('./config/boards.json');
+const Stats = require('./functions/stats.js');
 //Update boards.json format
 if (!boardConfig.current || !boardConfig.history) {
 	async function updateBoards() {
@@ -44,10 +46,16 @@ request('https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master
 		console.log(`Error updating masterfile.json: ${error}`);
 	}
 });
+//Update stat areas
+if (config.rdmStats.database.host) {
+	if (!fs.existsSync('./stats.json')) {
+		fs.writeFileSync('./stats.json', '{}');
+	}
+	Stats.getStatAreas(client);
+}
 
 const pm2 = require('pm2');
 const schedule = require('node-schedule');
-const config = require('./config/config.json');
 const GenerateServerInfo = require('./functions/generateServerInfo.js');
 const roleConfig = require('./config/roles.json');
 const SlashRegistry = require('./functions/slashRegistry.js');
@@ -323,16 +331,32 @@ client.on('messageReactionRemove', async (reaction, user) => {
 //AutoComplete
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isAutocomplete()) return;
-	let Boards = require('./config/boards.json');
-	let focusedValue = interaction.options.getFocused();
-	let boardList = Object.keys(Boards.raid).concat(Object.keys(Boards.current), Object.keys(Boards.history));
-	let filteredList = boardList.filter(choice => choice.includes(focusedValue)).slice(0, 25);
-	await interaction.respond(
-		filteredList.map(choice => ({
-			name: choice,
-			value: choice
-		}))
-	).catch(console.error);
+	//Delete boards
+	if (interaction.options._subcommand == 'delete') {
+		let Boards = require('./config/boards.json');
+		let focusedValue = interaction.options.getFocused();
+		let boardList = Object.keys(Boards.raid).concat(Object.keys(Boards.current), Object.keys(Boards.history));
+		let filteredList = boardList.filter(choice => choice.includes(focusedValue)).slice(0, 25);
+		await interaction.respond(
+			filteredList.map(choice => ({
+				name: choice,
+				value: choice
+			}))
+		).catch(console.error);
+	}
+	//Stat area names
+	if (interaction.options._hoistedOptions[2]['name'] == 'area') {
+		let focusedValue = interaction.options.getFocused();
+		let statConfig = require('./stats.json');
+		var areaList = statConfig.areas;
+		let filteredList = areaList.filter(choice => choice.includes(focusedValue)).slice(0, 25);
+		await interaction.respond(
+			filteredList.map(choice => ({
+				name: choice,
+				value: choice
+			}))
+		).catch(console.error);
+	}
 }); //End of autoComplete
 
 
