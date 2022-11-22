@@ -54,10 +54,10 @@ module.exports = {
 		let guild = await client.guilds.fetch(interaction.guildId).catch(console.error);
 		let userPerms = await Roles.getUserCommandPerms(guild, interaction.user);
 		if (userPerms.includes('admin') || userPerms.includes('stats')) {
-			interaction.deferReply();
-			let statType = interaction.options.getString('type');
-			let statDuration = interaction.options.getString('rpl');
-			let statArea = interaction.options.getString('area');
+			await interaction.deferReply();
+			let statType = await interaction.options.getString('type');
+			let statDuration = await interaction.options.getString('rpl');
+			let statArea = await interaction.options.getString('area');
 			Stats.statsMain(client, channel, interaction, statType, statDuration, statArea);
 		} //End of if userPerms
 		else {

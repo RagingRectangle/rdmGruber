@@ -381,7 +381,7 @@ module.exports = {
 
 
    sendChart: async function sendChart(interaction, title, footerText, url) {
-      interaction.editReply({
+      await interaction.editReply({
             embeds: [new EmbedBuilder().setTitle(title).setImage(url).setFooter({
                text: footerText
             })],
