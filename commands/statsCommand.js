@@ -56,7 +56,7 @@ module.exports = {
 		if (userPerms.includes('admin') || userPerms.includes('stats')) {
 			let statType = await interaction.options.getString('type');
 			let statDuration = await interaction.options.getString('rpl');
-			let statArea = await interaction.options.getString('area');
+			let statArea = await interaction.options.getString('stats_area');
 			Stats.statsMain(client, channel, interaction, statType, statDuration, statArea);
 		} //End of if userPerms
 		else {
