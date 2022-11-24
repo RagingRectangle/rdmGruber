@@ -378,7 +378,7 @@ module.exports = {
             let geoSplit = boardData.geofence.split(',');
             let geoStart = geoSplit[0].split(' ');
             let tzName = find(geoStart[0].replace('(', ''), geoStart[1]);
-            footerText = boardData.area == '~everywhere~' ? `${boardInfo.area.replaceAll('~','')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}` : `${boardInfo.area} ~ ${moment().tz(tzName[0]).format(footerFormat)}`;
+            footerText = boardData.area == '~everywhere~' ? `${boardInfo.area.replaceAll('~','').replaceAll('\n\n\n','\n\n')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}` : `${boardInfo.area} ~ ${moment().tz(tzName[0]).format(footerFormat)}`;
          } //End of currentLoop
       } //End of current boards
 
@@ -443,13 +443,13 @@ module.exports = {
       }
       try {
          let translationTemplate = Handlebars.compile(boardDescription.join('\n\n'));
-         let translatedBoard = translationTemplate(translations);
+         var translatedBoard = translationTemplate(translations).replaceAll(',**', '**');
          var boardEmbeds = [new EmbedBuilder().setTitle(boardInfo.title).setDescription(translatedBoard).setFooter({
             text: footerText
          })];
          if (eggBoardCheck == true) {
             let translationEggTemplate = Handlebars.compile(boardDescriptionEggs.join('\n\n'));
-            let translatedEggBoard = translationEggTemplate(translations);
+            let translatedEggBoard = translationEggTemplate(translations).replaceAll(',[', '[');
             boardEmbeds.push(new EmbedBuilder().setTitle(`${translations.Tier} ${boardInfo.tiers.join(' + ')} ${translations.Eggs}`).setDescription(translatedEggBoard).setFooter({
                text: footerText
             }))
