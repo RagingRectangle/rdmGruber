@@ -43,7 +43,7 @@ module.exports = {
 				value: `daily`
 			}))
 		.addStringOption(option =>
-			option.setName('area')
+			option.setName('stats_area')
 			.setDescription(`Enter area name`)
 			.setRequired(true)
 			.setAutocomplete(true)),
@@ -54,14 +54,13 @@ module.exports = {
 		let guild = await client.guilds.fetch(interaction.guildId).catch(console.error);
 		let userPerms = await Roles.getUserCommandPerms(guild, interaction.user);
 		if (userPerms.includes('admin') || userPerms.includes('stats')) {
-			await interaction.deferReply();
 			let statType = await interaction.options.getString('type');
 			let statDuration = await interaction.options.getString('rpl');
 			let statArea = await interaction.options.getString('area');
 			Stats.statsMain(client, channel, interaction, statType, statDuration, statArea);
 		} //End of if userPerms
 		else {
-			interaction.reply(`User *${interaction.user.username}* does not have required stats perms`).catch(console.error);
+			await interaction.reply(`User *${interaction.user.username}* does not have required stats perms`).catch(console.error);
 		}
 	}, //End of execute()
 };

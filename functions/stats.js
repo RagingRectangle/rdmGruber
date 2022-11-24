@@ -22,6 +22,7 @@ const util = require('../util.json');
 
 module.exports = {
    statsMain: async function statsMain(client, channel, interaction, statType, statDuration, area) {
+      await interaction.deferReply();
       let statConfig = require('../stats.json');
       console.log(`${interaction.user.username} looked up stats: ${area} ${statDuration} ${statType}`);
       let statAreas = area == 'All Areas' ? `'${statConfig.areas.join("', '")}'` : `'${area}'`;

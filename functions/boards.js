@@ -37,57 +37,22 @@ module.exports = {
       var newEmbed = new EmbedBuilder().setTitle(`Creating Current Stat Board:`).addFields({
          name: 'Board Type:',
          value: 'current'
+      }).addFields({
+         name: 'Area Name:',
+         value: interaction.options._hoistedOptions[0]['value']
       });
-      var geofenceList = [];
-      //geojson
-      if (geoConfig.features) {
-         for (var f in geoConfig.features) {
-            geofenceList.push(geoConfig.features[f]['properties']['name']);
-         } //End of f loop
-      }
-      //geo.jasparke
-      else {
-         for (var g in geoConfig) {
-            geofenceList.push(geoConfig[g]['name']);
-         } //End of g loop
-      }
-      geofenceList.sort();
-      geofenceList.unshift('~everywhere~');
-      let dropdownsNeeded = Math.min(5, Math.ceil(geofenceList.length / 25));
-      var geoCount = 0;
-      var componentList = [];
-      for (var d = 0; d < dropdownsNeeded; d++) {
-         var listOptions = [];
-         for (var i = 0; i < 25 && geoCount < geofenceList.length; i++, geoCount++) {
-            listOptions.push({
-               label: geofenceList[geoCount],
-               value: geofenceList[geoCount]
-            });
-         } //End of i loop
-         componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~board~current~addArea~${d}`).setPlaceholder('Select geofence name').addOptions(listOptions)));
-      } //End of d loop
-      await interaction.reply({
-         embeds: [newEmbed],
-         components: componentList,
-         ephemeral: true
-      }).catch(console.error);
+      this.addBoardArea(interaction, 'current', newEmbed)
    }, //End of beginCurrentBoard()
 
 
-   addBoardArea: async function addBoardArea(interaction, boardType, areaName) {
-      let oldEmbed = interaction.message.embeds[0];
-      var newEmbed = new EmbedBuilder().setTitle(oldEmbed.title).addFields(oldEmbed['fields']);
-      newEmbed.addFields({
-         name: 'Area Name:',
-         value: areaName
-      });
+   addBoardArea: async function addBoardArea(interaction, boardType, oldEmbed) {
       var newComponents = [];
       //Current - add Pokemon options
       if (boardType === 'current') {
          newComponents = [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Pokemon Options').setCustomId(`${config.serverName}~board~${boardType}~addPokemon`).addOptions(util.boards.current.pokemonOptions).setMaxValues(util.boards.current.pokemonOptions.length))]
       }
-      await interaction.update({
-         embeds: [newEmbed],
+      await interaction.reply({
+         embeds: [oldEmbed],
          components: newComponents,
          ephemeral: true
       }).catch(console.error);
@@ -552,50 +517,18 @@ module.exports = {
       var newEmbed = new EmbedBuilder().setTitle(`Creating Raid Board:`).addFields({
          name: 'Board Type:',
          value: 'raid'
+      }).addFields({
+         name: 'Area Name:',
+         value: interaction.options._hoistedOptions[0]['value']
       });
-      var geofenceList = [];
-      if (geoConfig.features) {
-         for (var g in geoConfig.features) {
-            geofenceList.push(geoConfig.features[g]['properties']['name']);
-         }
-      } else {
-         for (var g in geoConfig) {
-            geofenceList.push(geoConfig[g]['name']);
-         }
-      }
-      geofenceList.sort();
-      geofenceList.unshift('~everywhere~');
-      let dropdownsNeeded = Math.min(5, Math.ceil(geofenceList.length / 25));
-      var geoCount = 0;
-      var componentList = [];
-      for (var d = 0; d < dropdownsNeeded; d++) {
-         var listOptions = [];
-         for (var i = 0; i < 25 && geoCount < geofenceList.length; i++, geoCount++) {
-            listOptions.push({
-               label: geofenceList[geoCount],
-               value: geofenceList[geoCount]
-            });
-         } //End of i loop
-         componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~board~raid~addArea~${d}`).setPlaceholder('Select geofence name').addOptions(listOptions)));
-      } //End of d loop
-      await interaction.reply({
-         embeds: [newEmbed],
-         components: componentList,
-         ephemeral: true
-      }).catch(console.error);
+      this.addRaidArea(interaction, newEmbed);
    }, //End of startRaidBoard()
 
 
-   addRaidArea: async function addRaidArea(interaction, areaName) {
-      let oldEmbed = interaction.message.embeds[0]['data'];
-      var newEmbed = new EmbedBuilder().setTitle(oldEmbed.title).addFields(oldEmbed['fields']);
-      newEmbed.addFields({
-         name: 'Area Name:',
-         value: areaName
-      });
+   addRaidArea: async function addRaidArea(interaction, newEmbed) {
       var componentList = [];
       componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~board~raid~addTiers`).setPlaceholder('Select raid tiers').addOptions(util.boards.raid.raidTiers).setMaxValues(util.boards.raid.raidTiers.length)));
-      await interaction.update({
+      await interaction.reply({
          embeds: [newEmbed],
          components: componentList,
          ephemeral: true

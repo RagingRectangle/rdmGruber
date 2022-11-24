@@ -13,7 +13,12 @@ module.exports = {
 		.addSubcommand(subcommand =>
 			subcommand
 			.setName('current')
-			.setDescription('Create current stat board'))
+			.setDescription('Create current stat board')
+			.addStringOption(option =>
+				option.setName('board_area')
+				.setDescription(`Enter area name`)
+				.setRequired(true)
+				.setAutocomplete(true)))
 		.addSubcommand(subcommand =>
 			subcommand
 			.setName('history')
@@ -21,7 +26,11 @@ module.exports = {
 		.addSubcommand(subcommand =>
 			subcommand
 			.setName('raid')
-			.setDescription('Create raid board'))
+			.setDescription('Create raid board').addStringOption(option =>
+				option.setName('board_area')
+				.setDescription(`Enter area name`)
+				.setRequired(true)
+				.setAutocomplete(true)))
 		.addSubcommand(subcommand =>
 			subcommand
 			.setName('delete')

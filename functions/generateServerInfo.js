@@ -2,6 +2,7 @@ const fs = require('fs');
 const pm2 = require('pm2');
 const mysql = require('mysql2');
 const config = require('../config/config.json');
+const geoConfig = require('../config/geofence.json');
 
 module.exports = {
    generate: async function generate() {
@@ -37,31 +38,50 @@ module.exports = {
 
       //Instance Types
       var instanceList = {};
-      var db = config.rdmDB;
-      db.multipleStatements = true;
-      let connection = mysql.createConnection(db);
-      let instanceQuery = `SELECT DISTINCT(type) FROM instance; SELECT a.uuid 'uuid', a.instance_name 'instance', a.last_host 'ip', a.last_seen 'last_seen', a.account_username 'username', a.last_lat 'lat', a.last_lon 'lon', b.type 'type' FROM device a, instance b WHERE a.instance_name = b.name;`;
-      connection.query(instanceQuery, function (err, results) {
-         if (err) {
-            console.log("Generate server info error:", err);
-         } else {
-            let typeNames = results[0];
-            let instanceNames = results[1];
-            for (var t in typeNames) {
-               let type = typeNames[t]['type'];
-               let typeInstances = [];
-               for (var i in instanceNames) {
-                  if (instanceNames[i]['type'] === type) {
-                     typeInstances.push(instanceNames[i]['instance']);
-                  }
-               } //End of i loop
-               instanceList[type] = [...new Set(typeInstances)];
-            } //End of types
-         }
-      }); //End of query()
-      connection.end();
+      if (config.golbat != true) {
+         var db = config.rdmDB;
+         db.multipleStatements = true;
+         let connection = mysql.createConnection(db);
+         let instanceQuery = `SELECT DISTINCT(type) FROM instance; SELECT a.uuid 'uuid', a.instance_name 'instance', a.last_host 'ip', a.last_seen 'last_seen', a.account_username 'username', a.last_lat 'lat', a.last_lon 'lon', b.type 'type' FROM device a, instance b WHERE a.instance_name = b.name;`;
+         connection.query(instanceQuery, function (err, results) {
+            if (err) {
+               console.log("Generate server info error:", err);
+            } else {
+               let typeNames = results[0];
+               let instanceNames = results[1];
+               for (var t in typeNames) {
+                  let type = typeNames[t]['type'];
+                  let typeInstances = [];
+                  for (var i in instanceNames) {
+                     if (instanceNames[i]['type'] === type) {
+                        typeInstances.push(instanceNames[i]['instance']);
+                     }
+                  } //End of i loop
+                  instanceList[type] = [...new Set(typeInstances)];
+               } //End of types
+            }
+         }); //End of query()
+         connection.end();
+         await new Promise(done => setTimeout(done, 3000));
+      }
       serverInfo.instanceList = instanceList;
-      await new Promise(done => setTimeout(done, 3000));
+
+      //Geofences
+      var geofenceList = [];
+      //geojson
+      if (geoConfig.features) {
+         for (var f in geoConfig.features) {
+            geofenceList.push(geoConfig.features[f]['properties']['name']);
+         } //End of f loop
+      }
+      //geo.jasparke
+      else {
+         for (var g in geoConfig) {
+            geofenceList.push(geoConfig[g]['name']);
+         } //End of g loop
+      }
+      geofenceList.sort();
+      serverInfo.geofenceList = geofenceList;
 
       fs.writeFileSync('./Server_Info.json', JSON.stringify(serverInfo));
    } //End of generate()

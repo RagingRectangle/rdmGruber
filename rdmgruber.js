@@ -1,3 +1,4 @@
+"use strict";
 const {
 	Client,
 	GatewayIntentBits,
@@ -344,12 +345,26 @@ client.on('interactionCreate', async interaction => {
 			}))
 		).catch(console.error);
 	}
-	//Stat area names
-	if (interaction.options._hoistedOptions[2]['name'] == 'area') {
+	//rdmStats area names
+	else if (interaction.commandName == config.discord.statsCommand.toLowerCase().replaceAll(/[^a-z0-9]/gi, '_')) {
 		let focusedValue = interaction.options.getFocused();
 		let statConfig = require('./stats.json');
 		var areaList = statConfig.areas;
-		let filteredList = areaList.filter(choice => choice.includes(focusedValue)).slice(0, 25);
+		let filteredList = areaList.filter(choice => choice.toLowerCase().includes(focusedValue.toLowerCase())).slice(0, 25);
+		await interaction.respond(
+			filteredList.map(choice => ({
+				name: choice,
+				value: choice
+			}))
+		).catch(console.error);
+	}
+	//Board area names
+	else if (interaction.commandName == config.discord.boardCommand.toLowerCase().replaceAll(/[^a-z0-9]/gi, '_')) {
+		let focusedValue = interaction.options.getFocused();
+		let serverInfo = require('./Server_Info.json');
+		let geofenceList = serverInfo.geofenceList;
+		var filteredList = geofenceList.filter(choice => choice.toLowerCase().includes(focusedValue.toLowerCase())).slice(0, 24);
+		filteredList.unshift('~everywhere~');
 		await interaction.respond(
 			filteredList.map(choice => ({
 				name: choice,
