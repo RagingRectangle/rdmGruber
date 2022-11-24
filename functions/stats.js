@@ -38,17 +38,18 @@ module.exports = {
          rplLength = config.rdmStats.dataPointCount.daily;
          rplStamp = rplStamp.replace(' HH:mm', '');
       }
+      let opacity = config.rdmStats.colorPalette.opacity ? config.rdmStats.colorPalette.opacity : 0.2;
       let options = {
          rpl: rpl,
          rplType: rplType,
          rplLength: rplLength,
          rplStamp: rplStamp,
          color1: config.rdmStats.colorPalette.color1.toLowerCase(),
-         background1: `rgba(${convert.keyword.rgb(config.rdmStats.colorPalette.color1.toLowerCase()).join(', ')}, 0.5)`,
+         background1: `rgba(${convert.keyword.rgb(config.rdmStats.colorPalette.color1.toLowerCase()).join(', ')}, ${opacity})`,
          color2: config.rdmStats.colorPalette.color2.toLowerCase(),
-         background2: `rgba(${convert.keyword.rgb(config.rdmStats.colorPalette.color2.toLowerCase()).join(', ')}, 0.5)`,
+         background2: `rgba(${convert.keyword.rgb(config.rdmStats.colorPalette.color2.toLowerCase()).join(', ')}, ${opacity})`,
          color3: config.rdmStats.colorPalette.color3.toLowerCase(),
-         background3: `rgba(${convert.keyword.rgb(config.rdmStats.colorPalette.color3.toLowerCase()).join(', ')}, 0.5)`
+         background3: `rgba(${convert.keyword.rgb(config.rdmStats.colorPalette.color3.toLowerCase()).join(', ')}, ${opacity})`
       }
       //Mons Scanned
       if (statType == 'monsScanned') {

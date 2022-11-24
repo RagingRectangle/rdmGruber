@@ -121,6 +121,7 @@ rdmStats:
 - **database:** Basic stats database info.
 - **dataPointCount:** How many individual points on graphs for each type.
 - **colorPalette:** Colors used for stat graphs. Accepts all common color names.
+    - **opacity:** Graph infill amount between 0 and 1.
 - **graphDeleteSeconds:** How long to wait until graphs are deleted (Set to 0 to never delete).
 
 

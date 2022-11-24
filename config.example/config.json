@@ -96,7 +96,8 @@
         "colorPalette": {
             "color1": "maroon",
             "color2": "green",
-            "color3": "navy"
+            "color3": "navy",
+            "opacity": 0.2
         },
         "graphDeleteSeconds": 0
     }
