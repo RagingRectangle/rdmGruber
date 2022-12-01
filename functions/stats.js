@@ -1,24 +1,13 @@
-const {
-   Client,
-   GatewayIntentBits,
-   Partials,
-   Collection,
-   Permissions,
-   ActionRowBuilder,
-   SelectMenuBuilder,
-   MessageButton,
-   EmbedBuilder,
-   ButtonBuilder,
-   InteractionType,
-   ChannelType
+var {
+   EmbedBuilder
 } = require('discord.js');
-const fs = require('fs');
-const moment = require('moment');
-const mysql = require('mysql2');
-const QuickChart = require('quickchart-js');
-const convert = require('color-convert');
-const config = require('../config/config.json');
-const util = require('../util.json');
+var fs = require('fs');
+var moment = require('moment');
+var mysql = require('mysql2');
+var QuickChart = require('quickchart-js');
+var convert = require('color-convert');
+var config = require('../config/config.json');
+var util = require('../util.json');
 
 module.exports = {
    statsMain: async function statsMain(client, channel, interaction, statType, statDuration, area) {

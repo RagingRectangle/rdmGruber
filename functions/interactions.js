@@ -1,31 +1,20 @@
-const {
-   Client,
-   GatewayIntentBits,
-   Partials,
-   Collection,
-   Permissions,
-   ActionRowBuilder,
-   SelectMenuBuilder,
-   MessageButton,
-   EmbedBuilder,
-   ButtonBuilder,
-   InteractionType,
-   ChannelType
+var {
+   EmbedBuilder
 } = require('discord.js');
-const fs = require('fs');
-const pm2 = require('pm2');
-const shell = require('shelljs');
-const ansiParser = require("ansi-parser");
-const config = require('../config/config.json');
-const boardConfig = require('../config/boards.json');
-const queryConfig = require('../config/queries.json');
-const scriptConfig = require('../config/scripts.json');
-const Pm2Buttons = require('./pm2.js');
-const Scripts = require('./scripts.js');
-const Queries = require('./queries.js');
-const Devices = require('./devices.js');
-const Boards = require('./boards.js');
-const Quests = require('./quests.js');
+var fs = require('fs');
+var pm2 = require('pm2');
+var shell = require('shelljs');
+var ansiParser = require("ansi-parser");
+var config = require('../config/config.json');
+var boardConfig = require('../config/boards.json');
+var queryConfig = require('../config/queries.json');
+var scriptConfig = require('../config/scripts.json');
+var Pm2Buttons = require('./pm2.js');
+var Scripts = require('./scripts.js');
+var Queries = require('./queries.js');
+var Devices = require('./devices.js');
+var Boards = require('./boards.js');
+var Quests = require('./quests.js');
 
 module.exports = {
    listInteraction: async function listInteraction(client, interaction, interactionID, userPerms) {

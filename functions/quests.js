@@ -1,31 +1,21 @@
 const {
-   Client,
-   GatewayIntentBits,
-   Partials,
-   Collection,
-   Permissions,
    ActionRowBuilder,
    SelectMenuBuilder,
-   MessageButton,
-   EmbedBuilder,
-   ButtonBuilder,
-   InteractionType,
-   ChannelType
+   EmbedBuilder
 } = require('discord.js');
-const Handlebars = require("handlebars");
-const fs = require('fs');
-const {
+var fs = require('fs');
+var {
    find
 } = require('geo-tz');
-const moment = require('moment');
-const momentTZ = require('moment-timezone');
-const mysql = require('mysql2');
-const config = require('../config/config.json');
-const geoConfig = require('../config/geofence.json');
-const master = require('../masterfile.json');
-const util = require('../util.json');
-const Boards = require('./boards.js');
-const translations = require('../config/translations.json');
+var moment = require('moment');
+var mysql = require('mysql2');
+var config = require('../config/config.json');
+var master = require('../masterfile.json');
+var util = require('../util.json');
+var Boards = require('./boards.js');
+var Roles = require('./roles.js');
+var translations = require('../config/translations.json');
+var serverInfo = require('../Server_Info.json');
 var locale = require('../locale/en.json');
 if (config.raidBoardOptions.language) {
    locale = require(`../locale/${config.raidBoardOptions.language}.json`);
@@ -189,65 +179,54 @@ module.exports = {
    }, //End of updateQuests()
 
 
-   getGeofenceList: async function getGeofenceList(client, interaction, userPerms, userRoles) {
-      await interaction.deferReply({
-         ephemeral: true
-      }).catch(console.error);
-      var allGeofences = [];
-      var userGeofences = [];
-      //geojson
-      if (geoConfig.features) {
-         for (var f in geoConfig.features) {
-            allGeofences.push(geoConfig.features[f]['properties']['name']);
-         } //End of f loop
-      }
-      //geo.jasparke
-      else {
-         for (var g in geoConfig) {
-            allGeofences.push(geoConfig[g]['name']);
-         } //End of g loop
-      }
-      for (var a in allGeofences) {
-         if (userPerms.includes('admin') || config.questBoardOptions.roleRestriction != true) {
-            userGeofences.push(allGeofences[a]);
-            continue;
-         }
-         for (const [roleID, roleFences] of Object.entries(config.questBoardOptions.questRoles)) {
-            if (userRoles.includes(roleID)) {
-               for (var f in roleFences) {
-                  if (allGeofences.includes(roleFences[f])) {
-                     userGeofences.push(roleFences[f]);
-                  }
-               } //End of f loop
-            }
-         } //End of roles
-      } //End of a loop
-      userGeofences = [...new Set(userGeofences)];
-      userGeofences.sort();
-      if (userGeofences.length == 0) {
-         await interaction.editReply(`User *${interaction.user.username}* does not have required quest perms for any areas.`).catch(console.error);
+   generateAreaList: async function generateAreaList(client, interaction) {
+      //Admins
+      if (config.discord.adminIDs.includes(interaction.user.id)) {
+         sendAreaList(serverInfo.geofenceList);
          return;
       }
-      let dropdownsNeeded = Math.min(5, Math.ceil(userGeofences.length / 25));
-      var geoCount = 0;
-      var componentList = [];
-      for (var d = 0; d < dropdownsNeeded; d++) {
-         var listOptions = [];
-         for (var i = 0; i < 25 && geoCount < userGeofences.length; i++, geoCount++) {
-            listOptions.push({
-               label: userGeofences[geoCount],
-               value: userGeofences[geoCount]
-            });
-         } //End of i loop
-         componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~quests~geofence~${d}`).setPlaceholder(locale['Location'] ? locale['Location'] : 'Location').addOptions(listOptions)));
-      } //End of d loop
-      await interaction.editReply({
-         components: componentList,
-      }).catch(console.error);
-   }, //End of getGeofenceList()
+      //Role check
+      let userPerms = await Roles.getUserCommandPerms(interaction.member.guild, interaction.user);
+      if (!userPerms.includes('quests')) {
+         return;
+      }
+      //No role restrictions
+      if (config.questBoardOptions.roleRestriction != true) {
+         sendAreaList(serverInfo.geofenceList);
+         return;
+      }
+      //Restrict areas
+      var userGeofences = [];
+      let guildUser = await interaction.member.guild.members.cache.find(u => u.id === interaction.user.id);
+      for (const [roleID, roleFences] of Object.entries(config.questBoardOptions.questRoles)) {
+         if (guildUser['_roles'].includes(roleID)) {
+            for (var f in roleFences) {
+               if (serverInfo.geofenceList.includes(roleFences[f])) {
+                  userGeofences.push(roleFences[f]);
+               }
+            } //End of f loop
+         }
+      }
+      userGeofences = [...new Set(userGeofences)];
+      userGeofences.sort();
+      if (userGeofences.length > 0) {
+         sendAreaList(userGeofences);
+      }
+
+      async function sendAreaList(areaList) {
+         let focusedValue = interaction.options.getFocused();
+         var filteredList = areaList.filter(choice => choice.toLowerCase().includes(focusedValue.toLowerCase())).slice(0, 25);
+         await interaction.respond(
+            filteredList.map(choice => ({
+               name: choice,
+               value: choice
+            }))
+         ).catch(console.error);
+      } //End of sendAreaList()
+   }, //End of generateAreaList()
 
 
-   getRewardType: async function getRewardType(client, interaction) {
+   getRewardType: async function getRewardType(client, interaction, areaName) {
       let questList = JSON.parse(fs.readFileSync('./quests.json'));
       var componentList = [];
       //Pokemon
@@ -258,7 +237,7 @@ module.exports = {
          for (var i = 0; i < 25 && pokeCount < questList.pokemon.length; i++, pokeCount++) {
             listOptions.push(questList['pokemon'][pokeCount]);
          } //End of i loop
-         componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~quests~reward~${interaction.values[0]}~p${p}`).setPlaceholder(translations['Pokemon']).addOptions(listOptions)));
+         componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~quests~reward~${areaName}~p${p}`).setPlaceholder(translations['Pokemon']).addOptions(listOptions)));
       } //End of p loop
 
       //Items
@@ -269,7 +248,7 @@ module.exports = {
          for (var i = 0; i < 25 && itemCount < questList.items.length; i++, itemCount++) {
             listOptions.push(questList['items'][itemCount]);
          } //End of i loop
-         componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~quests~reward~${interaction.values[0]}~i${n}`).setPlaceholder(locale['Item'] ? locale['Item'] : 'Item').addOptions(listOptions)));
+         componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~quests~reward~${areaName}~i${n}`).setPlaceholder(locale['Item'] ? locale['Item'] : 'Item').addOptions(listOptions)));
       } //End of n loop
 
       //Other
@@ -281,9 +260,9 @@ module.exports = {
          for (var i = 0; i < 25 && otherCount < otherQuests.length; i++, otherCount++) {
             listOptions.push(otherQuests[otherCount]);
          } //End of i loop
-         componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~quests~reward~${interaction.values[0]}~o${o}`).setPlaceholder(translations['Other'] ? translations['Other'] : 'Other').addOptions(listOptions)));
+         componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~quests~reward~${areaName}~o${o}`).setPlaceholder(translations['Other'] ? translations['Other'] : 'Other').addOptions(listOptions)));
       } //End of o loop
-      await interaction.update({
+      await interaction.editReply({
          components: componentList
       }).catch(console.error);
    }, //End of getRewardType()

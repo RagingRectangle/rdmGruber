@@ -1,21 +1,12 @@
-const {
-   Client,
-   GatewayIntentBits,
-   Partials,
-   Collection,
-   Permissions,
+var {
    ActionRowBuilder,
    SelectMenuBuilder,
-   MessageButton,
-   EmbedBuilder,
-   ButtonBuilder,
-   InteractionType,
-   ChannelType
+   EmbedBuilder
 } = require('discord.js');
-const fs = require('fs');
-const mysql = require('mysql2');
-const config = require('../config/config.json');
-const queryConfig = require('../config/queries.json');
+var fs = require('fs');
+var mysql = require('mysql2');
+var config = require('../config/config.json');
+var queryConfig = require('../config/queries.json');
 
 module.exports = {
    queries: async function queries(channel) {
@@ -55,7 +46,7 @@ module.exports = {
          } else {
             console.log(`(${user.username}) ran custom query: ${queryName}`);
             var queryResults = results;
-            if (!queryFull.replace(';','').includes(';')){
+            if (!queryFull.replace(';', '').includes(';')) {
                queryResults = [results];
             }
             for (var r in queryResults) {

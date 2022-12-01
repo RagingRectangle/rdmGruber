@@ -1,20 +1,12 @@
-const {
-   Client,
-   GatewayIntentBits,
-   Partials,
-   Collection,
-   Permissions,
+var {
    ActionRowBuilder,
    SelectMenuBuilder,
-   MessageButton,
    EmbedBuilder,
    ButtonBuilder,
-   ButtonStyle,
-   InteractionType,
-   ChannelType
+   ButtonStyle
 } = require('discord.js');
-const pm2 = require('pm2');
-const config = require('../config/config.json');
+var pm2 = require('pm2');
+var config = require('../config/config.json');
 
 module.exports = {
    updateStatus: async function updateStatus(channelOrInteraction, type) {

@@ -1,24 +1,16 @@
-const {
-   Client,
-   GatewayIntentBits,
-   Partials,
-   Collection,
-   Permissions,
+var {
    ActionRowBuilder,
    SelectMenuBuilder,
-   MessageButton,
    EmbedBuilder,
    ButtonBuilder,
-   ButtonStyle,
-   InteractionType,
-   ChannelType
+   ButtonStyle
 } = require('discord.js');
-const fs = require('fs');
-const fileExists = require('file-exists');
-const config = require('../config/config.json');
-const scriptList = require('../config/scripts.json');
-const shell = require('shelljs');
-const ansiParser = require("ansi-parser");
+var fs = require('fs');
+var fileExists = require('file-exists');
+var config = require('../config/config.json');
+var scriptList = require('../config/scripts.json');
+var shell = require('shelljs');
+var ansiParser = require("ansi-parser");
 
 module.exports = {
    sendScriptList: async function sendScriptList(messageOrInteraction, type) {

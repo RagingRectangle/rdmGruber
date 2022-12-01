@@ -1,10 +1,9 @@
-const {
+var {
 	SlashCommandBuilder
 } = require('discord.js');
-const fs = require('fs');
-const Roles = require('../functions/roles.js');
-const Devices = require('../functions/devices.js');
-const config = require('../config/config.json');
+var Roles = require('../functions/roles.js');
+var Devices = require('../functions/devices.js');
+var config = require('../config/config.json');
 
 module.exports = {
 	data: new SlashCommandBuilder()

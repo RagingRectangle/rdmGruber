@@ -1,10 +1,10 @@
-const {
+var {
 	AttachmentBuilder,
 	SlashCommandBuilder
 } = require('discord.js');
-const fs = require('fs');
-const fetch = require('node-fetch');
-const Roles = require('../functions/roles.js');
+var fs = require('fs');
+var fetch = require('node-fetch');
+var Roles = require('../functions/roles.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()

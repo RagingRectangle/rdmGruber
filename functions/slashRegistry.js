@@ -1,30 +1,18 @@
-const {
-   Client,
-   GatewayIntentBits,
-   Partials,
-   Collection,
-   Permissions,
-   ActionRowBuilder,
-   SelectMenuBuilder,
-   MessageButton,
-   EmbedBuilder,
-   ButtonBuilder,
-   InteractionType,
-   ChannelType
+var {
+   Collection
 } = require('discord.js');
-
-const fs = require('fs');
-const config = require('../config/config.json');
+var fs = require('fs');
+var config = require('../config/config.json');
 
 module.exports = {
    registerCommands: async function registerCommands(client) {
       var commands = [];
-      const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+      var commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
       var finalCommands = [];
-      const {
+      var {
          REST
       } = require('@discordjs/rest');
-      const {
+      var {
          Routes
       } = require('discord-api-types/v10');
       for (const file of commandFiles) {

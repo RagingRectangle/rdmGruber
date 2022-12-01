@@ -1,26 +1,13 @@
-const {
-   Client,
-   GatewayIntentBits,
-   Partials,
-   Collection,
-   Permissions,
-   ActionRowBuilder,
-   SelectMenuBuilder,
-   MessageButton,
-   EmbedBuilder,
-   ButtonBuilder,
-   InteractionType,
-   ChannelType
+var {
+   EmbedBuilder
 } = require('discord.js');
-const Roles = require('./roles.js');
-const config = require('../config/config.json');
+var Roles = require('./roles.js');
+var config = require('../config/config.json');
 
 module.exports = {
    helpMenu: async function helpMenu(client, channel, guild, user) {
       let commands = config.discord;
       let prefix = config.discord.prefix;
-      var pm2 = scripts = queries = links = devices = systemStats = sendWorker = events = 'N/A';
-
       var commandList = [];
       if (commands.helpCommand) {
          commandList.push(`Help: \`${prefix}${commands.helpCommand}\``);
@@ -55,7 +42,6 @@ module.exports = {
       if (userPerms.length == 0) {
          allowedCommands = `**${authorName} Permissions:**\n- None`;
       }
-
       channel.send({
          embeds: [new EmbedBuilder().setTitle("MadGruber Help Menu").setURL("https://github.com/RagingRectangle/rdmGruber").setDescription(`**Command Syntax:**\n- ${commandList.join('\n- ')}\n\n${allowedCommands}`)]
       }).catch(console.error);

@@ -76,6 +76,10 @@ roleConfig.forEach(role => {
 		roleMessages.push(role.messageID);
 	}
 });
+var locale = require('./locale/en.json');
+if (config.raidBoardOptions.language) {
+	locale = require(`./locale/${config.raidBoardOptions.language}.json`);
+}
 
 client.on('ready', async () => {
 	console.log("rdmGruber Bot Logged In");
@@ -371,6 +375,10 @@ client.on('interactionCreate', async interaction => {
 				value: choice
 			}))
 		).catch(console.error);
+	}
+	//Quest area names
+	else if (interaction.commandName == config.discord.questCommand.toLowerCase().replaceAll(/[^a-z0-9]/gi, '_')) {
+		Quests.generateAreaList(client, interaction);
 	}
 }); //End of autoComplete
 

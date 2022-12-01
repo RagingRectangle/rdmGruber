@@ -1,11 +1,11 @@
-const {
+var {
 	SlashCommandBuilder
 } = require('discord.js');
-const fs = require('fs');
-const Roles = require('../functions/roles.js');
-const Queries = require('../functions/queries.js');
-const config = require('../config/config.json');
-const queryConfig = require('../config/queries.json');
+var fs = require('fs');
+var Roles = require('../functions/roles.js');
+var Queries = require('../functions/queries.js');
+var config = require('../config/config.json');
+var queryConfig = require('../config/queries.json');
 
 module.exports = {
 	data: new SlashCommandBuilder()

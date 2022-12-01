@@ -1,32 +1,23 @@
-const {
-   Client,
-   GatewayIntentBits,
-   Partials,
-   Collection,
-   Permissions,
+var {
    ActionRowBuilder,
    SelectMenuBuilder,
-   MessageButton,
    EmbedBuilder,
    ButtonBuilder,
-   ButtonStyle,
-   InteractionType,
-   ChannelType
+   ButtonStyle
 } = require('discord.js');
-const fs = require('fs');
-const {
+var fs = require('fs');
+var {
    find
 } = require('geo-tz');
-const mysql = require('mysql2');
-const moment = require('moment');
-const momentTZ = require('moment-timezone');
-const schedule = require('node-schedule');
-const Handlebars = require("handlebars");
+var mysql = require('mysql2');
+var moment = require('moment');
+var schedule = require('node-schedule');
+var Handlebars = require("handlebars");
 var Table = require('easy-table');
-const config = require('../config/config.json');
-const geoConfig = require('../config/geofence.json');
-const util = require('../util.json');
-const translations = require('../config/translations.json');
+var config = require('../config/config.json');
+var geoConfig = require('../config/geofence.json');
+var util = require('../util.json');
+var translations = require('../config/translations.json');
 var locale = require('../locale/en.json');
 if (config.raidBoardOptions.language) {
    locale = require(`../locale/${config.raidBoardOptions.language}.json`);

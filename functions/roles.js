@@ -1,19 +1,5 @@
-const {
-   Client,
-   GatewayIntentBits,
-   Partials,
-   Collection,
-   Permissions,
-   ActionRowBuilder,
-   SelectMenuBuilder,
-   MessageButton,
-   EmbedBuilder,
-   ButtonBuilder,
-   InteractionType,
-   ChannelType
-} = require('discord.js');
-const config = require('../config/config.json');
-const roleConfig = require('../config/roles.json');
+var config = require('../config/config.json');
+var roleConfig = require('../config/roles.json');
 
 module.exports = {
    roles: async function roles(reaction, user, type) {
@@ -23,12 +9,12 @@ module.exports = {
                if (emoji.emojiName === reaction._emoji.name) {
                   let guildUser = await reaction.message.guild.members.cache.find(m => m.id === user.id);
                   let newRole = await reaction.message.guild.roles.cache.find(r => r.id === emoji.roleID);
-                  if (!newRole){
+                  if (!newRole) {
                      console.log(`Error fetching role for ${emoji.emojiName}`);
                      return;
                   }
                   var errorCheck = false;
-                  if (!guildUser.roles){
+                  if (!guildUser.roles) {
                      console.log(`Error getting roles for user: ${user.username}`);
                      return;
                   }

@@ -1,22 +1,13 @@
-const {
-   Client,
-   GatewayIntentBits,
-   Partials,
-   Collection,
-   Permissions,
+var {
    ActionRowBuilder,
-   SelectMenuBuilder,
-   MessageButton,
    EmbedBuilder,
    ButtonBuilder,
-   ButtonStyle,
-   InteractionType,
-   ChannelType
+   ButtonStyle
 } = require('discord.js');
-const fs = require('fs');
-const mysql = require('mysql2');
-const moment = require('moment');
-const config = require('../config/config.json');
+var fs = require('fs');
+var mysql = require('mysql2');
+var moment = require('moment');
+var config = require('../config/config.json');
 
 module.exports = {
    deviceStatus: async function deviceStatus(channel, user) {

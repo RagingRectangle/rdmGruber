@@ -1,9 +1,8 @@
-const {
+var {
 	SlashCommandBuilder
 } = require('discord.js');
-const fs = require('fs');
-const Help = require('../functions/help.js');
-const config = require('../config/config.json');
+var Help = require('../functions/help.js');
+var config = require('../config/config.json');
 
 module.exports = {
 	data: new SlashCommandBuilder()

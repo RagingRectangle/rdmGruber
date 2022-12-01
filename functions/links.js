@@ -1,19 +1,9 @@
-const {
-   Client,
-   GatewayIntentBits,
-   Partials,
-   Collection,
-   Permissions,
+var {
    ActionRowBuilder,
-   SelectMenuBuilder,
-   MessageButton,
-   EmbedBuilder,
    ButtonBuilder,
-   ButtonStyle,
-   InteractionType,
-   ChannelType
+   ButtonStyle
 } = require('discord.js');
-const linksList = require('../config/links.json');
+var linksList = require('../config/links.json');
 
 module.exports = {
    links: async function links(client, channel) {

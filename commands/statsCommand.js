@@ -1,12 +1,10 @@
-const {
-	EmbedBuilder,
+var {
 	SlashCommandBuilder
 } = require('discord.js');
-const fs = require('fs');
-const config = require('../config/config.json');
-const Roles = require('../functions/roles.js');
-const Stats = require('../functions/stats.js');
-
+var fs = require('fs');
+var config = require('../config/config.json');
+var Roles = require('../functions/roles.js');
+var Stats = require('../functions/stats.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
