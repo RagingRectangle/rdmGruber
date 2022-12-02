@@ -10,7 +10,7 @@ var {
    find
 } = require('geo-tz');
 var mysql = require('mysql2');
-var moment = require('moment');
+var moment = require('moment-timezone');
 var schedule = require('node-schedule');
 var Handlebars = require("handlebars");
 var Table = require('easy-table');

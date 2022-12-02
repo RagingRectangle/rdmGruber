@@ -7,7 +7,7 @@ var fs = require('fs');
 var {
    find
 } = require('geo-tz');
-var moment = require('moment');
+var moment = require('moment-timezone');
 var mysql = require('mysql2');
 var config = require('../config/config.json');
 var master = require('../masterfile.json');
