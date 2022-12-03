@@ -273,10 +273,17 @@ module.exports = {
          content: `Collecting quests...`,
          components: []
       }).catch(console.error);
-      let dayStart = moment().startOf('day').format('X');
-      let dayEnd = moment().endOf('day').format('X');
-      let footerFormat = config.raidBoardOptions.useDayMonthYear == true ? 'DD/MM/YY' : 'MM/DD/YY';
       let geofenceArea = await Boards.generateGeofence(geofenceName);
+      if (geofenceArea == []) {
+         console.log("Error generating board geofence.");
+         return;
+      }
+      let coordArray = geofenceArea.split(',');
+      let firstCoord = coordArray[0].split(' ');
+      let tzName = find(firstCoord[0].replace('(', ''), firstCoord[1]);
+      let dayStart = moment().tz(tzName[0]).startOf('day').format('X');
+      let dayEnd = moment().tz(tzName[0]).endOf('day').format('X');
+      let footerFormat = config.raidBoardOptions.useDayMonthYear == true ? 'DD/MM/YY' : 'MM/DD/YY';
       let rewardData = rewardType.split('~');
       var rewardName = '';
       var rewardPic = config.questBoardOptions.iconRepo ? config.questBoardOptions.iconRepo : "https://raw.githubusercontent.com/nileplumb/PkmnHomeIcons/master/UICONS";
@@ -332,13 +339,14 @@ module.exports = {
          let candyQuery = util.queries.areaQuests.candy.replace('{{pokemonID}}', pokemonID).replace('{{candyAmount}}', candyAmount).replace('{{area}}', geofenceArea).replace('{{dayStart}}', dayStart).replace('{{dayEnd}}', dayEnd);
          questResults = await this.runQuestQuery(`${candyQuery} ${candyQuery.replaceAll('quest_', 'alternative_quest_')}`);
       }
+      questResults.shift();
       if (questResults.length != 2) {
          console.log(`Error retrieving current quests`);
          return;
       }
       console.log(`${interaction.user.username} requested ${rewardName} quests for ${geofenceName}`);
       if (questResults[0].length == 0 && questResults[1].length == 0) {
-         let noneFoundEmbed = new EmbedBuilder().setTitle(`${rewardName} ${translations.AR} ${translations.Quests}:`).setThumbnail(rewardPic).setDescription(translations.noQuests ? translations.noQuests : 'No quests found!').setColor('Red').setFooter({
+         let noneFoundEmbed = new EmbedBuilder().setTitle(`${rewardName} ${translations.Quests}:`).setThumbnail(rewardPic).setDescription(translations.noQuests ? translations.noQuests : 'No quests found!').setColor('Red').setFooter({
             text: `${geofenceName} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}`
          });
          if (config.questBoardOptions.dmResponse == true) {
