@@ -329,7 +329,8 @@ module.exports = {
                      }
                      //Multi result queries
                      else if (boardData.pokestopOptions[i] === 'current_total_quests') {
-                        boardDescription.push(`${labelText}: **${(queryResult[0][`ar`] + queryResult[0][`non_ar`])}**`);
+                        boardDescription.push(`${labelText} (${translations.AR}): **${(queryResult[0][`ar`])}**`);
+                        boardDescription.push(`${labelText} (${translations.nonAR}): **${(queryResult[0][`non_ar`])}**`);
                      } else if (boardData.pokestopOptions[i] === 'current_total_lures') {
                         boardDescription.push(`${labelText}: **${Object.values(queryResult[0]) ? Object.values(queryResult[0]) : 0}**`);
                      } else if (boardData.pokestopOptions[i] === 'current_lure_types') {
