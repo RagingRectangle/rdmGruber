@@ -52,7 +52,7 @@ if (config.rdmStats.database.host) {
 	if (!fs.existsSync('./stats.json')) {
 		fs.writeFileSync('./stats.json', '{}');
 	}
-	Stats.getStatAreas(client);
+	Stats.getRdmStatsData(client);
 }
 
 const pm2 = require('pm2');
@@ -254,7 +254,7 @@ client.on('interactionCreate', async interaction => {
 		let slashReturn = await command.execute(client, interaction);
 		try {
 			if (slashReturn === 'delete') {
-				interaction.deleteReply().catch(err);
+				await interaction.deleteReply().catch(console.error);
 			}
 		} catch (err) {}
 	} catch (error) {
@@ -354,6 +354,19 @@ client.on('interactionCreate', async interaction => {
 		let focusedValue = interaction.options.getFocused();
 		let statConfig = require('./stats.json');
 		var areaList = statConfig.areas;
+		let filteredList = areaList.filter(choice => choice.toLowerCase().includes(focusedValue.toLowerCase())).slice(0, 25);
+		await interaction.respond(
+			filteredList.map(choice => ({
+				name: choice,
+				value: choice
+			}))
+		).catch(console.error);
+	}
+	//rdmStats worker names
+	else if (interaction.commandName == config.discord.workerStatsCommand.toLowerCase().replaceAll(/[^a-z0-9]/gi, '_')) {
+		let focusedValue = interaction.options.getFocused();
+		let statConfig = require('./stats.json');
+		var areaList = statConfig.workers;
 		let filteredList = areaList.filter(choice => choice.toLowerCase().includes(focusedValue.toLowerCase())).slice(0, 25);
 		await interaction.respond(
 			filteredList.map(choice => ({

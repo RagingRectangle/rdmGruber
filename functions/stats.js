@@ -1,5 +1,7 @@
 var {
-   EmbedBuilder
+   ActionRowBuilder,
+   EmbedBuilder,
+   SelectMenuBuilder
 } = require('discord.js');
 var fs = require('fs');
 var moment = require('moment');
@@ -40,7 +42,6 @@ module.exports = {
          color3: config.rdmStats.colorPalette.color3.toLowerCase(),
          background3: `rgba(${convert.keyword.rgb(config.rdmStats.colorPalette.color3.toLowerCase()).join(', ')}, ${opacity})`
       }
-      //Mons Scanned
       if (statType == 'monsScanned') {
          this.monsScanned(client, interaction, statDuration, area, statAreas, options);
       } else if (statType == 'despawnLeft') {
@@ -51,6 +52,375 @@ module.exports = {
          this.spawnpoints(client, interaction, statDuration, area, statAreas, options);
       }
    }, //End of statsMain()
+
+
+   statsWorkerMain: async function statsWorkerMain(client, interaction, statDuration, workerName) {
+      console.log(`${interaction.user.username} looked up worker stats: ${workerName} ${statDuration}`);
+      let statConfig = require('../stats.json');
+      if (!statConfig.workers.includes(workerName)) {
+         console.log(`Failed to find rdmStats worker: ${workerName}`);
+         return;
+      }
+      let defaultStatType = 'workerMonsScanned';
+      interaction.channel.send(`Creating worker stats...`).catch(console.error)
+         .then(msg => {
+            this.UpdateWorkerStats(client, msg, workerName, statDuration, defaultStatType);
+         });
+   }, //End of statsWorkerMain()
+
+
+   UpdateWorkerStats: async function UpdateWorkerStats(client, message, workerName, statDuration, type, messageType) {
+      //Hourly values
+      var rpl = 60;
+      var rplType = 'Hourly';
+      var rplLength = config.rdmStats.dataPointCount.hourly;
+      var rplStamp = config.raidBoardOptions.useDayMonthYear == false ? 'MM-DD HH:mm' : 'DD-MM HH:mm';
+      //Daily values
+      if (statDuration == 'daily') {
+         rpl = 1440;
+         rplType = 'Daily';
+         rplLength = config.rdmStats.dataPointCount.daily;
+         rplStamp = rplStamp.replace(' HH:mm', '');
+      }
+      let opacity = config.rdmStats.colorPalette.opacity ? config.rdmStats.colorPalette.opacity : 0.2;
+      let options = {
+         rpl: rpl,
+         rplType: rplType,
+         rplLength: rplLength,
+         rplStamp: rplStamp,
+         color1: config.rdmStats.colorPalette.color1.toLowerCase(),
+         background1: `rgba(${convert.keyword.rgb(config.rdmStats.colorPalette.color1.toLowerCase()).join(', ')}, ${opacity})`,
+         color2: config.rdmStats.colorPalette.color2.toLowerCase(),
+         background2: `rgba(${convert.keyword.rgb(config.rdmStats.colorPalette.color2.toLowerCase()).join(', ')}, ${opacity})`,
+         color3: config.rdmStats.colorPalette.color3.toLowerCase(),
+         background3: `rgba(${convert.keyword.rgb(config.rdmStats.colorPalette.color3.toLowerCase()).join(', ')}, ${opacity})`
+      }
+      if (type == 'workerMonsScanned') {
+         let graphURL = await this.getWorkerMonsScanned(workerName, options);
+         let graphTitle = `${workerName} Mons Scanned (${options.rplType})`;
+         updateWorkerGraph(graphURL, graphTitle);
+      } else if (type == 'workerHandlingTime') {
+         let graphURL = await this.getWorkerHandlingTime(workerName, options);
+         let graphTitle = `${workerName} Handling Time (${options.rplType})`;
+         updateWorkerGraph(graphURL, graphTitle);
+      } else if (type == 'workerLocations') {
+         let graphURL = await this.getWorkerLocations(workerName, options);
+         let graphTitle = `${workerName} Locations Handled (${options.rplType})`;
+         updateWorkerGraph(graphURL, graphTitle);
+      } else if (type == 'workerSuccessRate') {
+         let graphURL = await this.getWorkerSuccessRate(workerName, options);
+         let graphTitle = `${workerName} Success Rate (${options.rplType})`;
+         updateWorkerGraph(graphURL, graphTitle);
+      } else if (type == 'workerLostScanning') {
+         let graphURL = await this.getWorkerLostScanning(workerName, options);
+         let graphTitle = `${workerName} Lost Scanning Time (${options.rplType})`;
+         updateWorkerGraph(graphURL, graphTitle);
+      }
+
+      async function updateWorkerGraph(url, title) {
+         var componentList = [];
+         var listOptions = [];
+         for (var i in util.stats.workerStats) {
+            if (util.stats.workerStats[i]['value'] != type) {
+               listOptions.push(util.stats.workerStats[i]);
+            }
+         } //End of i loop
+         componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~stats~worker~${workerName}~${statDuration}`).setPlaceholder('Worker Stat Type').addOptions(listOptions)));
+         await message.edit({
+               content: ``,
+               embeds: [new EmbedBuilder().setTitle(title).setImage(url)],
+               components: componentList
+            }).catch(console.error)
+            .then(async msg => {
+               if (config.rdmStats.graphDeleteSeconds > 0) {
+                  setTimeout(() => msg.delete().catch(err => console.log(`(${interaction.user.username}) Error deleting rdmStats graph:`, err)), (config.rdmStats.graphDeleteSeconds * 1000));
+               }
+            });
+      } //End of updateWorkerGraph()
+   }, //UpdateWorkerStats()
+
+
+   getWorkerMonsScanned: async function getWorkerMonsScanned(workerName, options) {
+      let workerResultsTemp = await this.runStatQuery(util.queries.stats.workerMonsScanned.replace("{{worker}}", workerName).replace("{{rpl}}", options.rpl).replace("{{rplLength}}", options.rplLength));
+      let workerResults = workerResultsTemp[0].reverse();
+      var labels = [];
+      var monsSeen = [];
+      var monsEncountered = [];
+      var iv = [];
+      workerResults.forEach(entry => {
+         labels.push(moment(entry.time).format(options.rplStamp));
+         monsSeen.push(entry.monsSeen);
+         monsEncountered.push(entry.encountered);
+         iv.push(entry.iv);
+      });
+      let myChart = new QuickChart();
+      myChart.setConfig({
+         type: 'line',
+         data: {
+            labels: labels,
+            datasets: [{
+                  label: `Mons Seen`,
+                  data: monsSeen,
+                  fill: true,
+                  borderColor: options.color1,
+                  backgroundColor: options.background1,
+                  pointRadius: 0,
+                  yAxisID: 'left_mons'
+               },
+               {
+                  label: `Encountered`,
+                  data: monsEncountered,
+                  fill: true,
+                  borderColor: options.color2,
+                  backgroundColor: options.background2,
+                  pointRadius: 0,
+                  yAxisID: 'left_mons'
+               },
+               {
+                  label: `% IV`,
+                  data: iv,
+                  fill: true,
+                  borderColor: options.color3,
+                  backgroundColor: options.background3,
+                  pointRadius: 0,
+                  yAxisID: 'right_iv'
+               }
+            ]
+         },
+         options: {
+            "stacked": false,
+            scales: {
+               yAxes: [{
+                     id: "left_mons",
+                     type: "linear",
+                     display: true,
+                     position: "left",
+                     ticks: {
+                        suggestedMin: 0,
+                        suggestedMax: 1,
+                        fontColor: options.color1,
+                        callback: (val) => {
+                           return val.toLocaleString();
+                        }
+                     }
+                  },
+                  {
+                     id: "right_iv",
+                     type: "linear",
+                     display: true,
+                     position: "right",
+                     ticks: {
+                        suggestedMin: 99,
+                        suggestedMax: 100,
+                        fontColor: options.color3,
+                        callback: (val) => {
+                           return val + ' %'
+                        }
+                     }
+                  }
+               ],
+            }
+         }
+      });
+      let url = await myChart.getShortUrl();
+      return url;
+   }, //End of getWorkerMonsScanned()
+
+
+   getWorkerHandlingTime: async function getWorkerHandlingTime(workerName, options) {
+      let workerResultsTemp = await this.runStatQuery(util.queries.stats.workerHandlingTime.replace("{{worker}}", workerName).replace("{{rpl}}", options.rpl).replace("{{rplLength}}", options.rplLength));
+      let workerResults = workerResultsTemp[0].reverse();
+      var labels = [];
+      var handlingTime = [];
+      workerResults.forEach(entry => {
+         labels.push(moment(entry.time).format(options.rplStamp));
+         handlingTime.push(entry.handlingTime);
+      });
+      let myChart = new QuickChart();
+      myChart.setConfig({
+         type: 'line',
+         data: {
+            labels: labels,
+            datasets: [{
+               label: `Handling Time (s)`,
+               data: handlingTime,
+               fill: true,
+               borderColor: options.color1,
+               backgroundColor: options.background1,
+               pointRadius: 0,
+               yAxisID: 'left'
+            }]
+         },
+         options: {
+            "stacked": true,
+            scales: {
+               yAxes: [{
+                  id: "left",
+                  type: "linear",
+                  display: true,
+                  position: "left",
+                  ticks: {
+                     suggestedMin: 0,
+                     suggestedMax: 5,
+                     fontColor: options.color1,
+                     callback: (val) => {
+                        return val.toLocaleString();
+                     }
+                  }
+               }],
+            }
+         }
+      });
+      let url = await myChart.getShortUrl();
+      return url;
+   }, //End of getWorkerHandlingTime()
+
+
+   getWorkerLocations: async function getWorkerLocations(workerName, options) {
+      let workerResultsTemp = await this.runStatQuery(util.queries.stats.workerLocations.replace("{{worker}}", workerName).replace("{{rpl}}", options.rpl).replace("{{rplLength}}", options.rplLength));
+      let workerResults = workerResultsTemp[0].reverse();
+      var labels = [];
+      var locations = [];
+      workerResults.forEach(entry => {
+         labels.push(moment(entry.time).format(options.rplStamp));
+         locations.push(entry.locations);
+      });
+      let myChart = new QuickChart();
+      myChart.setConfig({
+         type: 'line',
+         data: {
+            labels: labels,
+            datasets: [{
+               label: `Locations Handled`,
+               data: locations,
+               fill: true,
+               borderColor: options.color1,
+               backgroundColor: options.background1,
+               pointRadius: 0,
+               yAxisID: 'left'
+            }]
+         },
+         options: {
+            "stacked": true,
+            scales: {
+               yAxes: [{
+                  id: "left",
+                  type: "linear",
+                  display: true,
+                  position: "left",
+                  ticks: {
+                     suggestedMin: 0,
+                     suggestedMax: 1,
+                     fontColor: options.color1,
+                     callback: (val) => {
+                        return val.toLocaleString();
+                     }
+                  }
+               }],
+            }
+         }
+      });
+      let url = await myChart.getShortUrl();
+      return url;
+   }, //End of getWorkerLocations()
+
+
+   getWorkerSuccessRate: async function getWorkerSuccessRate(workerName, options) {
+      let workerResultsTemp = await this.runStatQuery(util.queries.stats.workerSuccessRate.replace("{{worker}}", workerName).replace("{{rpl}}", options.rpl).replace("{{rplLength}}", options.rplLength));
+      let workerResults = workerResultsTemp[0].reverse();
+      var labels = [];
+      var successRate = [];
+      workerResults.forEach(entry => {
+         labels.push(moment(entry.time).format(options.rplStamp));
+         successRate.push(entry.successRate);
+      });
+      let myChart = new QuickChart();
+      myChart.setConfig({
+         type: 'line',
+         data: {
+            labels: labels,
+            datasets: [{
+               label: `Success Rate`,
+               data: successRate,
+               fill: true,
+               borderColor: options.color1,
+               backgroundColor: options.background1,
+               pointRadius: 0,
+               yAxisID: 'left'
+            }]
+         },
+         options: {
+            "stacked": true,
+            scales: {
+               yAxes: [{
+                  id: "left",
+                  type: "linear",
+                  display: true,
+                  position: "left",
+                  ticks: {
+                     suggestedMin: 99,
+                     suggestedMax: 100,
+                     fontColor: options.color1,
+                     callback: (val) => {
+                        return val + ' %'
+                     }
+                  }
+               }],
+            }
+         }
+      });
+      let url = await myChart.getShortUrl();
+      return url;
+   }, //End of getWorkerSuccessRate()
+
+
+   getWorkerLostScanning: async function getWorkerLostScanning(workerName, options) {
+      let workerResultsTemp = await this.runStatQuery(util.queries.stats.workerLostScanning.replace("{{worker}}", workerName).replace("{{rpl}}", options.rpl).replace("{{rplLength}}", options.rplLength));
+      let workerResults = workerResultsTemp[0].reverse();
+      var labels = [];
+      var lostScanning = [];
+      workerResults.forEach(entry => {
+         labels.push(moment(entry.time).format(options.rplStamp));
+         lostScanning.push(entry.lostScanning);
+      });
+      let myChart = new QuickChart();
+      myChart.setConfig({
+         type: 'line',
+         data: {
+            labels: labels,
+            datasets: [{
+               label: `Lost Time (s)`,
+               data: lostScanning,
+               fill: true,
+               borderColor: options.color1,
+               backgroundColor: options.background1,
+               pointRadius: 0,
+               yAxisID: 'left'
+            }]
+         },
+         options: {
+            "stacked": true,
+            scales: {
+               yAxes: [{
+                  id: "left",
+                  type: "linear",
+                  display: true,
+                  position: "left",
+                  ticks: {
+                     suggestedMin: 0,
+                     suggestedMax: 1,
+                     fontColor: options.color1,
+                     callback: (val) => {
+                        return val.toLocaleString();
+                     }
+                  }
+               }],
+            }
+         }
+      });
+      let url = await myChart.getShortUrl();
+      return url;
+   }, //End of getWorkerLostScanning()
 
 
    monsScanned: async function monsScanned(client, interaction, statDuration, footerText, statAreas, options) {
@@ -379,7 +749,7 @@ module.exports = {
          }).catch(console.error)
          .then(async msg => {
             if (config.rdmStats.graphDeleteSeconds > 0) {
-               setTimeout(() => msg.delete().catch(err => console.log(`(${interaction.user.username}) Error deleting screenshot:`, err)), (config.rdmStats.graphDeleteSeconds * 1000));
+               setTimeout(() => msg.delete().catch(err => console.log(`(${interaction.user.username}) Error deleting rdmStats graph:`, err)), (config.rdmStats.graphDeleteSeconds * 1000));
             }
          });
    }, //End of sendChart()
@@ -408,18 +778,25 @@ module.exports = {
    }, //End of runStatQuery()
 
 
-   getStatAreas: async function getStatAreas(client) {
+   getRdmStatsData: async function getRdmStatsData(client) {
       var statsInfo = require('../stats.json');
       var areaList = ["All Areas"];
-      let areaResult = await this.runStatQuery(util.queries.stats.getAreas);
-      if (areaResult == 'ERROR') {
-         console.log(`Error getting rdmStat areas`);
+      var workerList = [];
+      let statsResult = await this.runStatQuery(`${util.queries.stats.getAreas} ${util.queries.stats.getWorkers}`);
+      if (statsResult == 'ERROR') {
+         console.log(`Error getting rdmStat data`);
          return;
       }
-      for (var r in areaResult[0]) {
-         areaList.push(areaResult[0][r]['area']);
+      //Add areas
+      for (var r in statsResult[0]) {
+         areaList.push(statsResult[0][r]['area']);
       } //End of r loop
       statsInfo.areas = areaList;
+      //Add workers
+      for (var w in statsResult[1]) {
+         workerList.push(statsResult[1][w]['worker']);
+      } //End of w loop
+      statsInfo.workers = workerList;
       fs.writeFileSync('./stats.json', JSON.stringify(statsInfo));
-   } //End of getStatAreas()
+   } //End of getRdmStatsData()
 }

@@ -15,6 +15,7 @@ var Queries = require('./queries.js');
 var Devices = require('./devices.js');
 var Boards = require('./boards.js');
 var Quests = require('./quests.js');
+var Stats = require('./stats.js');
 
 module.exports = {
    listInteraction: async function listInteraction(client, interaction, interactionID, userPerms) {
@@ -66,6 +67,14 @@ module.exports = {
          let splitID = interactionID.replace('quests~reward~', '').split('~');
          let rewardType = interaction.values[0];
          Quests.getAreaQuests(client, interaction, splitID[0], rewardType);
+      }
+
+      //Worker stats
+      if (interactionID.startsWith('stats~worker~')){
+         let splitID = interactionID.replace('stats~worker~','').split('~');
+         let statType = interaction.values[0];
+         await interaction.deferUpdate();
+         Stats.UpdateWorkerStats(client, interaction.message, splitID[0], splitID[1], statType);
       }
    }, //End of listInteraction()
 

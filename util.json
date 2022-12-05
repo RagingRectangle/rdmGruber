@@ -229,6 +229,28 @@
          ]
       }
    },
+   "stats": {
+      "workerStats": [{
+         "label": "Mons Scanned",
+         "value": "workerMonsScanned"
+      },
+      {
+         "label": "Handling Time",
+         "value": "workerHandlingTime"
+      },
+      {
+         "label": "Locations Handled",
+         "value": "workerLocations"
+      },
+      {
+         "label": "Success Rate",
+         "value": "workerSuccessRate"
+      },
+      {
+         "label": "Lost Scanning",
+         "value": "workerLostScanning"
+      }]
+   },
    "queries": {
       "dirtyRead": "SET SESSION tx_isolation = 'READ-UNCOMMITTED';",
       "current_total_pokemon": {
@@ -367,10 +389,16 @@
       },
       "stats": {
          "getAreas": "select distinct area FROM stats_mon_area order by area asc;",
+         "getWorkers": "select distinct drago_worker as worker FROM stats_worker order by drago_worker asc;",
          "monsScanned": "select datetime 'time', sum(totMon) 'mons', 100*sum(ivMon)/sum(totMon) 'iv' from stats_mon_area where rpl = {{rpl}} and area in ({{areas}}) group by 1 order by datetime desc limit {{rplLength}};",
          "despawnLeft": "select datetime 'time', (sum(wildSecLeft)/sum(verifiedWild))/60 'wild', (sum(encSecLeft)/sum(verifiedEnc))/60 'encounter' from stats_mon_area where rpl = {{rpl}} and area in ({{areas}}) group by 1 order by datetime desc limit {{rplLength}};",
          "statResets": "select datetime 'time', sum(resetMon) 'resetMons', sum(verifiedReEnc) 'reEncounter', (sum(re_encSecLeft)/sum(verifiedReEnc))/60 'despawnLeft' from stats_mon_area where rpl = {{rpl}} and area in ({{areas}}) group by 1 order by datetime desc limit {{rplLength}};",
-         "spawnpoints": "select datetime 'time', sum(spawnpoints) 'spawnpoints', 100*sum(verified)/sum(spawnpoints) 'verified', sum(seen) 'seen' from stats_spawnpoint where rpl = {{rpl}} and area in ({{areas}}) group by 1 order by datetime desc limit {{rplLength}};"
+         "spawnpoints": "select datetime 'time', sum(spawnpoints) 'spawnpoints', 100*sum(verified)/sum(spawnpoints) 'verified', sum(seen) 'seen' from stats_spawnpoint where rpl = {{rpl}} and area in ({{areas}}) group by 1 order by datetime desc limit {{rplLength}};",
+         "workerMonsScanned": "select datetime 'time', sum(mons_seen) as 'monsSeen', sum(mons_enc) as 'encountered', 100*sum(mons_enc)/sum(mons_seen) as 'iv' from stats_worker where drago_worker = '{{worker}}' and rpl = {{rpl}} group by 1 order by datetime desc limit {{rplLength}};",
+         "workerHandlingTime": "select datetime 'time', sum(loc_time)/sum(loc_success) as 'handlingTime' from stats_worker where drago_worker = '{{worker}}' and rpl = {{rpl}} group by 1 order by datetime desc limit {{rplLength}};",
+         "workerLocations": "select datetime 'time', sum(loc_count) as 'locations' from stats_worker where drago_worker = '{{worker}}' and rpl = {{rpl}} group by 1 order by datetime desc limit {{rplLength}};",
+         "workerSuccessRate": "select datetime 'time', 100*sum(loc_success)/sum(loc_count) as 'successRate' from stats_worker where drago_worker = '{{worker}}' and rpl = {{rpl}} group by 1 order by datetime desc limit {{rplLength}};",
+         "workerLostScanning": "select datetime 'time', sum(rpl)*60 - sum(loc_time) as 'lostScanning' from stats_worker where drago_worker = '{{worker}}' and rpl = {{rpl}} group by 1 order by datetime desc limit {{rplLength}};"
       }
    },
    "protos": {
