@@ -62,10 +62,12 @@ module.exports = {
          return;
       }
       let defaultStatType = 'workerMonsScanned';
-      interaction.channel.send(`Creating worker stats...`).catch(console.error)
+      await interaction.deferReply();
+      await interaction.channel.send(`Creating worker stats...`).catch(console.error)
          .then(msg => {
             this.UpdateWorkerStats(client, msg, workerName, statDuration, defaultStatType);
          });
+         await interaction.deleteReply();
    }, //End of statsWorkerMain()
 
 
@@ -80,6 +82,13 @@ module.exports = {
          rpl = 1440;
          rplType = 'Daily';
          rplLength = config.rdmStats.dataPointCount.daily;
+         rplStamp = rplStamp.replace(' HH:mm', '');
+      }
+      //15 min
+      if (statDuration == '15Min') {
+         rpl = 15;
+         rplType = '15 Min';
+         rplLength = config.rdmStats.dataPointCount['15Min'] ? config.rdmStats.dataPointCount['15Min'] : 48;
          rplStamp = rplStamp.replace(' HH:mm', '');
       }
       let opacity = config.rdmStats.colorPalette.opacity ? config.rdmStats.colorPalette.opacity : 0.2;
