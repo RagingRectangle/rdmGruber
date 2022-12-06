@@ -88,7 +88,7 @@ module.exports = {
       if (statDuration == '15min') {
          rpl = 15;
          rplType = '15 Min';
-         rplLength = config.rdmStats.dataPointCount['15Min'] ? config.rdmStats.dataPointCount['15Min'] : 48;
+         rplLength = config.rdmStats.dataPointCount['15min'] ? config.rdmStats.dataPointCount['15min'] : 48;
          var rplStamp = config.raidBoardOptions.useDayMonthYear == false ? 'MM-DD HH:mm' : 'DD-MM HH:mm';
       }
       let opacity = config.rdmStats.colorPalette.opacity ? config.rdmStats.colorPalette.opacity : 0.2;
