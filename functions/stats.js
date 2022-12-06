@@ -71,7 +71,7 @@ module.exports = {
    }, //End of statsWorkerMain()
 
 
-   UpdateWorkerStats: async function UpdateWorkerStats(client, message, workerName, statDuration, type, messageType) {
+   UpdateWorkerStats: async function UpdateWorkerStats(client, message, workerName, statDuration, type) {
       //Hourly values
       var rpl = 60;
       var rplType = 'Hourly';
@@ -85,11 +85,11 @@ module.exports = {
          rplStamp = rplStamp.replace(' HH:mm', '');
       }
       //15 min
-      if (statDuration == '15Min') {
+      if (statDuration == '15min') {
          rpl = 15;
          rplType = '15 Min';
          rplLength = config.rdmStats.dataPointCount['15Min'] ? config.rdmStats.dataPointCount['15Min'] : 48;
-         rplStamp = rplStamp.replace(' HH:mm', '');
+         var rplStamp = config.raidBoardOptions.useDayMonthYear == false ? 'MM-DD HH:mm' : 'DD-MM HH:mm';
       }
       let opacity = config.rdmStats.colorPalette.opacity ? config.rdmStats.colorPalette.opacity : 0.2;
       let options = {
