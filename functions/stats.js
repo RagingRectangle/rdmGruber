@@ -67,7 +67,7 @@ module.exports = {
          .then(msg => {
             this.UpdateWorkerStats(client, msg, workerName, statDuration, defaultStatType);
          });
-         await interaction.deleteReply();
+      await interaction.deleteReply();
    }, //End of statsWorkerMain()
 
 
@@ -791,7 +791,7 @@ module.exports = {
       var statsInfo = require('../stats.json');
       var areaList = ["All Areas"];
       var workerList = [];
-      let statsResult = await this.runStatQuery(`${util.queries.stats.getAreas} ${util.queries.stats.getWorkers}`);
+      let statsResult = await this.runStatQuery(`${util.queries.stats.getAreas} ${config.golbat == true ? util.queries.stats.getWorkers : ''}`);
       if (statsResult == 'ERROR') {
          console.log(`Error getting rdmStat data`);
          return;
@@ -802,10 +802,12 @@ module.exports = {
       } //End of r loop
       statsInfo.areas = areaList;
       //Add workers
-      for (var w in statsResult[1]) {
-         workerList.push(statsResult[1][w]['worker']);
-      } //End of w loop
-      statsInfo.workers = workerList;
+      if (config.golbat == true) {
+         for (var w in statsResult[1]) {
+            workerList.push(statsResult[1][w]['worker']);
+         } //End of w loop
+         statsInfo.workers = workerList;
+      }
       fs.writeFileSync('./stats.json', JSON.stringify(statsInfo));
    } //End of getRdmStatsData()
 }
