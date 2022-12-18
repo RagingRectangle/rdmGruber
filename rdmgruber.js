@@ -362,19 +362,6 @@ client.on('interactionCreate', async interaction => {
 			}))
 		).catch(console.error);
 	}
-	//rdmStats worker names
-	else if (interaction.commandName == config.discord.workerStatsCommand.toLowerCase().replaceAll(/[^a-z0-9]/gi, '_')) {
-		let focusedValue = interaction.options.getFocused();
-		let statConfig = require('./stats.json');
-		var areaList = statConfig.workers;
-		let filteredList = areaList.filter(choice => choice.toLowerCase().includes(focusedValue.toLowerCase())).slice(0, 25);
-		await interaction.respond(
-			filteredList.map(choice => ({
-				name: choice,
-				value: choice
-			}))
-		).catch(console.error);
-	}
 	//Board area names
 	else if (interaction.commandName == config.discord.boardCommand.toLowerCase().replaceAll(/[^a-z0-9]/gi, '_')) {
 		let focusedValue = interaction.options.getFocused();
@@ -392,6 +379,21 @@ client.on('interactionCreate', async interaction => {
 	//Quest area names
 	else if (interaction.commandName == config.discord.questCommand.toLowerCase().replaceAll(/[^a-z0-9]/gi, '_')) {
 		Quests.generateAreaList(client, interaction);
+	}
+	if (config.golbat == true) {
+		//rdmStats worker names
+		if (interaction.commandName == config.discord.workerStatsCommand.toLowerCase().replaceAll(/[^a-z0-9]/gi, '_')) {
+			let focusedValue = interaction.options.getFocused();
+			let statConfig = require('./stats.json');
+			var areaList = statConfig.workers;
+			let filteredList = areaList.filter(choice => choice.toLowerCase().includes(focusedValue.toLowerCase())).slice(0, 25);
+			await interaction.respond(
+				filteredList.map(choice => ({
+					name: choice,
+					value: choice
+				}))
+			).catch(console.error);
+		}
 	}
 }); //End of autoComplete
 

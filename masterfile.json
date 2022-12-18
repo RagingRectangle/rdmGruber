@@ -14305,15 +14305,7 @@
         "baseStamina": 207
       },
       "thirdMoveStardust": 50000,
-      "thirdMoveCandy": 50,
-      "evolutions": [
-        {
-          "evoId": 901,
-          "id": 0,
-          "candyCost": 100,
-          "onlyNighttime": true
-        }
-      ]
+      "thirdMoveCandy": 50
     },
     "217_1268": {
       "name": "Ursaring",
@@ -14334,15 +14326,7 @@
         "baseStamina": 207
       },
       "thirdMoveStardust": 50000,
-      "thirdMoveCandy": 50,
-      "evolutions": [
-        {
-          "evoId": 901,
-          "id": 0,
-          "candyCost": 100,
-          "onlyNighttime": true
-        }
-      ]
+      "thirdMoveCandy": 50
     },
     "218_0": {
       "name": "Slugma",
@@ -39634,7 +39618,7 @@
         {
           "evoId": 665,
           "id": 0,
-          "candyCost": 12
+          "candyCost": 25
         }
       ]
     },
@@ -39657,7 +39641,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2765,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2746": {
       "name": "Scatterbug",
@@ -39678,7 +39669,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2766,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2747": {
       "name": "Scatterbug",
@@ -39699,7 +39697,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2767,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2748": {
       "name": "Scatterbug",
@@ -39720,7 +39725,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2768,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2749": {
       "name": "Scatterbug",
@@ -39741,7 +39753,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2769,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2750": {
       "name": "Scatterbug",
@@ -39762,7 +39781,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2770,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2751": {
       "name": "Scatterbug",
@@ -39783,7 +39809,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2771,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2752": {
       "name": "Scatterbug",
@@ -39804,7 +39837,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2772,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2753": {
       "name": "Scatterbug",
@@ -39825,7 +39865,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2773,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2754": {
       "name": "Scatterbug",
@@ -39846,7 +39893,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2774,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2755": {
       "name": "Scatterbug",
@@ -39867,7 +39921,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2775,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2756": {
       "name": "Scatterbug",
@@ -39888,7 +39949,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2776,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2757": {
       "name": "Scatterbug",
@@ -39909,7 +39977,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2777,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2758": {
       "name": "Scatterbug",
@@ -39930,7 +40005,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2778,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2759": {
       "name": "Scatterbug",
@@ -39951,7 +40033,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2779,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2760": {
       "name": "Scatterbug",
@@ -39972,7 +40061,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2780,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2761": {
       "name": "Scatterbug",
@@ -39993,7 +40089,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2781,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2762": {
       "name": "Scatterbug",
@@ -40014,7 +40117,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2782,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2763": {
       "name": "Scatterbug",
@@ -40035,7 +40145,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2783,
+          "candyCost": 25
+        }
+      ]
     },
     "664_2764": {
       "name": "Scatterbug",
@@ -40056,7 +40173,14 @@
         "baseStamina": 116
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 665,
+          "id": 2784,
+          "candyCost": 25
+        }
+      ]
     },
     "665_0": {
       "name": "Spewpa",
@@ -40082,7 +40206,7 @@
         {
           "evoId": 666,
           "id": 0,
-          "candyCost": 50
+          "candyCost": 100
         }
       ]
     },
@@ -40105,7 +40229,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2594,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2766": {
       "name": "Spewpa",
@@ -40126,7 +40257,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2595,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2767": {
       "name": "Spewpa",
@@ -40147,7 +40285,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2596,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2768": {
       "name": "Spewpa",
@@ -40168,7 +40313,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2597,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2769": {
       "name": "Spewpa",
@@ -40189,7 +40341,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2598,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2770": {
       "name": "Spewpa",
@@ -40210,7 +40369,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2599,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2771": {
       "name": "Spewpa",
@@ -40231,7 +40397,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2600,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2772": {
       "name": "Spewpa",
@@ -40252,7 +40425,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2601,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2773": {
       "name": "Spewpa",
@@ -40273,7 +40453,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2602,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2774": {
       "name": "Spewpa",
@@ -40294,7 +40481,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2603,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2775": {
       "name": "Spewpa",
@@ -40315,7 +40509,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2604,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2776": {
       "name": "Spewpa",
@@ -40336,7 +40537,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2605,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2777": {
       "name": "Spewpa",
@@ -40357,7 +40565,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2606,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2778": {
       "name": "Spewpa",
@@ -40378,7 +40593,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2607,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2779": {
       "name": "Spewpa",
@@ -40399,7 +40621,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2608,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2780": {
       "name": "Spewpa",
@@ -40420,7 +40649,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2609,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2781": {
       "name": "Spewpa",
@@ -40441,7 +40677,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2610,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2782": {
       "name": "Spewpa",
@@ -40462,7 +40705,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2611,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2783": {
       "name": "Spewpa",
@@ -40483,7 +40733,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2612,
+          "candyCost": 100
+        }
+      ]
     },
     "665_2784": {
       "name": "Spewpa",
@@ -40504,7 +40761,14 @@
         "baseStamina": 128
       },
       "thirdMoveStardust": 10000,
-      "thirdMoveCandy": 25
+      "thirdMoveCandy": 25,
+      "evolutions": [
+        {
+          "evoId": 666,
+          "id": 2613,
+          "candyCost": 100
+        }
+      ]
     },
     "666_0": {
       "name": "Vivillon",
@@ -43394,6 +43658,10 @@
       "id": 713,
       "types": [
         {
+          "id": 6,
+          "name": "Rock"
+        },
+        {
           "id": 15,
           "name": "Ice"
         }
@@ -43403,8 +43671,8 @@
         "id": 2795
       },
       "stats": {
-        "baseAttack": 196,
-        "baseDefense": 240,
+        "baseAttack": 214,
+        "baseDefense": 238,
         "baseStamina": 216
       },
       "thirdMoveStardust": 50000,
@@ -51981,7 +52249,7 @@
       "name": "Unova Stone"
     },
     "1150": {
-      "name": "Item Other Evolution Stone A"
+      "name": "?????? Coin"
     },
     "1201": {
       "name": "Fast TM"
@@ -53100,6 +53368,10 @@
     "377": {
       "name": "High Horsepower",
       "type": "Ground"
+    },
+    "378": {
+      "name": "Glaciate",
+      "type": "Ice"
     }
   },
   "questTypes": {
