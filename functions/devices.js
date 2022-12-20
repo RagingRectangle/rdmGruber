@@ -202,16 +202,22 @@ module.exports = {
 
       async function sendNoProtoButtons(deviceButtonList) {
          var noProtoChannel = channel;
+         var userTags = [];
          if (type == 'cron') {
             try {
                noProtoChannel = await client.channels.fetch(config.devices.noProtoChannelID);
+               if (config.devices.noProtoAlertUsers){
+                  for (u in config.devices.noProtoAlertUsers){
+                     userTags.push(`<@${config.devices.noProtoAlertUsers[u]}>`);
+                  }
+               }
             } catch (err) {
                console.log("Failed to fetch noProto post channel:", err);
                return;
             }
          }
          let messagesNeeded = Math.ceil(deviceButtonList.length / 25);
-         var content = `**${deviceButtonList.length} No Proto Devices:**`;
+         var content = `**${deviceButtonList.length} No Proto Devices:**\n${userTags.join(' ')}`;
          for (var m = 0; m < messagesNeeded; m++) {
             let buttonsNeeded = Math.min(25, deviceButtonList.length);
             let rowsNeeded = Math.ceil(buttonsNeeded / 5);

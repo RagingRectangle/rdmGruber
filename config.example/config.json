@@ -46,6 +46,7 @@
         "noProtoMinutes": 20,
         "noProtoCheckMinutes": 0,
         "noProtoChannelID": "",
+        "noProtoAlertUsers": [],
         "noProtoIgnoreDevices": [],
         "checkDeleteMinutes": 0,
         "infoMessageDeleteSeconds": 0,
