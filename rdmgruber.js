@@ -21,7 +21,7 @@ const client = new Client({
 const fs = require('fs');
 const config = require('./config/config.json');
 const Boards = require('./functions/boards.js');
-const boardConfig = require('./config/boards.json');
+let boardConfig = require('./config/boards.json');
 const Stats = require('./functions/stats.js');
 //Update boards.json format
 if (!boardConfig.current || !boardConfig.history) {
