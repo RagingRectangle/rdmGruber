@@ -48,6 +48,7 @@
         "noProtoChannelID": "",
         "noProtoAlertUsers": [],
         "noProtoIgnoreDevices": [],
+        "noProtoIgnoreQuestDevices": false,
         "checkDeleteMinutes": 0,
         "infoMessageDeleteSeconds": 0,
         "statusButtonsDeleteMinutes": 0,

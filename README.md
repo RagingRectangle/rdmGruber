@@ -94,6 +94,7 @@ Devices:
 - **noProtoChannelID:** Channel ID where automated warnings should be posted.
 - **noProtoAlertUsers:** List of user IDs that will be tagged during automated checks.
 - **noProtoIgnoreDevices:** Array of devices to be ignored during noProto checks.
+- **noProtoIgnoreQuestDevices:** Whether or not to ignore devices that are questing (true/false).
 - **checkDeleteMinutes:** How long to wait until auto check messages are deleted (Set to 0 to never delete).
 - **infoMessageDeleteSeconds:** How long to wait until device info responses are deleted (Set to 0 to never delete).
 - **statusButtonsDeleteMinutes:** How long to wait until messages with device buttons are deleted (Set to 0 to never delete).

@@ -154,8 +154,8 @@ module.exports = {
       }
       let lastSeenCutoff = (Date.now() / 1000) - (config.devices.noProtoMinutes * 60);
       let connection = mysql.createConnection(config.rdmDB);
-
-      let deviceQuery = `SELECT uuid, last_seen FROM device WHERE last_seen < ${lastSeenCutoff} and uuid NOT IN ('${config.devices.noProtoIgnoreDevices.join("','")}') ORDER BY uuid`;
+      let ignoreQuestDevices = config.devices.noProtoIgnoreQuestDevices == true ? `AND b.type != 'auto_quest' ` : ``;
+      let deviceQuery = `SELECT a.uuid, a.last_seen, b.type FROM device a, instance b WHERE last_seen < ${lastSeenCutoff} and uuid NOT IN ('${config.devices.noProtoIgnoreDevices.join("','")}') AND a.instance_name = b.name ${ignoreQuestDevices}ORDER BY uuid;`;
       connection.query(deviceQuery, function (err, results) {
          if (err) {
             console.log("noProto Status Query Error:", err);
