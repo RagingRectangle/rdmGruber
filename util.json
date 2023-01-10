@@ -85,6 +85,10 @@
                "value": "current_lure_types"
             },
             {
+               "label": "Kecleon",
+               "value": "current_total_kecleon"
+            },
+            {
                "label": "Grunts",
                "value": "current_total_grunts"
             },
@@ -231,25 +235,26 @@
    },
    "stats": {
       "workerStats": [{
-         "label": "Mons Scanned",
-         "value": "workerMonsScanned"
-      },
-      {
-         "label": "Handling Time",
-         "value": "workerHandlingTime"
-      },
-      {
-         "label": "Locations Handled",
-         "value": "workerLocations"
-      },
-      {
-         "label": "Success Rate",
-         "value": "workerSuccessRate"
-      },
-      {
-         "label": "Lost Scanning",
-         "value": "workerLostScanning"
-      }]
+            "label": "Mons Scanned",
+            "value": "workerMonsScanned"
+         },
+         {
+            "label": "Handling Time",
+            "value": "workerHandlingTime"
+         },
+         {
+            "label": "Locations Handled",
+            "value": "workerLocations"
+         },
+         {
+            "label": "Success Rate",
+            "value": "workerSuccessRate"
+         },
+         {
+            "label": "Lost Scanning",
+            "value": "workerLostScanning"
+         }
+      ]
    },
    "queries": {
       "dirtyRead": "SET SESSION tx_isolation = 'READ-UNCOMMITTED';",
@@ -325,9 +330,13 @@
          "label": "{{{luresEmoji}}} {{Lures}}",
          "query": "SELECT `normal`, `glacial`, `mossy`, `magnetic`, `rainy` FROM (SELECT COUNT(CASE WHEN lure_id = 501 THEN 1 END) AS `normal`, COUNT(CASE WHEN lure_id = 502 THEN 1 END) AS `glacial`, COUNT(CASE WHEN lure_id = 503 THEN 1 END) AS `mossy`, COUNT(CASE WHEN lure_id = 504 THEN 1 END) AS `magnetic`, COUNT(CASE WHEN lure_id = 505 THEN 1 END) AS `rainy` FROM pokestop WHERE UNIX_TIMESTAMP() < lure_expire_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon)))AS latte;"
       },
+      "current_total_kecleon": {
+         "label": "{{{kecleonEmoji}}} {{Kecleon}}",
+         "query": "SELECT count(*) FROM incident a, pokestop b WHERE a.pokestop_id = b.id AND UNIX_TIMESTAMP() < a.expiration AND a.display_type = '8' AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(b.lat, b.lon));"
+      },
       "current_total_grunts": {
          "label": "{{{gruntsEmoji}}} {{Grunts}}",
-         "query": "SELECT count(*) FROM incident a, pokestop b WHERE a.pokestop_id = b.id AND UNIX_TIMESTAMP() < a.expiration AND a.character NOT IN ('41','42','43','44') AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(b.lat, b.lon));"
+         "query": "SELECT count(*) FROM incident a, pokestop b WHERE a.pokestop_id = b.id AND UNIX_TIMESTAMP() < a.expiration AND a.character NOT IN ('41','42','43','44') AND a.display_type != '8' AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(b.lat, b.lon));"
       },
       "current_total_leaders": {
          "label": "{{{leadersEmoji}}} {{Leaders}}",

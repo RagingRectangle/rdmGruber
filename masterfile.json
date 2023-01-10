@@ -23474,6 +23474,16 @@
             "baseStamina": 216
           },
           "unreleased": true
+        },
+        {
+          "tempEvoId": 1,
+          "stats": {
+            "baseAttack": 310,
+            "baseDefense": 251,
+            "baseStamina": 216
+          },
+          "firstEnergyCost": 200,
+          "subsequentEnergyCost": 40
         }
       ]
     },
@@ -23510,6 +23520,16 @@
             "baseStamina": 216
           },
           "unreleased": true
+        },
+        {
+          "tempEvoId": 1,
+          "stats": {
+            "baseAttack": 310,
+            "baseDefense": 251,
+            "baseStamina": 216
+          },
+          "firstEnergyCost": 200,
+          "subsequentEnergyCost": 40
         }
       ]
     },
@@ -37078,7 +37098,7 @@
       "evolutions": [
         {
           "evoId": 614,
-          "id": 0,
+          "id": 2234,
           "candyCost": 50
         }
       ]
@@ -37102,7 +37122,14 @@
         "baseStamina": 146
       },
       "thirdMoveStardust": 50000,
-      "thirdMoveCandy": 50
+      "thirdMoveCandy": 50,
+      "evolutions": [
+        {
+          "evoId": 614,
+          "id": 2820,
+          "candyCost": 50
+        }
+      ]
     },
     "614_0": {
       "name": "Beartic",
@@ -37137,6 +37164,27 @@
       "form": {
         "name": "Normal",
         "id": 2234
+      },
+      "stats": {
+        "baseAttack": 233,
+        "baseDefense": 152,
+        "baseStamina": 216
+      },
+      "thirdMoveStardust": 50000,
+      "thirdMoveCandy": 50
+    },
+    "614_2820": {
+      "name": "Beartic",
+      "id": 614,
+      "types": [
+        {
+          "id": 15,
+          "name": "Ice"
+        }
+      ],
+      "form": {
+        "name": "Winter 2020",
+        "id": 2820
       },
       "stats": {
         "baseAttack": 233,

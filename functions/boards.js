@@ -318,13 +318,19 @@ module.exports = {
             if (boardData.pokestopOptions) {
                if (boardData.pokestopOptions[0] !== 'None') {
                   for (var i in boardData.pokestopOptions) {
-                     let translationTemplate = Handlebars.compile(util.queries[boardData.pokestopOptions[i]]['label']);
-                     let labelText = translationTemplate(translations);
+                     var labelText = '';
+                     if (boardData.pokestopOptions[i] == 'current_total_kecleon'){
+                        labelText = `${translations.kecleonEmoji ? translations.kecleonEmoji : '🦎'} ${locale.Kecleon ? locale.Kecleon : 'Kecleon'}`;
+                     }
+                     else {
+                        let translationTemplate = Handlebars.compile(util.queries[boardData.pokestopOptions[i]]['label']);
+                        labelText = translationTemplate(translations);
+                     }
                      var boardTable = new Table;
                      var query = util.queries[boardData.pokestopOptions[i]]['query'].replace('{{queryName}}', boardData.pokestopOptions[i]).replace('{{area}}', boardData.geofence).replace('{{offset}}', config.timezoneOffsetHours);
                      let queryResult = await runQuery(query);
                      //Single result queries
-                     if (boardData.pokestopOptions[i] === 'current_total_pokestops' || boardData.pokestopOptions[i] === 'current_total_grunts' || boardData.pokestopOptions[i] === 'current_total_leaders') {
+                     if (boardData.pokestopOptions[i] === 'current_total_pokestops' || boardData.pokestopOptions[i] === 'current_total_kecleon' || boardData.pokestopOptions[i] === 'current_total_grunts' || boardData.pokestopOptions[i] === 'current_total_leaders') {
                         boardDescription.push(`${labelText}: **${Object.values(queryResult[0]) ? Object.values(queryResult[0]) : 0}**`);
                      }
                      //Multi result queries
