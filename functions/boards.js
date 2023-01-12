@@ -131,7 +131,7 @@ module.exports = {
       var boardList = JSON.parse(fs.readFileSync('./config/boards.json'));
       let boardFields = interaction.message.embeds[0]['fields'];
       let boardType = boardFields[0]['value'];
-      //Current
+      //Current boards
       if (boardType === 'current') {
          var boardData = {};
          boardData.type = 'current';
@@ -161,6 +161,7 @@ module.exports = {
                module.exports.runBoardCron(client, msg.id, 'current');
             });
       } //End of current
+      //History boards
       else if (boardType === 'history') {
          var boardData = {};
          boardData.type = 'history';
@@ -188,6 +189,7 @@ module.exports = {
                module.exports.runBoardCron(client, msg.id, 'history');
             });
       } //End of history
+      //Raid boards
       else if (boardType === 'raid') {
          var boardData = {};
          boardData.type = 'raid';
@@ -216,6 +218,36 @@ module.exports = {
                module.exports.runBoardCron(client, msg.id, 'raid');
             });
       } //End of raid
+      //Kecleon boards
+      else if (boardType === 'kecleon') {
+         if (!boardList['kecleon']) {
+            boardList['kecleon'] = {};
+         }
+         var boardData = {};
+         boardData.type = 'kecleon';
+         boardData.channelID = interaction.message.channel.id;
+         boardData.title = `${locale.Kecleon} ${translations.Pokestops}`;
+         boardData.area = boardFields[1]['value'];
+         boardData.updateInterval = `*/${boardFields[2]['value'].replace('every ', '').replace(' minutes', '')} * * * *`;
+         boardData.geofence = await module.exports.generateGeofence(boardData.area);
+         await interaction.channel.send({
+               embeds: [new EmbedBuilder().setTitle(boardData.title).setDescription(`Board will be created soon...`)]
+            }).catch(console.error)
+            .then(msg => {
+               boardList['kecleon'][msg.id] = boardData;
+               fs.writeFileSync('./config/boards.json', JSON.stringify(boardList));
+               //Start cron job
+               try {
+                  const boardJob = schedule.scheduleJob(msg.id, boardData.updateInterval, function () {
+                     module.exports.runBoardCron(client, msg.id, 'kecleon');
+                  });
+               } catch (err) {
+                  console.log(err);
+               }
+               //Run first time
+               module.exports.runBoardCron(client, msg.id, 'kecleon');
+            });
+      } //End of kecleon
       await interaction.update({
          content: `Board created!`,
          embeds: [],
@@ -319,10 +351,9 @@ module.exports = {
                if (boardData.pokestopOptions[0] !== 'None') {
                   for (var i in boardData.pokestopOptions) {
                      var labelText = '';
-                     if (boardData.pokestopOptions[i] == 'current_total_kecleon'){
+                     if (boardData.pokestopOptions[i] == 'current_total_kecleon') {
                         labelText = `${translations.kecleonEmoji ? translations.kecleonEmoji : '🦎'} ${locale.Kecleon ? locale.Kecleon : 'Kecleon'}`;
-                     }
-                     else {
+                     } else {
                         let translationTemplate = Handlebars.compile(util.queries[boardData.pokestopOptions[i]]['label']);
                         labelText = translationTemplate(translations);
                      }
@@ -377,7 +408,7 @@ module.exports = {
             let geoStart = geoSplit[0].split(' ');
             let tzName = find(geoStart[0].replace('(', ''), geoStart[1]);
             footerText = boardData.area == '~everywhere~' ? `${boardInfo.area.replaceAll('~','').replaceAll('\n\n\n','\n\n')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}` : `${boardInfo.area} ~ ${moment().tz(tzName[0]).format(footerFormat)}`;
-         } //End of currentLoop
+         } //End of current loop
       } //End of current boards
 
       //History boards
@@ -433,8 +464,60 @@ module.exports = {
             let geoStart = geoSplit[0].split(' ');
             let tzName = find(geoStart[0].replace('(', ''), geoStart[1]);
             footerText = boardData.area == '~everywhere~' ? `${boardInfo.area.replaceAll('~','')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}` : `${boardInfo.area} ~ ${moment().tz(tzName[0]).format(footerFormat)}`;
-         } //End of history loop
+         } //End of raid loop
       } //End of raid boards
+
+      //Kecleon boards
+      else if (boardType === 'kecleon') {
+         for (const [msgID, boardData] of Object.entries(boardList.kecleon)) {
+            if (messageID !== msgID) {
+               continue;
+            }
+            boardInfo = boardData;
+            let boardChannel = await client.channels.cache.get(boardData.channelID);
+            try {
+               boardMessage = await boardChannel.messages.fetch(messageID);
+            } catch (err) {
+               console.log(`Board message ${messageID} not found.`);
+               return;
+            }
+            let queryKecleon = util.queries.kecleon.query.replace('{{area}}', boardInfo.geofence);
+            let kecleonResult = await runQuery(queryKecleon);
+            //No Kecleon
+            if (kecleonResult.length == 0) {
+               boardDescription.push(translations.No_Kecleon ? translations.No_Kecleon : `Currently no ${locale.Kecleon}. Check back later.`);
+            }
+            //Create Kecleon list
+            else {
+               var kecleonList = [];
+               for (var k in kecleonResult) {
+                  var stopName = kecleonResult[k]['name'] ? kecleonResult[k]['name'].length > 30 ? `${kecleonResult[k]['name'].slice(0, 28)}..` : kecleonResult[k]['name'] : translations.Unknown;
+                  if (config.raidBoardOptions.mapLink == true) {
+                     stopName = `[${stopName}](${config.raidBoardOptions.linkFormat.replace('{{lat}}',kecleonResult[k]['lat'].toFixed(4)).replace('{{lon}}',kecleonResult[k]['lon'].toFixed(4))})`;
+                  }
+                  kecleonList.push(`${stopName} (${translations.Ends} <t:${kecleonResult[k]['expiration']}:R>)`);
+                  if (kecleonList.join('\n\n').length > 3900) {
+                     kecleonList.pop();
+                     break;
+                  }
+               } //End of k loop
+               boardDescription = kecleonList.join('\n\n');
+            }
+         } //End of Kecleon loop
+         let geoSplit = boardInfo.geofence.split(',');
+         let geoStart = geoSplit[0].split(' ');
+         let tzName = find(geoStart[0].replace('(', ''), geoStart[1]);
+         footerText = boardInfo.area == '~everywhere~' ? `${boardInfo.area.replaceAll('~','')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}` : `${boardInfo.area} ~ ${moment().tz(tzName[0]).format(footerFormat)}`;
+         let kecleonPic = (`${config.questBoardOptions.iconRepo ? config.questBoardOptions.iconRepo : "https://raw.githubusercontent.com/nileplumb/PkmnHomeIcons/master/UICONS"}/pokemon/352.png`).replaceAll('//pokemon', '/pokemon');
+         var boardEmbeds = [new EmbedBuilder().setTitle(boardInfo.title).setDescription(boardDescription).setThumbnail(kecleonPic).setFooter({
+            text: footerText
+         })];
+         boardMessage.edit({
+            content: ``,
+            embeds: boardEmbeds
+         }).catch(console.error);
+         return;
+      } //End of Kecleon boards
       if (!boardInfo) {
          console.log(`Board message ${messageID} not found.`);
          return;
@@ -450,14 +533,14 @@ module.exports = {
             let translatedEggBoard = translationEggTemplate(translations).replaceAll(',[', '[');
             boardEmbeds.push(new EmbedBuilder().setTitle(`${translations.Tier} ${boardInfo.tiers.join(' + ')} ${translations.Eggs}`).setDescription(translatedEggBoard).setFooter({
                text: footerText
-            }))
+            }));
          }
          boardMessage.edit({
             content: ``,
             embeds: boardEmbeds
          }).catch(console.error);
       } catch (err) {
-         console.log("Failed to update raid board:", err);
+         console.log("Failed to update board:", err);
       }
    }, //End of runBoardCron()
 
@@ -512,7 +595,7 @@ module.exports = {
 
 
    startRaidBoard: async function startRaidBoard(interaction) {
-      var newEmbed = new EmbedBuilder().setTitle(`Creating Raid Board:`).addFields({
+      var newEmbed = new EmbedBuilder().setTitle(`Creating New Board:`).addFields({
          name: 'Board Type:',
          value: 'raid'
       }).addFields({
@@ -521,6 +604,23 @@ module.exports = {
       });
       this.addRaidArea(interaction, newEmbed);
    }, //End of startRaidBoard()
+
+
+   startKecleonBoard: async function startKecleonBoard(interaction) {
+      var newEmbed = new EmbedBuilder().setTitle(`Creating New Board:`).addFields({
+         name: 'Board Type:',
+         value: 'kecleon'
+      }).addFields({
+         name: 'Area Name:',
+         value: interaction.options._hoistedOptions[0]['value']
+      });
+      let newComponents = [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Update Interval').setCustomId(`${config.serverName}~board~kecleon~updateInterval`).addOptions(util.boards.kecleon.updateIntervals))];
+      await interaction.reply({
+         embeds: [newEmbed],
+         components: newComponents,
+         ephemeral: true
+      }).catch(console.error);
+   }, //End of startKecleonBoard()
 
 
    addRaidArea: async function addRaidArea(interaction, newEmbed) {
@@ -589,6 +689,23 @@ module.exports = {
    }, //End of addRaidUpdateInterval()
 
 
+   addKecleonUpdateInterval: async function addKecleonUpdateInterval(interaction, updateInterval) {
+      let oldEmbed = interaction.message.embeds[0]['data'];
+      var newEmbed = new EmbedBuilder().setTitle(oldEmbed.title).addFields(oldEmbed['fields']);
+      newEmbed.addFields({
+         name: 'Update Interval:',
+         value: `every ${updateInterval.replace('*/','').replaceAll(' *','')} minutes`
+      });
+      //Add verify buttons
+      let newComponents = [new ActionRowBuilder().addComponents(new ButtonBuilder().setLabel('Start').setCustomId(`${config.serverName}~board~start`).setStyle(ButtonStyle.Success), new ButtonBuilder().setLabel('Restart').setCustomId(`${config.serverName}~board~kecleon~restart`).setStyle(ButtonStyle.Secondary), new ButtonBuilder().setLabel('Cancel').setCustomId(`${config.serverName}~board~cancel`).setStyle(ButtonStyle.Danger))];
+      await interaction.update({
+         embeds: [newEmbed],
+         components: newComponents,
+         ephemeral: true
+      }).catch(console.error);
+   }, //End of addKecleonUpdateInterval()
+
+
    updateRaidBoard: async function updateRaidBoard(boardInfo, raids, eggs) {
       let masterfile = await JSON.parse(fs.readFileSync('./masterfile.json'));
       let monsters = masterfile.monsters;
@@ -640,7 +757,7 @@ module.exports = {
                   gymName = gymName.concat(` ${gymEmoji}`);
                }
                raidInfo.push(`**${monName}** ${monTypes} *(${move1}/${move2})*\n${gymName} (${translations.Ends} <t:${raids[r]['raid_end_timestamp']}:R>)\n\n`);
-               if (raidInfo.join('\n\n').length > 2900) {
+               if (raidInfo.join('\n\n').length > eggs != '' ? 2900 : 3900) {
                   raidInfo.pop();
                   break;
                }
@@ -666,7 +783,7 @@ module.exports = {
                }
                let formatTime = config.raidBoardOptions.use24Hour == true ? 'H:mm:ss' : 'h:mm:ss A';
                eggInfo.push(`${gymName}\n${moment.unix(eggs[e]['raid_battle_timestamp']).tz(tzName[0]).format(formatTime)} (<t:${eggs[e]['raid_battle_timestamp']}:R>)\n\n`);
-               if (eggInfo.join('\n\n').length > 2900) {
+               if (eggInfo.join('\n\n').length > raids != '' ? 2900 : 3900) {
                   eggInfo.pop();
                   break;
                }
@@ -773,7 +890,7 @@ module.exports = {
             delete Boards[type][boardID];
             fs.writeFileSync('./config/boards.json', JSON.stringify(Boards));
             await interaction.reply({
-               content: `${type.replace('raid','Raid').replace('history','History').replace('current','Current')} board \`${boardID}\` deleted`,
+               content: `${type.replace('raid','Raid').replace('history','History').replace('current','Current').replace('kecleon',locale.Kecleon)} board \`${boardID}\` deleted`,
                ephemeral: true
             }).catch(console.error);
          } catch (err) {

@@ -130,6 +130,16 @@ client.on('ready', async () => {
 			console.log(err);
 		}
 	} //End of history boards
+	//Create Kecleon board crons
+	for (const [msgID, boardData] of Object.entries(boardConfig.kecleon)) {
+		try {
+			const boardJob = schedule.scheduleJob(msgID, boardData.updateInterval, function () {
+				Boards.runBoardCron(client, msgID, 'kecleon');
+			});
+		} catch (err) {
+			console.log(err);
+		}
+	} //End of Kecleon boards
 	//Update available quests
 	if (config.discord.questCommand) {
 		Quests.updateQuests();
@@ -340,7 +350,7 @@ client.on('interactionCreate', async interaction => {
 	if (interaction.options._subcommand == 'delete') {
 		let Boards = require('./config/boards.json');
 		let focusedValue = interaction.options.getFocused();
-		let boardList = Object.keys(Boards.raid).concat(Object.keys(Boards.current), Object.keys(Boards.history));
+		let boardList = Object.keys(Boards.raid).concat(Object.keys(Boards.current), Object.keys(Boards.history), Object.keys(Boards.kecleon));
 		let filteredList = boardList.filter(choice => choice.includes(focusedValue)).slice(0, 25);
 		await interaction.respond(
 			filteredList.map(choice => ({

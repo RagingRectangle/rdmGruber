@@ -5,6 +5,10 @@ var fs = require('fs');
 var config = require('../config/config.json');
 var Boards = require('../functions/boards.js');
 var Roles = require('../functions/roles.js');
+var locale = require('../locale/en.json');
+if (config.raidBoardOptions.language) {
+	locale = require(`../locale/${config.raidBoardOptions.language}.json`);
+}
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -23,6 +27,14 @@ module.exports = {
 			subcommand
 			.setName('history')
 			.setDescription('Create history stat board'))
+		.addSubcommand(subcommand =>
+			subcommand
+			.setName(locale.Kecleon.toLowerCase())
+			.setDescription(`Create ${locale.Kecleon} board`).addStringOption(option =>
+				option.setName('board_area')
+				.setDescription(`Enter area name`)
+				.setRequired(true)
+				.setAutocomplete(true)))
 		.addSubcommand(subcommand =>
 			subcommand
 			.setName('raid')
@@ -52,6 +64,8 @@ module.exports = {
 				Boards.startHistoryBoard(interaction);
 			} else if (interaction.options.getSubcommand() === 'raid') {
 				Boards.startRaidBoard(interaction);
+			} else if (interaction.options.getSubcommand() === locale.Kecleon.toLowerCase()) {
+				Boards.startKecleonBoard(interaction);
 			}
 			if (userPerms.includes('admin')) {
 				if (interaction.options.getSubcommand() === 'delete') {

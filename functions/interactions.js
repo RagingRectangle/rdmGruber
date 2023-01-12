@@ -210,11 +210,11 @@ module.exports = {
          }).catch(console.error);
       }
       //Start new board
-      if (splitID[0] === 'start') {
+      else if (splitID[0] === 'start') {
          Boards.startNewBoard(client, interaction);
       }
       //Current board
-      if (splitID[0] === 'current') {
+      else if (splitID[0] === 'current') {
          //Create/restart board
          if (splitID[1] === 'create' || splitID[1] === 'restart') {
             Boards.beginCurrentBoard(interaction);
@@ -241,7 +241,7 @@ module.exports = {
          }
       } //End of current
       //History board
-      if (splitID[0] === 'history') {
+      else if (splitID[0] === 'history') {
          //Create/restart board
          if (splitID[1] === 'create' || splitID[1] === 'restart') {
             Boards.startHistoryBoard(interaction);
@@ -256,7 +256,7 @@ module.exports = {
          }
       } //End of history
       //Raid board
-      if (splitID[0] === 'raid') {
+      else if (splitID[0] === 'raid') {
          if (splitID[1] === 'restart') {
             Boards.startRaidBoard(interaction);
          } else if (splitID[1] === 'addArea') {
@@ -269,5 +269,21 @@ module.exports = {
             Boards.addRaidUpdateInterval(interaction, interaction.values[0]);
          }
       } //End of raids
+
+
+
+      //Kecleon board
+      else if (splitID[0] === 'kecleon'){
+         if (splitID[1] === 'restart') {
+            Boards.startKecleonBoard(interaction);
+         }
+         else if (splitID[1] === 'updateInterval'){
+            Boards.addKecleonUpdateInterval(interaction, interaction.values[0]);
+         }
+      }
+
+
+
+
    } //End of boardInteractions()
 }
