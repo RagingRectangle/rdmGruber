@@ -131,13 +131,15 @@ client.on('ready', async () => {
 		}
 	} //End of history boards
 	//Create Kecleon board crons
-	for (const [msgID, boardData] of Object.entries(boardConfig.kecleon)) {
-		try {
-			const boardJob = schedule.scheduleJob(msgID, boardData.updateInterval, function () {
-				Boards.runBoardCron(client, msgID, 'kecleon');
-			});
-		} catch (err) {
-			console.log(err);
+	if (boardConfig.kecleon){
+		for (const [msgID, boardData] of Object.entries(boardConfig.kecleon)) {
+			try {
+				const boardJob = schedule.scheduleJob(msgID, boardData.updateInterval, function () {
+					Boards.runBoardCron(client, msgID, 'kecleon');
+				});
+			} catch (err) {
+				console.log(err);
+			}
 		}
 	} //End of Kecleon boards
 	//Update available quests
