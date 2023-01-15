@@ -485,7 +485,7 @@ module.exports = {
             let kecleonResult = await runQuery(queryKecleon);
             //No Kecleon
             if (kecleonResult.length == 0) {
-               boardDescription.push(translations.No_Kecleon ? translations.No_Kecleon : `Currently no ${locale.Kecleon}. Check back later.`);
+               boardDescription.push(translations.No_Kecleon ? [translations.No_Kecleon] : [`Currently no ${locale.Kecleon}. Check back later.`]);
             }
             //Create Kecleon list
             else {
