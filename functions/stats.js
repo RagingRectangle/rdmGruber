@@ -29,6 +29,13 @@ module.exports = {
          rplLength = config.rdmStats.dataPointCount.daily;
          rplStamp = rplStamp.replace(' HH:mm', '');
       }
+      //15 min values
+      else if (statDuration == '15_min') {
+         rpl = 15;
+         rplType = '15 Min';
+         rplLength = config.rdmStats.dataPointCount['15min'];
+         rplStamp = rplStamp.replace(' HH:mm', '');
+      }
       let opacity = config.rdmStats.colorPalette.opacity ? config.rdmStats.colorPalette.opacity : 0.2;
       let options = {
          rpl: rpl,

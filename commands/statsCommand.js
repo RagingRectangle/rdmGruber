@@ -34,6 +34,9 @@ module.exports = {
 			.setDescription('Select report period length')
 			.setRequired(true)
 			.addChoices({
+				name: `15_min`,
+				value: `min15`
+			}, {
 				name: `Hourly`,
 				value: `hourly`
 			}, {

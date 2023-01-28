@@ -837,19 +837,27 @@ module.exports = {
 
 
    updateBoardFormat: async function updateBoardFormat(oldBoards) {
-      var currentBoards = {};
-      var historyBoards = {};
+      fs.writeFileSync('./config/boards_backup.json', JSON.stringify(oldBoards));
+      var currentBoards = oldBoards.current ? oldBoards.current : {};
+      var historyBoards = oldBoards.history ? oldBoards.history : {};
+      var raidBoards = oldBoards.raid ? oldBoards.raid : {};
+      var kecleonBoards = oldBoards.kecleon ? oldBoards.kecleon : {};
       for (const [msgID, boardData] of Object.entries(oldBoards)) {
          if (boardData['type'] === 'current') {
             currentBoards[msgID] = boardData;
          } else if (boardData['type'] === 'history') {
             historyBoards[msgID] = boardData;
+         } else if (boardData['type'] === 'raid') {
+            raidBoards[msgID] = boardData;
+         } else if (boardData['type'] === 'kecleon') {
+            kecleonBoards[msgID] = boardData;
          }
       }
       let newBoards = {
          "current": currentBoards,
          "history": historyBoards,
-         "raid": {}
+         "raid": raidBoards,
+         "kecleon": kecleonBoards
       }
       fs.writeFileSync('./config/boards.json', JSON.stringify(newBoards));
       return newBoards;

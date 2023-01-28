@@ -24,7 +24,7 @@ const Boards = require('./functions/boards.js');
 let boardConfig = require('./config/boards.json');
 const Stats = require('./functions/stats.js');
 //Update boards.json format
-if (!boardConfig.current || !boardConfig.history) {
+if (!boardConfig.current || !boardConfig.history || !boardConfig.raid || !boardConfig.kecleon) {
 	async function updateBoards() {
 		boardConfig = await Boards.updateBoardFormat(boardConfig);
 	}
