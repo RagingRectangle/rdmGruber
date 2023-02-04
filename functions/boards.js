@@ -485,7 +485,7 @@ module.exports = {
             let kecleonResult = await runQuery(queryKecleon);
             //No Kecleon
             if (kecleonResult.length == 0) {
-               boardDescription.push(translations.No_Kecleon ? [translations.No_Kecleon] : [`Currently no ${locale.Kecleon}. Check back later.`]);
+               boardDescription = translations.No_Kecleon ? translations.No_Kecleon : `Currently no ${locale.Kecleon}. Check back later.`;
             }
             //Create Kecleon list
             else {
@@ -757,7 +757,8 @@ module.exports = {
                   gymName = gymName.concat(` ${gymEmoji}`);
                }
                raidInfo.push(`**${monName}** ${monTypes} *(${move1}/${move2})*\n${gymName} (${translations.Ends} <t:${raids[r]['raid_end_timestamp']}:R>)\n\n`);
-               if (raidInfo.join('\n\n').length > eggs != '' ? 2900 : 3900) {
+               let raidStringLimit = eggs != '' ? 2900 : 3900;
+               if (raidInfo.join('\n\n').length > raidStringLimit) {
                   raidInfo.pop();
                   break;
                }
