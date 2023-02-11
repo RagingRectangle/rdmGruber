@@ -345,6 +345,7 @@ module.exports = {
          return;
       }
       console.log(`${interaction.user.username} requested ${rewardName} quests for ${geofenceName}`);
+      interaction.deleteReply().catch(console.error);
       if (questResults[0].length == 0 && questResults[1].length == 0) {
          let noneFoundEmbed = new EmbedBuilder().setTitle(`${rewardName} ${translations.Quests}:`).setThumbnail(rewardPic).setDescription(translations.noQuests ? translations.noQuests : 'No quests found!').setColor('Red').setFooter({
             text: `${geofenceName} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}`

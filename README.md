@@ -115,6 +115,7 @@ RaidBoardOptions:
 questBoardOptions:
 - **dmResponse:** Keep server channels clean by sending quest list directly to user.
 - **iconRepo:** UICON repo for quest images.
+- **questPercentage:** Include % of completed quests.
 - **roleRestriction:** If set to false then users with roles listed in the quest commandPermRoles config can request quests for all areas in *config/geofence.json*. If set to true then areas will be limited to only users with specific roles. 
 - **questRoles:** Limit areas according to roles. Role IDs with an array of usable geofence names.
 

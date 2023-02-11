@@ -343,7 +343,7 @@
       },
       "current_total_quests": {
          "label": "{{{questsEmoji}}} {{Quests}}",
-         "query": "SELECT COUNT(CASE WHEN quest_conditions IS NOT null THEN 1 END) AS ar, COUNT(CASE WHEN alternative_quest_conditions IS NOT null THEN 1 END) AS non_ar FROM pokestop WHERE ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon));"
+         "query": "SELECT COUNT(CASE WHEN quest_conditions IS NOT null THEN 1 END) AS ar, COUNT(CASE WHEN alternative_quest_conditions IS NOT null THEN 1 END) AS non_ar, COUNT(*) as total FROM pokestop WHERE ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon));"
       },
       "current_total_lures": {
          "label": "{{{luresEmoji}}} {{Lures}}",

@@ -77,6 +77,7 @@
     "questBoardOptions": {
         "dmResponse": false,
         "iconRepo": "https://raw.githubusercontent.com/nileplumb/PkmnHomeIcons/master/UICONS",
+        "questPercentage": false,
         "roleRestriction": false,
         "questRoles": {
             "<roleID1>": ["fence1", "fence2"],
