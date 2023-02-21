@@ -69,6 +69,7 @@ const Links = require('./functions/links.js');
 const Scripts = require('./functions/scripts.js');
 const Queries = require('./functions/queries.js');
 const Quests = require('./functions/quests.js');
+const Leaders = require('./functions/leaders.js');
 
 var roleMessages = [];
 roleConfig.forEach(role => {
@@ -142,6 +143,18 @@ client.on('ready', async () => {
 			}
 		}
 	} //End of Kecleon boards
+	//Create Leaderboard crons
+	if (boardConfig.leader) {
+		for (const [msgID, boardData] of Object.entries(boardConfig.leader)) {
+			try {
+				const boardJob = schedule.scheduleJob(msgID, boardData.updateInterval, function () {
+					Leaders.runLeaderboardCron(client, msgID)
+				});
+			} catch (err) {
+				console.log(err);
+			}
+		}
+	} //End of leaderboards
 	//Update available quests
 	if (config.discord.questCommand) {
 		Quests.updateQuests();
