@@ -215,7 +215,7 @@ module.exports = {
          } //End of a loop
          leaderEmbed.addFields({
             name: leaderArray[a]['option'],
-            value: leaderList.join('\n'),
+            value: leaderList.join('\n').replace('1:', '🥇').replace('2:', '🥈').replace('3:', '🥉'),
             inline: false
          });
       } //End of a loop
