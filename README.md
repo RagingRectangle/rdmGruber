@@ -25,6 +25,7 @@ Join the Discord server for any help and to keep up with updates: https://discor
 - Options to verify certain actions first
 - Limit commands to only certain roles
 - [dkmur's rdmStats](https://github.com/dkmur/rdmStats) integration
+- [naji's leaderboard](https://github.com/na-ji/leaderboard) integration
 
   
   
@@ -73,7 +74,8 @@ Discord:
 - **grepCommand:** Search uploaded file for string and return the lines where it's included (Slash command only).
 - **boardCommand:** Create current and historical stat boards (Slash command only).
 - **questCommand:** Get list of Pokestop with quest reward in an area (Slash command only).
-- **statsCommand:** Get list of Pokestop with quest reward in an area (Slash command only).
+- **statsCommand:** Create graphs from rdmStats (Slash command only).
+- **leadersCommand:** Create leaderboards for top users (Slash command only).
 
 PM2:
 - **ignore:** List of PM2 processes/modules to ignore if you don't want buttons for them.
@@ -127,6 +129,12 @@ rdmStats:
     - **opacity:** Graph infill amount between 0 and 1.
 - **graphDeleteSeconds:** How long to wait until graphs are deleted (Set to 0 to never delete).
 
+leaderboard:
+- [Install info](https://github.com/na-ji/leaderboard)
+- **database:** Basic leaderboard database info.
+- **dailyUserLimit:** How many users to display in daily boards.
+- **allTimeUserLimit:** How many users to display in all-time boards.
+- **excludedUsers:** List of any users to exclude from boards.
 
  
   
@@ -220,3 +228,6 @@ rdmStats:
 ![Mons Scanned](https://i.imgur.com/sJF2HV9.png)
 ![Stat Resets](https://i.imgur.com/pZ0roz1.png)
 ![Spawnpoints](https://i.imgur.com/Qk8OMni.png)
+
+###### naji leaderboard:
+![Despawn Left](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYmRhM2MxY2YyMmMyYmI4YTUyMjcyNjVlNmQ4NWI5YTRhM2U5Njc3OSZjdD1n/WK0g50VhpMVRtnYGls/giphy.gif)

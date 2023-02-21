@@ -16,6 +16,7 @@ var Devices = require('./devices.js');
 var Boards = require('./boards.js');
 var Quests = require('./quests.js');
 var Stats = require('./stats.js');
+var Leaders = require('./leaders.js');
 
 module.exports = {
    listInteraction: async function listInteraction(client, interaction, interactionID, userPerms) {
@@ -70,11 +71,25 @@ module.exports = {
       }
 
       //Worker stats
-      if (interactionID.startsWith('stats~worker~')){
-         let splitID = interactionID.replace('stats~worker~','').split('~');
+      if (interactionID.startsWith('stats~worker~')) {
+         let splitID = interactionID.replace('stats~worker~', '').split('~');
          let statType = interaction.values[0];
          await interaction.deferUpdate();
          Stats.UpdateWorkerStats(client, interaction.message, splitID[0], splitID[1], statType);
+      }
+
+      //Leaderboard
+      if (interactionID.startsWith('leaderboard~')) {
+         if (interactionID.startsWith('leaderboard~addOption')) {
+            let newOption = interaction.values[0];
+            if (newOption == 'finishLeaderboard') {
+               Leaders.addUpdateInterval(interaction);
+            } else {
+               Leaders.addBoardOption(interaction, newOption);
+            }
+         } else if (interactionID.startsWith('leaderboard~addInterval')) {
+            Leaders.verifyLeaderboard(interaction);
+         }
       }
    }, //End of listInteraction()
 
@@ -193,7 +208,16 @@ module.exports = {
          if (userPerms.includes('boards') || userPerms.includes('admin')) {
             module.exports.boardInteractions(client, interaction, interactionID, userPerms);
          }
-      } //End of board
+      } //End of boards
+
+      //Leaderboards
+      if (interactionID.startsWith('leaderboard~')) {
+         if (interactionID.startsWith('leaderboard~start')) {
+            Leaders.startLeaderboard(client, interaction);
+         } else if (interactionID.startsWith('leaderboard~cancel')) {
+            Leaders.cancelLeaderboard(interaction);
+         }
+      } //End of leaderboards
    }, //End of buttonInteraction()
 
 
@@ -203,7 +227,7 @@ module.exports = {
       //Cancel board
       if (splitID[0] === 'cancel') {
          interaction.update({
-            content: `Board cancelled, dismiss this anytime.`,
+            content: `Board cancelled, dismiss this anytime or it will automatically cancel later.`,
             embeds: [],
             components: [],
             ephemeral: true
@@ -263,27 +287,19 @@ module.exports = {
             Boards.addRaidArea(interaction, interaction.values[0]);
          } else if (splitID[1] === 'addTiers') {
             Boards.addRaidTiers(interaction, interaction.values);
-         }else if (splitID[1] === 'addEggs') {
+         } else if (splitID[1] === 'addEggs') {
             Boards.addRaidEggs(interaction, interaction.values[0]);
          } else if (splitID[1] === 'updateInterval') {
             Boards.addRaidUpdateInterval(interaction, interaction.values[0]);
          }
       } //End of raids
-
-
-
       //Kecleon board
-      else if (splitID[0] === 'kecleon'){
+      else if (splitID[0] === 'kecleon') {
          if (splitID[1] === 'restart') {
             Boards.startKecleonBoard(interaction);
-         }
-         else if (splitID[1] === 'updateInterval'){
+         } else if (splitID[1] === 'updateInterval') {
             Boards.addKecleonUpdateInterval(interaction, interaction.values[0]);
          }
       }
-
-
-
-
    } //End of boardInteractions()
 }

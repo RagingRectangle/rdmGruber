@@ -845,6 +845,7 @@ module.exports = {
       var historyBoards = oldBoards.history ? oldBoards.history : {};
       var raidBoards = oldBoards.raid ? oldBoards.raid : {};
       var kecleonBoards = oldBoards.kecleon ? oldBoards.kecleon : {};
+      var leaderBoards = oldBoards.leader ? oldBoards.leader : {};
       for (const [msgID, boardData] of Object.entries(oldBoards)) {
          if (boardData['type'] === 'current') {
             currentBoards[msgID] = boardData;
@@ -854,13 +855,16 @@ module.exports = {
             raidBoards[msgID] = boardData;
          } else if (boardData['type'] === 'kecleon') {
             kecleonBoards[msgID] = boardData;
+         } else if (boardData['type'] === 'leader') {
+            leaderBoards[msgID] = boardData;
          }
       }
       let newBoards = {
          "current": currentBoards,
          "history": historyBoards,
          "raid": raidBoards,
-         "kecleon": kecleonBoards
+         "kecleon": kecleonBoards,
+         "leader": leaderBoards
       }
       fs.writeFileSync('./config/boards.json', JSON.stringify(newBoards));
       return newBoards;

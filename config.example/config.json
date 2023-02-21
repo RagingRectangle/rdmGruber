@@ -18,7 +18,8 @@
         "grepCommand": "grep",
         "boardCommand": "board",
         "questCommand": "quests",
-        "statsCommand": "stats"
+        "statsCommand": "stats",
+        "leadersCommand": "leaders"
     },
     "pm2": {
         "ignore": [""],
@@ -103,5 +104,17 @@
             "opacity": 0.2
         },
         "graphDeleteSeconds": 0
+    },
+    "leaderboard": {
+        "database": {
+            "host": "65.109.92.130",
+            "port": 3306,
+            "user": "remote",
+            "password": "Milomilo1!",
+            "database": "leaderboard"
+        },
+        "dailyUserLimit": 3,
+        "allTimeUserLimit": 3,
+        "excludedUsers": []
     }
 }

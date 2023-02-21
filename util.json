@@ -254,6 +254,198 @@
                "value": "9"
             }
          ]
+      },
+      "leader": {
+         "pokemonOptions": [{
+               "label": "Pokemon Caught",
+               "value": "caught_pokemon"
+            },
+            {
+               "label": "Pikachu Caught",
+               "value": "pikachu_caught"
+            },
+            {
+               "label": "XL Magikarp",
+               "value": "xl_karps"
+            },
+            {
+               "label": "XS Rattata",
+               "value": "xs_rats"
+            },
+            {
+               "label": "Tiny Pokemon",
+               "value": "tiny_pokemon_caught"
+            },
+            {
+               "label": "Jumbo Pokemon",
+               "value": "jumbo_pokemon_caught"
+            },
+            {
+               "label": "Lure Catches",
+               "value": "caught_at_lure"
+            },
+            {
+               "label": "Berries Fed",
+               "value": "berries_fed"
+            }
+         ],
+         "pokestopOptions": [{
+               "label": "Stops Spun",
+               "value": "stops_spun"
+            },
+            {
+               "label": "Unique Stops",
+               "value": "unique_stops_spun"
+            },
+            {
+               "label": "Quests Completed",
+               "value": "quests"
+            },
+            {
+               "label": "Grunts Defeated",
+               "value": "grunts_defeated"
+            },
+            {
+               "label": "Giovanni Defeated",
+               "value": "giovanni_defeated"
+            }
+         ],
+         "gymRaidOptions": [{
+               "label": "Hours Defended",
+               "value": "hours_defended"
+            },
+            {
+               "label": "Normal Raids Won",
+               "value": "normal_raids_won"
+            },
+            {
+               "label": "Legendary Raids Won",
+               "value": "legendary_raids_won"
+            },
+            {
+               "label": "Unique Raid Bosses",
+               "value": "unique_raid_bosses"
+            },
+            {
+               "label": "Raids With Friends",
+               "value": "raids_with_friends"
+            },
+            {
+               "label": "Raid Achievements",
+               "value": "raid_achievements"
+            }
+         ],
+         "battleOptions": [{
+               "label": "Battles Won",
+               "value": "battles_won"
+            },
+            {
+               "label": "Gym Battles Won",
+               "value": "gym_battles_won"
+            },
+            {
+               "label": "Trainer Battles Won",
+               "value": "trainings_won"
+            },
+            {
+               "label": "Battle League Rank",
+               "value": "gbl_rank"
+            },
+            {
+               "label": "Battle League Rating",
+               "value": "gbl_rating"
+            },
+            {
+               "label": "Great League Wins",
+               "value": "league_great_won"
+            },
+            {
+               "label": "Ultra League Wins",
+               "value": "league_ultra_won"
+            },
+            {
+               "label": "Master League Wins",
+               "value": "league_master_won"
+            }
+         ],
+         "otherOptions": [{
+               "label": "XP Gained",
+               "value": "xp"
+            },
+            {
+               "label": "KM Walked",
+               "value": "km_walked"
+            },
+            {
+               "label": "Wayfarer Agreements",
+               "value": "wayfarer_agreements"
+            },
+            {
+               "label": "Photobombs",
+               "value": "photobombs"
+            },
+            {
+               "label": "Best Friends",
+               "value": "best_friends"
+            },
+            {
+               "label": "Best Buddies",
+               "value": "best_buddies"
+            },
+            {
+               "label": "Purified",
+               "value": "purified"
+            },
+            {
+               "label": "Evolved",
+               "value": "evolved"
+            },
+            {
+               "label": "Mega Evolved",
+               "value": "mega_evos"
+            },
+            {
+               "label": "Unique Megas",
+               "value": "unique_mega_evos"
+            },
+            {
+               "label": "Hatched",
+               "value": "hatched"
+            },
+            {
+               "label": "Trades",
+               "value": "trades"
+            },
+            {
+               "label": "Trade KM",
+               "value": "trade_km"
+            },
+            {
+               "label": "Finish Leaderboard",
+               "value": "finishLeaderboard"
+            }
+         ],
+         "updateIntervals": [{
+               "label": "Every 5 Minutes",
+               "value": "5"
+            },
+            {
+               "label": "Every 10 Minutes",
+               "value": "10"
+            },
+            {
+               "label": "Every 15 Minutes",
+               "value": "15"
+            },
+            {
+               "label": "Every 30 Minutes",
+               "value": "30"
+            },
+            {
+               "label": "Every 60 Minutes",
+               "value": "60"
+            }
+         ]
       }
    },
    "stats": {
@@ -432,6 +624,10 @@
          "workerLocations": "select datetime 'time', sum(loc_count) as 'locations' from stats_worker where drago_worker = '{{worker}}' and rpl = {{rpl}} group by 1 order by datetime desc limit {{rplLength}};",
          "workerSuccessRate": "select datetime 'time', 100*sum(loc_success)/sum(loc_count) as 'successRate' from stats_worker where drago_worker = '{{worker}}' and rpl = {{rpl}} group by 1 order by datetime desc limit {{rplLength}};",
          "workerLostScanning": "select datetime 'time', sum(rpl)*60 - sum(loc_time) as 'lostScanning' from stats_worker where drago_worker = '{{worker}}' and rpl = {{rpl}} group by 1 order by datetime desc limit {{rplLength}};"
+      },
+      "leaderboard": {
+         "dailyLeaders": "select a.name, a.{{option}} - b.{{option}} as value from {{golbatDB}}.player a, {{leaderboardDB}}.pogo_leaderboard_trainer_history b where a.name=b.name and b.date = curdate() - interval 1 day and b.rpl = 1440 and a.name not in ({{exludedUsers}}) order by a.{{option}} - b.{{option}} desc limit {{limit}};",
+         "allTimeLeaders": "select name, {{option}} as value from player where name not in ({{exludedUsers}}) order by {{option}} desc limit {{limit}};"
       }
    },
    "protos": {

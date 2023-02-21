@@ -18115,15 +18115,6 @@
             "baseDefense": 229,
             "baseStamina": 169
           },
-          "unreleased": true
-        },
-        {
-          "tempEvoId": 1,
-          "stats": {
-            "baseAttack": 326,
-            "baseDefense": 229,
-            "baseStamina": 169
-          },
           "firstEnergyCost": 200,
           "subsequentEnergyCost": 40
         }
@@ -18154,15 +18145,6 @@
       "thirdMoveStardust": 75000,
       "thirdMoveCandy": 75,
       "tempEvolutions": [
-        {
-          "tempEvoId": 1,
-          "stats": {
-            "baseAttack": 326,
-            "baseDefense": 229,
-            "baseStamina": 169
-          },
-          "unreleased": true
-        },
         {
           "tempEvoId": 1,
           "stats": {
@@ -23994,7 +23976,19 @@
         "baseStamina": 190
       },
       "thirdMoveStardust": 100000,
-      "thirdMoveCandy": 100
+      "thirdMoveCandy": 100,
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "stats": {
+            "baseAttack": 289,
+            "baseDefense": 297,
+            "baseStamina": 190
+          },
+          "firstEnergyCost": 300,
+          "subsequentEnergyCost": 60
+        }
+      ]
     },
     "381_0": {
       "name": "Latios",
@@ -24093,7 +24087,19 @@
         "baseStamina": 190
       },
       "thirdMoveStardust": 100000,
-      "thirdMoveCandy": 100
+      "thirdMoveCandy": 100,
+      "tempEvolutions": [
+        {
+          "tempEvoId": 1,
+          "stats": {
+            "baseAttack": 335,
+            "baseDefense": 241,
+            "baseStamina": 190
+          },
+          "firstEnergyCost": 300,
+          "subsequentEnergyCost": 60
+        }
+      ]
     },
     "382_0": {
       "name": "Kyogre",
@@ -24114,7 +24120,19 @@
         "baseStamina": 205
       },
       "thirdMoveStardust": 100000,
-      "thirdMoveCandy": 100
+      "thirdMoveCandy": 100,
+      "tempEvolutions": [
+        {
+          "tempEvoId": 4,
+          "stats": {
+            "baseAttack": 353,
+            "baseDefense": 268,
+            "baseStamina": 218
+          },
+          "firstEnergyCost": 400,
+          "subsequentEnergyCost": 80
+        }
+      ]
     },
     "382_1637": {
       "name": "Kyogre",
@@ -24156,7 +24174,29 @@
         "baseStamina": 205
       },
       "thirdMoveStardust": 100000,
-      "thirdMoveCandy": 100
+      "thirdMoveCandy": 100,
+      "tempEvolutions": [
+        {
+          "tempEvoId": 4,
+          "stats": {
+            "baseAttack": 353,
+            "baseDefense": 268,
+            "baseStamina": 218
+          },
+          "types": [
+            {
+              "id": 5,
+              "name": "Ground"
+            },
+            {
+              "id": 10,
+              "name": "Fire"
+            }
+          ],
+          "firstEnergyCost": 400,
+          "subsequentEnergyCost": 80
+        }
+      ]
     },
     "383_1640": {
       "name": "Groudon",
@@ -56490,6 +56530,7 @@
       "thirdReward": false,
       "encounters": {
         "first": [
+          103,
           147
         ],
         "second": [
@@ -56557,7 +56598,7 @@
       "gender": 2,
       "grunt": "Grunt",
       "firstReward": true,
-      "secondReward": false,
+      "secondReward": true,
       "thirdReward": false,
       "encounters": {
         "first": [

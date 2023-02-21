@@ -24,7 +24,7 @@ const Boards = require('./functions/boards.js');
 let boardConfig = require('./config/boards.json');
 const Stats = require('./functions/stats.js');
 //Update boards.json format
-if (!boardConfig.current || !boardConfig.history || !boardConfig.raid || !boardConfig.kecleon) {
+if (!boardConfig.current || !boardConfig.history || !boardConfig.raid || !boardConfig.kecleon || !boardConfig.leader) {
 	async function updateBoards() {
 		boardConfig = await Boards.updateBoardFormat(boardConfig);
 	}
@@ -131,7 +131,7 @@ client.on('ready', async () => {
 		}
 	} //End of history boards
 	//Create Kecleon board crons
-	if (boardConfig.kecleon){
+	if (boardConfig.kecleon) {
 		for (const [msgID, boardData] of Object.entries(boardConfig.kecleon)) {
 			try {
 				const boardJob = schedule.scheduleJob(msgID, boardData.updateInterval, function () {
