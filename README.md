@@ -106,6 +106,9 @@ Devices:
 rdmDB:
 - Enter your basic RDM database info. Make sure your user has access if the database is not local.
 
+golbatDB:
+- If you use Golbat you will also need to fill in this section. Currently only used for Leaderboards.
+
 RaidBoardOptions:
 - **mapLink:** Turn gym names into map hyperlinks (true/false).
 - **linkFormat:** Use custom links to point towards your own map. (Also for quests)

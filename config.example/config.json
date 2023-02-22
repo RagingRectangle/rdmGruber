@@ -67,6 +67,13 @@
         "password": "",
         "database": ""
     },
+    "golbatDB": {
+        "host": "",
+        "port": 3306,
+        "user": "",
+        "password": "",
+        "database": ""
+    },
     "raidBoardOptions": {
         "mapLink": true,
         "linkFormat": "http://maps.google.com/maps?q={{lat}},{{lon}}",

@@ -152,7 +152,7 @@ module.exports = {
 
    runLeaderboardCron: async function runLeaderboardCron(client, messageID) {
       runQuery = (query) => {
-         let connection = mysql.createConnection(config.rdmDB);
+         let connection = mysql.createConnection(config.golbatDB);
          return new Promise((resolve, reject) => {
             connection.query(query, (error, results) => {
                if (error) {
@@ -189,7 +189,7 @@ module.exports = {
       for (var i in boardData.options) {
          //Daily
          if (boardData.type == 'daily') {
-            let query = util.queries.leaderboard.dailyLeaders.replaceAll('{{option}}', boardData.options[i]).replace('{{golbatDB}}', config.rdmDB.database).replace('{{leaderboardDB}}', config.leaderboard.database.database).replace('{{exludedUsers}}', `'${config.leaderboard.excludedUsers.join("','")}'`).replace('{{limit}}', config.leaderboard.dailyUserLimit);
+            let query = util.queries.leaderboard.dailyLeaders.replaceAll('{{option}}', boardData.options[i]).replace('{{golbatDB}}', config.golbatDB.database).replace('{{leaderboardDB}}', config.leaderboard.database.database).replace('{{exludedUsers}}', `'${config.leaderboard.excludedUsers.join("','")}'`).replace('{{limit}}', config.leaderboard.dailyUserLimit);
             leaderArray.push({
                option: translations[boardData.options[i]] ? translations[boardData.options[i]] : boardData.options[i],
                results: await runQuery(query)

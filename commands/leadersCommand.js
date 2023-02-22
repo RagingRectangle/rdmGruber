@@ -30,6 +30,8 @@ module.exports = {
       if (userPerms.includes('admin')) {
          if (!config.leaderboard.database.host) {
             channel.send(`Leaderboard config not filled out.`).catch(console.error);
+         } else if (!config.golbatDB.host) {
+            channel.send(`Golbat config not filled out.`).catch(console.error);
          } else if (interaction.options.getSubcommand() === 'daily') {
             Leaders.createNewLeaderboard(interaction, 'daily', 'new');
          } else if (interaction.options.getSubcommand() === 'all_time') {
