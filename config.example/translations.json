@@ -114,5 +114,6 @@
     "trades": "Trades",
     "trade_km": "Trade KM",
     "dailyLeaderTitle": "Daily Leaders",
-    "allTimeLeaderTitle": "All-Time Leaders"
+    "allTimeLeaderTitle": "All-Time Leaders",
+    "totalLeaderTitle": "User Total Today"
 }

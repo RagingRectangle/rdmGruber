@@ -16,12 +16,16 @@ module.exports = {
       .setDescription('Create new leaderboard')
       .addSubcommand(subcommand =>
          subcommand
+         .setName('all_time')
+         .setDescription('Create all-time leaderboard'))
+      .addSubcommand(subcommand =>
+         subcommand
          .setName('daily')
          .setDescription('Create daily leaderboard'))
       .addSubcommand(subcommand =>
          subcommand
-         .setName('all_time')
-         .setDescription('Create all-time leaderboard')),
+         .setName('total')
+         .setDescription('Create total daily board')),
 
    async execute(client, interaction) {
       let channel = await client.channels.fetch(interaction.channelId).catch(console.error);
@@ -32,10 +36,12 @@ module.exports = {
             channel.send(`Leaderboard config not filled out.`).catch(console.error);
          } else if (!config.golbatDB.host) {
             channel.send(`Golbat config not filled out.`).catch(console.error);
-         } else if (interaction.options.getSubcommand() === 'daily') {
-            Leaders.createNewLeaderboard(interaction, 'daily', 'new');
          } else if (interaction.options.getSubcommand() === 'all_time') {
             Leaders.createNewLeaderboard(interaction, 'all_time', 'new');
+         } else if (interaction.options.getSubcommand() === 'daily') {
+            Leaders.createNewLeaderboard(interaction, 'daily', 'new');
+         } else if (interaction.options.getSubcommand() === 'total') {
+            Leaders.createNewLeaderboard(interaction, 'total', 'new');
          }
       } else {
          channel.send(`User *${interaction.user.username}* does not have required leaderboard perms.`).catch(console.error);

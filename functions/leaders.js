@@ -101,11 +101,15 @@ module.exports = {
    startLeaderboard: async function startLeaderboard(client, interaction) {
       var boardList = JSON.parse(fs.readFileSync('./config/boards.json'));
       let boardType = interaction.message.embeds[0]['fields'][0]['value'];
-      //Daily
-      var boardTitle = translations.dailyLeaderTitle ? translations.dailyLeaderTitle : 'Daily Leaders';
       //All-Time
-      if (boardType == 'all_time') {
-         boardTitle = translations.allTimeLeaderTitle ? translations.allTimeLeaderTitle : 'All-Time Leaders';
+      var boardTitle = translations.allTimeLeaderTitle ? translations.allTimeLeaderTitle : 'All-Time Leaders';
+      //Daily
+      if (boardType == 'daily') {
+         boardTitle = translations.dailyLeaderTitle ? translations.dailyLeaderTitle : 'Daily Leaders';
+      }
+      //Daily
+      else if (boardType == 'total') {
+         boardTitle = translations.totalLeaderTitle ? translations.totalLeaderTitle : 'Player Total Today';
       }
       let intervalMinutes = interaction.message.embeds[0]['fields'][2]['value'].replace(' Minutes', '');
       var boardData = {};
@@ -187,17 +191,25 @@ module.exports = {
       var leaderArray = [];
 
       for (var i in boardData.options) {
+         //All-Time
+         if (boardData.type == 'all_time') {
+            let query = util.queries.leaderboard.allTimeLeaders.replaceAll('{{option}}', boardData.options[i]).replace('{{exludedUsers}}', `'${config.leaderboard.excludedUsers.join("','")}'`).replace('{{limit}}', config.leaderboard.allTimeUserLimit);
+            leaderArray.push({
+               option: translations[boardData.options[i]] ? translations[boardData.options[i]] : boardData.options[i],
+               results: await runQuery(query)
+            });
+         }
          //Daily
-         if (boardData.type == 'daily') {
+         else if (boardData.type == 'daily') {
             let query = util.queries.leaderboard.dailyLeaders.replaceAll('{{option}}', boardData.options[i]).replace('{{golbatDB}}', config.golbatDB.database).replace('{{leaderboardDB}}', config.leaderboard.database.database).replace('{{exludedUsers}}', `'${config.leaderboard.excludedUsers.join("','")}'`).replace('{{limit}}', config.leaderboard.dailyUserLimit);
             leaderArray.push({
                option: translations[boardData.options[i]] ? translations[boardData.options[i]] : boardData.options[i],
                results: await runQuery(query)
             });
          }
-         //All-Time
-         else {
-            let query = util.queries.leaderboard.allTimeLeaders.replaceAll('{{option}}', boardData.options[i]).replace('{{exludedUsers}}', `'${config.leaderboard.excludedUsers.join("','")}'`).replace('{{limit}}', config.leaderboard.allTimeUserLimit);
+         //Total
+         else if (boardData.type == 'total') {
+            let query = util.queries.leaderboard.totalDaily.replaceAll('{{option}}', boardData.options[i]).replace('{{golbatDB}}', config.golbatDB.database).replace('{{leaderboardDB}}', config.leaderboard.database.database);
             leaderArray.push({
                option: translations[boardData.options[i]] ? translations[boardData.options[i]] : boardData.options[i],
                results: await runQuery(query)
@@ -209,15 +221,26 @@ module.exports = {
          text: footerText
       });
       for (var a in leaderArray) {
-         var leaderList = [];
-         for (r = 0; r < leaderArray[a]['results'].length; r++) {
-            leaderList.push(`${r + 1}: **${leaderArray[a]['results'][r]['name']}** (${leaderArray[a]['results'][r]['value'].toLocaleString()})`);
-         } //End of a loop
-         leaderEmbed.addFields({
-            name: leaderArray[a]['option'],
-            value: leaderList.join('\n').replace('1:', '🥇').replace('2:', '🥈').replace('3:', '🥉'),
-            inline: false
-         });
+         //Leader ranks
+         if (boardData.type == 'all_time' || boardData.type == 'daily') {
+            var leaderList = [];
+            for (r = 0; r < leaderArray[a]['results'].length; r++) {
+               leaderList.push(`${r + 1}: **${leaderArray[a]['results'][r]['name']}** (${Number(leaderArray[a]['results'][r]['value']).toLocaleString()})`);
+            } //End of a loop
+            leaderEmbed.addFields({
+               name: leaderArray[a]['option'],
+               value: leaderList.join('\n').replace('1:', '🥇').replace('2:', '🥈').replace('3:', '🥉'),
+               inline: false
+            });
+         }
+         //Totals
+         else if (boardData.type == 'total') {
+            leaderEmbed.addFields({
+               name: leaderArray[a]['option'],
+               value: Number(leaderArray[a]['results'][0]['value']).toLocaleString(),
+               inline: false
+            });
+         }
       } //End of a loop
       boardMessage.edit({
          content: ``,

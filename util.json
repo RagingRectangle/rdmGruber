@@ -626,8 +626,9 @@
          "workerLostScanning": "select datetime 'time', sum(rpl)*60 - sum(loc_time) as 'lostScanning' from stats_worker where drago_worker = '{{worker}}' and rpl = {{rpl}} group by 1 order by datetime desc limit {{rplLength}};"
       },
       "leaderboard": {
-         "dailyLeaders": "select a.name, a.{{option}} - b.{{option}} as value from {{golbatDB}}.player a, {{leaderboardDB}}.pogo_leaderboard_trainer_history b where a.name=b.name and b.date = curdate() - interval 1 day and b.rpl = 1440 and a.name not in ({{exludedUsers}}) order by a.{{option}} - b.{{option}} desc limit {{limit}};",
-         "allTimeLeaders": "select name, {{option}} as value from player where name not in ({{exludedUsers}}) order by {{option}} desc limit {{limit}};"
+         "allTimeLeaders": "select name, {{option}} as value from player where name not in ({{exludedUsers}}) order by {{option}} desc limit {{limit}};",
+         "dailyLeaders": "select a.name, a.{{option}} - b.{{option}} as value from {{golbatDB}}.player a, {{leaderboardDB}}.pogo_leaderboard_trainer_history b where a.name = b.name and b.date = curdate() - interval 1 day and b.rpl = 1440 and a.name not in ({{exludedUsers}}) order by a.{{option}} - b.{{option}} desc limit {{limit}};",
+         "totalDaily": "select sum(a.{{option}} - b.{{option}}) as value from {{golbatDB}}.player a, {{leaderboardDB}}.pogo_leaderboard_trainer_history b where a.name = b.name and b.date = curdate() - interval 1 day and b.rpl = 1440;"
       }
    },
    "protos": {
