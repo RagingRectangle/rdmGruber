@@ -19614,6 +19614,16 @@
             "baseStamina": 155
           },
           "unreleased": true
+        },
+        {
+          "tempEvoId": 1,
+          "stats": {
+            "baseAttack": 205,
+            "baseDefense": 179,
+            "baseStamina": 155
+          },
+          "firstEnergyCost": 100,
+          "subsequentEnergyCost": 20
         }
       ]
     },
@@ -19650,6 +19660,16 @@
             "baseStamina": 155
           },
           "unreleased": true
+        },
+        {
+          "tempEvoId": 1,
+          "stats": {
+            "baseAttack": 205,
+            "baseDefense": 179,
+            "baseStamina": 155
+          },
+          "firstEnergyCost": 100,
+          "subsequentEnergyCost": 20
         }
       ]
     },
@@ -56154,6 +56174,10 @@
     "380": {
       "name": "Boomburst",
       "type": "Normal"
+    },
+    "381": {
+      "name": "Double Iron Bash",
+      "type": "Steel"
     }
   },
   "questTypes": {

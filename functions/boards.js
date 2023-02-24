@@ -879,7 +879,7 @@ module.exports = {
                let boardChannel = await client.channels.cache.get(Boards[typeKey][boardID]['channelID']);
                try {
                   let boardMessage = await boardChannel.messages.fetch(boardID);
-                  boardDelete(boardChannel, boardMessage, Boards[typeKey][boardID]['type']);
+                  boardDelete(Boards, boardChannel, boardMessage, Boards[typeKey][boardID]['type']);
                } catch (err) {
                   console.log("Unable to fetch board message for board deletion:", err);
                }
@@ -889,7 +889,8 @@ module.exports = {
          }
       } //End of board loop
 
-      async function boardDelete(boardChannel, boardMessage, type) {
+      async function boardDelete(Boards, boardChannel, boardMessage, type) {
+         type = type.replace('all_time', 'leader').replace('daily', 'leader').replace('total', 'leader');
          console.log(`${interaction.user.username} deleted ${type} board ${boardID}`);
          //Delete cron
          try {
@@ -898,14 +899,14 @@ module.exports = {
          } catch (err) {
             console.log(`Failed to remove cron job for board ${boardMessage.id}: ${err}`);
          }
-         //Delete message
-         setTimeout(() => boardMessage.delete().catch(err => console.log(`Error deleting board message:`, err)), (1));
          //Delete from boards.json
          try {
             delete Boards[type][boardID];
             fs.writeFileSync('./config/boards.json', JSON.stringify(Boards));
+            //Delete message
+            setTimeout(() => boardMessage.delete().catch(err => console.log(`Error deleting board message:`, err)), (1));
             await interaction.reply({
-               content: `${type.replace('raid','Raid').replace('history','History').replace('current','Current').replace('kecleon',locale.Kecleon)} board \`${boardID}\` deleted`,
+               content: `${type.replace('raid','Raid').replace('history','History').replace('current','Current').replace('kecleon',locale.Kecleon).replace('leader','Leader')} board \`${boardID}\` deleted`,
                ephemeral: true
             }).catch(console.error);
          } catch (err) {

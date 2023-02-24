@@ -365,7 +365,7 @@ client.on('interactionCreate', async interaction => {
 	if (interaction.options._subcommand == 'delete') {
 		let Boards = require('./config/boards.json');
 		let focusedValue = interaction.options.getFocused();
-		let boardList = Object.keys(Boards.raid).concat(Object.keys(Boards.current), Object.keys(Boards.history), Object.keys(Boards.kecleon));
+		let boardList = Object.keys(Boards.raid).concat(Object.keys(Boards.current), Object.keys(Boards.history), Object.keys(Boards.kecleon), Object.keys(Boards.leader));
 		let filteredList = boardList.filter(choice => choice.includes(focusedValue)).slice(0, 25);
 		await interaction.respond(
 			filteredList.map(choice => ({
