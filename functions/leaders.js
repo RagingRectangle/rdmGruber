@@ -34,7 +34,12 @@ module.exports = {
       //Battle Options
       leaderOptions.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Battle Options').setCustomId(`${config.serverName}~leaderboard~addOption~addBattle`).addOptions(util.boards.leader.battleOptions)));
       //Other Options
-      leaderOptions.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Other Options').setCustomId(`${config.serverName}~leaderboard~addOption~addOther`).addOptions(util.boards.leader.otherOptions)));
+      var leaderOptionList = util.boards.leader.otherOptions;
+      if (type == 'total') {
+         leaderOptionList.pop();
+         leaderOptionList = leaderOptionList.concat(util.boards.leader.otherTotalOptions);
+      }
+      leaderOptions.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Other Options').setCustomId(`${config.serverName}~leaderboard~addOption~addOther`).addOptions(leaderOptionList)));
       await interaction.reply({
          content: `- Select options in the order you want them to appear.\n- Select 'Finish Leaderboard' in Other Options menu when done.`,
          embeds: [leaderEmbed],
@@ -209,7 +214,15 @@ module.exports = {
          }
          //Total
          else if (boardData.type == 'total') {
-            let query = util.queries.leaderboard.totalDaily.replaceAll('{{option}}', boardData.options[i]).replace('{{golbatDB}}', config.golbatDB.database).replace('{{leaderboardDB}}', config.leaderboard.database.database);
+            var query;
+            //Special player count queries
+            if (boardData.options[i] == 'playersIncluded' || boardData.options[i] == 'newPlayersToday') {
+               query = util.queries.leaderboard[boardData.options[i]].replaceAll('{{option}}', boardData.options[i]).replace('{{golbatDB}}', config.golbatDB.database).replace('{{leaderboardDB}}', config.leaderboard.database.database);
+            }
+            //Normal queries
+            else {
+               query = util.queries.leaderboard.totalDaily.replaceAll('{{option}}', boardData.options[i]).replace('{{golbatDB}}', config.golbatDB.database).replace('{{leaderboardDB}}', config.leaderboard.database.database);
+            }
             leaderArray.push({
                option: translations[boardData.options[i]] ? translations[boardData.options[i]] : boardData.options[i],
                results: await runQuery(query)
