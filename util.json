@@ -645,7 +645,7 @@
          "dailyLeaders": "select a.name, a.{{option}} - b.{{option}} as value from {{golbatDB}}.player a, {{leaderboardDB}}.pogo_leaderboard_trainer_history b where a.name = b.name and b.date = curdate() - interval 1 day and b.rpl = 1440 and a.name not in ({{exludedUsers}}) order by a.{{option}} - b.{{option}} desc limit {{limit}};",
          "totalDaily": "select sum(a.{{option}} - b.{{option}}) as value from {{golbatDB}}.player a, {{leaderboardDB}}.pogo_leaderboard_trainer_history b where a.name = b.name and b.date = curdate() - interval 1 day and b.rpl = 1440;",
          "playersIncluded": "select count(a.friendship_id) as value from {{golbatDB}}.player a, {{leaderboardDB}}.pogo_leaderboard_trainer_history b where a.name=b.name and b.date = curdate() - interval 1 day and b.rpl = 1440;",
-         "newPlayersToday": "select count(a.friendship_id) as value from {{golbatDB}}.player a where a.friendship_id and a.name not in (select b.name from {{leaderboardDB}}.pogo_leaderboard_trainer_history b where b.date = curdate() - interval 1 day and b.rpl = 1440);"
+         "newPlayersToday": "select count(a.friendship_id) as value from {{golbatDB}}.player a where a.name not in (select b.name from {{leaderboardDB}}.pogo_leaderboard_trainer_history b where b.date = curdate() - interval 1 day and b.rpl = 1440);"
       }
    },
    "protos": {
