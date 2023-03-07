@@ -558,7 +558,7 @@
       },
       "current_lure_types": {
          "label": "{{{luresEmoji}}} {{Lures}}",
-         "query": "SELECT `normal`, `glacial`, `mossy`, `magnetic`, `rainy` FROM (SELECT COUNT(CASE WHEN lure_id = 501 THEN 1 END) AS `normal`, COUNT(CASE WHEN lure_id = 502 THEN 1 END) AS `glacial`, COUNT(CASE WHEN lure_id = 503 THEN 1 END) AS `mossy`, COUNT(CASE WHEN lure_id = 504 THEN 1 END) AS `magnetic`, COUNT(CASE WHEN lure_id = 505 THEN 1 END) AS `rainy` , COUNT(CASE WHEN lure_id = 506 THEN 1 END) AS `sparkly` FROM pokestop WHERE UNIX_TIMESTAMP() < lure_expire_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon)))AS latte;"
+         "query": "SELECT `normal`, `glacial`, `mossy`, `magnetic`, `rainy`, `sparkly` FROM (SELECT COUNT(CASE WHEN lure_id = 501 THEN 1 END) AS `normal`, COUNT(CASE WHEN lure_id = 502 THEN 1 END) AS `glacial`, COUNT(CASE WHEN lure_id = 503 THEN 1 END) AS `mossy`, COUNT(CASE WHEN lure_id = 504 THEN 1 END) AS `magnetic`, COUNT(CASE WHEN lure_id = 505 THEN 1 END) AS `rainy` , COUNT(CASE WHEN lure_id = 506 THEN 1 END) AS `sparkly` FROM pokestop WHERE UNIX_TIMESTAMP() < lure_expire_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokestop.lat, pokestop.lon)))AS latte;"
       },
       "current_total_kecleon": {
          "label": "{{{kecleonEmoji}}} {{Kecleon}}",
