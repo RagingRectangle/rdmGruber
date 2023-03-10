@@ -303,10 +303,12 @@ module.exports = {
                      let queryResult = await runQuery(query);
                      let translationTemplate = Handlebars.compile(util.queries[boardData.pokemonOptions[i]]['label']);
                      let labelText = translationTemplate(translations);
-                     let resultValue = Number(Object.values(queryResult[0])).toFixed(2).replace(/[.,]00$/, "");
-                     boardDescription.push(`${labelText}: **${resultValue ? resultValue : 0}**`);
+                     var resultValue = Number(Object.values(queryResult[0])).toFixed(0);
+                     if (boardData.pokemonOptions[i] == 'current_avg_iv') {
+                        resultValue = Number(Object.values(queryResult[0])).toFixed(2);
+                     }
+                     boardDescription.push(`${labelText}: **${Number(resultValue).toLocaleString()}**`);
                   } //End of i loop
-                  boardDescription.push(' ');
                }
             } //End of pokemonOptions
             //Gym Options
@@ -320,7 +322,8 @@ module.exports = {
                      if (boardData.gymOptions[i] === 'current_total_gyms' || boardData.gymOptions[i] === 'current_battling' || boardData.gymOptions[i] === 'current_total_raids' || boardData.gymOptions[i] === 'current_total_eggs') {
                         let translationTemplate = Handlebars.compile(util.queries[boardData.gymOptions[i]]['label']);
                         let labelText = translationTemplate(translations);
-                        boardDescription.push(`${labelText}: **${Object.values(queryResult[0]) ? Object.values(queryResult[0]) : 0}**`);
+                        let resultValue = Number(Object.values(queryResult[0])).toFixed(0);
+                        boardDescription.push(`${labelText}: **${Number(resultValue).toLocaleString()}**`);
                      }
                      //Multi result queries
                      else if (boardData.gymOptions[i] === 'current_gym_teams') {
@@ -362,16 +365,18 @@ module.exports = {
                      let queryResult = await runQuery(query);
                      //Single result queries
                      if (boardData.pokestopOptions[i] === 'current_total_pokestops' || boardData.pokestopOptions[i] === 'current_total_kecleon' || boardData.pokestopOptions[i] === 'current_total_grunts' || boardData.pokestopOptions[i] === 'current_total_leaders') {
-                        boardDescription.push(`${labelText}: **${Object.values(queryResult[0]) ? Object.values(queryResult[0]) : 0}**`);
+                        let resultValue = Number(Object.values(queryResult[0])).toFixed(0);
+                        boardDescription.push(`${labelText}: **${Number(resultValue).toLocaleString()}**`);
                      }
                      //Multi result queries
                      else if (boardData.pokestopOptions[i] === 'current_total_quests') {
-                        var arText = `${labelText} ${translations.AR}: **${(queryResult[0][`ar`])}**${config.questBoardOptions.questPercentage == true ? ` (${(queryResult[0][`ar`] / queryResult[0][`total`] * 100).toFixed(0)}%)` : ``}`;
-                        var nonARtext = `${labelText} ${translations.nonAR}: **${(queryResult[0][`non_ar`])}**${config.questBoardOptions.questPercentage == true ?  ` (${(queryResult[0][`non_ar`] / queryResult[0][`total`] * 100).toFixed(0)}%)` : ``}`;
+                        var arText = `${labelText} ${translations.AR}: **${Number(queryResult[0][`ar`]).toLocaleString()}**${config.questBoardOptions.questPercentage == true ? ` (${(queryResult[0][`ar`] / queryResult[0][`total`] * 100).toFixed(0)}%)` : ``}`;
+                        var nonARtext = `${labelText} ${translations.nonAR}: **${Number(queryResult[0][`non_ar`]).toLocaleString()}**${config.questBoardOptions.questPercentage == true ?  ` (${(queryResult[0][`non_ar`] / queryResult[0][`total`] * 100).toFixed(0)}%)` : ``}`;
                         boardDescription.push(arText);
                         boardDescription.push(nonARtext);
                      } else if (boardData.pokestopOptions[i] === 'current_total_lures') {
-                        boardDescription.push(`${labelText}: **${Object.values(queryResult[0]) ? Object.values(queryResult[0]) : 0}**`);
+                        let resultValue = Number(Object.values(queryResult[0])).toFixed(0);
+                        boardDescription.push(`${labelText}: **${Number(resultValue).toLocaleString()}**`);
                      } else if (boardData.pokestopOptions[i] === 'current_lure_types') {
                         if (queryResult[0][`normal`] != 0) {
                            boardTable.cell(translations.Normal, queryResult[0][`normal`] ? queryResult[0][`normal`] : 0);
@@ -412,7 +417,7 @@ module.exports = {
             let geoSplit = boardData.geofence.split(',');
             let geoStart = geoSplit[0].split(' ');
             let tzName = find(geoStart[0].replace('(', ''), geoStart[1]);
-            footerText = boardData.area == '~everywhere~' ? `${boardInfo.area.replaceAll('~','').replaceAll('\n\n\n','\n\n')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}` : `${boardInfo.area} ~ ${moment().tz(tzName[0]).format(footerFormat)}`;
+            footerText = boardData.area == '~everywhere~' ? `${boardInfo.area.replaceAll('~','')} ~ ${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}` : `${boardInfo.area} ~ ${moment().tz(tzName[0]).format(footerFormat)}`;
          } //End of current loop
       } //End of current boards
 
@@ -435,8 +440,8 @@ module.exports = {
                let queryResult = await runQuery(query);
                let translationTemplate = Handlebars.compile(util.queries[boardData.historyOptions[i]]['label']);
                let labelText = translationTemplate(translations);
-               let resultValue = Number(Object.values(queryResult[0])).toLocaleString();
-               boardDescription.push(`${labelText}: **${resultValue}**\n`);
+               let resultValue = Number(Object.values(queryResult[0])).toFixed(0);
+               boardDescription.push(`${labelText}: **${Number(resultValue).toLocaleString()}**`);
             } //End of i loop
             boardDescription.push(' ');
             footerText = `${moment().add(config.timezoneOffsetHours, 'hours').format(footerFormat)}`;
