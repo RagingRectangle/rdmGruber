@@ -123,5 +123,9 @@
         "dailyUserLimit": 3,
         "allTimeUserLimit": 3,
         "excludedUsers": []
+    },
+    "kojiOptions": {
+        "url": "http://{koji_url}/api/v1/geofence/feature-collection/{rdmgruber_project}",
+        "bearerToken": "your_koji_secret"
     }
 }

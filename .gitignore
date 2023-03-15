@@ -4,3 +4,5 @@ config/
 quests.json
 stats.json
 Server_Info.json
+masterfile.json
+locale/*.json

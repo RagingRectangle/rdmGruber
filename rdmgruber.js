@@ -14,11 +14,13 @@ const {
 	InteractionType,
 	ChannelType,
 } = require('discord.js');
+
 const client = new Client({
 	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildEmojisAndStickers, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildScheduledEvents, GatewayIntentBits.DirectMessages],
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction],
 });
 const fs = require('fs');
+const fetch = require('node-fetch');
 const config = require('./config/config.json');
 const Boards = require('./functions/boards.js');
 let boardConfig = require('./config/boards.json');
@@ -38,15 +40,6 @@ try {
 } catch (err) {
 	console.log(`Error creating copy of translations.json config: ${err}`);
 }
-//Update masterfile
-const request = require('request');
-request('https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/master-latest-poracle.json', (error, response, html) => {
-	if (!error && response.statusCode == 200) {
-		fs.writeFileSync('./masterfile.json', html);
-	} else {
-		console.log(`Error updating masterfile.json: ${error}`);
-	}
-});
 //Update stat areas
 if (config.rdmStats.database.host) {
 	if (!fs.existsSync('./stats.json')) {
@@ -77,15 +70,52 @@ roleConfig.forEach(role => {
 		roleMessages.push(role.messageID);
 	}
 });
-var locale = require('./locale/en.json');
-if (config.raidBoardOptions.language) {
-	locale = require(`./locale/${config.raidBoardOptions.language}.json`);
-}
+
 
 client.on('ready', async () => {
 	console.log("rdmGruber Bot Logged In");
+	//Get Koji Fence
+	if (config.kojiOptions?.url && config.kojiOptions?.bearerToken) {
+		await fetch(config.kojiOptions.url, {
+			headers: { 
+				"Authorization": `Bearer ${config.kojiOptions.bearerToken}`,
+				"Content-Type": "application/json"
+			 },
+			 rejectUnauthorized: false
+		})
+			.then((response) => response.json())
+			.then((json) => fs.writeFileSync(`./config/geofence.json`, JSON.stringify(json.data, null, 2)))
+			.catch((e) => console.log(`Error fetching koji fence: ${e}`))
+	}
+	//Update masterfile
+	await fetch('https://raw.githubusercontent.com/WatWowMap/Masterfile-Generator/master/master-latest-poracle.json')
+		.then(response => response.json())
+		.then(data => fs.writeFileSync('./masterfile.json', JSON.stringify(data, null, 2)))
+		.catch((e) => console.log(`Error fetching masterfile: ${e}`));
+	//Get translations index
+	const translations = await fetch('https://raw.githubusercontent.com/WatWowMap/pogo-translations/master/index.json')
+		.then((response) => response.json())
+		.catch((e) => {
+			console.log(`Error fetching translations: ${e}`)
+			return []
+		})
+	//Get translations
+	await Promise.all(translations.map((locale) => 
+		fetch(`https://raw.githubusercontent.com/WatWowMap/pogo-translations/master/static/enRefMerged/${locale}`)
+			.then((response) => response.json())
+			.then((json) => fs.writeFileSync(`./locale/${locale}`, JSON.stringify(json, null, 2)))
+			.catch((e) => console.log(`Error fetching translations for ${locale}: ${e}`))
+	))
+
+	Boards.setLocale();
+	Boards.setGeoConfig();
+	Leaders.setLocale();
+	Quests.setLocale();
+	Quests.setMasterfile();
+
 	//Generate server info
 	await GenerateServerInfo.generate();
+
 	//Register Slash Commands
 	if (config.discord.useSlashCommands === true && config.discord.slashGuildIDs.length > 0) {
 		SlashRegistry.registerCommands(client);

@@ -10,18 +10,23 @@ var {
 var moment = require('moment-timezone');
 var mysql = require('mysql2');
 var config = require('../config/config.json');
-var master = require('../masterfile.json');
 var util = require('../util.json');
 var Boards = require('./boards.js');
 var Roles = require('./roles.js');
 var translations = require('../config/translations.json');
 var serverInfo = require('../Server_Info.json');
-var locale = require('../locale/en.json');
-if (config.raidBoardOptions.language) {
-   locale = require(`../locale/${config.raidBoardOptions.language}.json`);
-}
+var locale = {};
+var master = {};
 
 module.exports = {
+   setLocale() {
+      locale = require(`../locale/${config.raidBoardOptions.language || 'en'}.json`);
+      console.log('[Quests] Set Locale to: ' + config.raidBoardOptions.language);
+   },
+   setMasterfile() {
+      master = require('../masterfile.json');
+      console.log('[Quests] Updated masterfile');
+   },
    updateQuests: async function updateQuests() {
       let dayStart = moment().startOf('day').format('X');
       let dayEnd = moment().endOf('day').format('X');

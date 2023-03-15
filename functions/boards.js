@@ -15,15 +15,20 @@ var schedule = require('node-schedule');
 var Handlebars = require("handlebars");
 var Table = require('easy-table');
 var config = require('../config/config.json');
-var geoConfig = require('../config/geofence.json');
 var util = require('../util.json');
 var translations = require('../config/translations.json');
-var locale = require('../locale/en.json');
-if (config.raidBoardOptions.language) {
-   locale = require(`../locale/${config.raidBoardOptions.language}.json`);
-}
+var locale = {};
+var geoConfig = {};
 
 module.exports = {
+   setLocale() {
+      locale = require(`../locale/${config.raidBoardOptions.language || 'en'}.json`);
+      console.log('[Boards] Set Locale to: ' + config.raidBoardOptions.language);
+   },
+   setGeoConfig() {
+      geoConfig = require('../config/geofence.json');
+      console.log('[Boards] Set GeoConfig');
+   },
    beginCurrentBoard: async function beginCurrentBoard(interaction) {
       var newEmbed = new EmbedBuilder().setTitle(`Creating Current Stat Board:`).addFields({
          name: 'Board Type:',
