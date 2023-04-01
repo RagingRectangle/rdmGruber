@@ -6,7 +6,7 @@ const {
 	Collection,
 	Permissions,
 	ActionRowBuilder,
-	SelectMenuBuilder,
+	StringSelectMenuBuilder,
 	MessageButton,
 	EmbedBuilder,
 	ButtonBuilder,

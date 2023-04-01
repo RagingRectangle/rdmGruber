@@ -1,6 +1,6 @@
 const {
    ActionRowBuilder,
-   SelectMenuBuilder,
+   StringSelectMenuBuilder,
    EmbedBuilder
 } = require('discord.js');
 var fs = require('fs');
@@ -242,7 +242,7 @@ module.exports = {
          for (var i = 0; i < 25 && pokeCount < questList.pokemon.length; i++, pokeCount++) {
             listOptions.push(questList['pokemon'][pokeCount]);
          } //End of i loop
-         componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~quests~reward~${areaName}~p${p}`).setPlaceholder(translations['Pokemon']).addOptions(listOptions)));
+         componentList.push(new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(`${config.serverName}~quests~reward~${areaName}~p${p}`).setPlaceholder(translations['Pokemon']).addOptions(listOptions)));
       } //End of p loop
 
       //Items
@@ -253,7 +253,7 @@ module.exports = {
          for (var i = 0; i < 25 && itemCount < questList.items.length; i++, itemCount++) {
             listOptions.push(questList['items'][itemCount]);
          } //End of i loop
-         componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~quests~reward~${areaName}~i${n}`).setPlaceholder(locale['Item'] ? locale['Item'] : 'Item').addOptions(listOptions)));
+         componentList.push(new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(`${config.serverName}~quests~reward~${areaName}~i${n}`).setPlaceholder(locale['Item'] ? locale['Item'] : 'Item').addOptions(listOptions)));
       } //End of n loop
 
       //Other
@@ -265,7 +265,7 @@ module.exports = {
          for (var i = 0; i < 25 && otherCount < otherQuests.length; i++, otherCount++) {
             listOptions.push(otherQuests[otherCount]);
          } //End of i loop
-         componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~quests~reward~${areaName}~o${o}`).setPlaceholder(translations['Other'] ? translations['Other'] : 'Other').addOptions(listOptions)));
+         componentList.push(new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(`${config.serverName}~quests~reward~${areaName}~o${o}`).setPlaceholder(translations['Other'] ? translations['Other'] : 'Other').addOptions(listOptions)));
       } //End of o loop
       await interaction.editReply({
          components: componentList

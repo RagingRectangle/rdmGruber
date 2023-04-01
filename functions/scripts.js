@@ -1,6 +1,6 @@
 var {
    ActionRowBuilder,
-   SelectMenuBuilder,
+   StringSelectMenuBuilder,
    EmbedBuilder,
    ButtonBuilder,
    ButtonStyle
@@ -31,7 +31,7 @@ module.exports = {
       });
       let fullList = new ActionRowBuilder()
          .addComponents(
-            new SelectMenuBuilder()
+            new StringSelectMenuBuilder()
             .setCustomId(`${config.serverName}~scriptList`)
             .setPlaceholder('List of Scripts')
             .addOptions(selectList))
@@ -113,7 +113,7 @@ module.exports = {
             } //End of v loop
             let fullList = new ActionRowBuilder()
                .addComponents(
-                  new SelectMenuBuilder()
+                  new StringSelectMenuBuilder()
                   .setCustomId(`${config.serverName}~runScript${n}`)
                   .setPlaceholder(`${varDescription}`)
                   .addOptions(currentList))
@@ -184,7 +184,7 @@ module.exports = {
                   } //End of v loop
                   let fullList = new ActionRowBuilder()
                      .addComponents(
-                        new SelectMenuBuilder()
+                        new StringSelectMenuBuilder()
                         .setCustomId(`${config.serverName}~runScript_var${varCounter}`)
                         .setPlaceholder(`${varDescription}`)
                         .addOptions(currentList))

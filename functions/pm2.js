@@ -1,6 +1,6 @@
 var {
    ActionRowBuilder,
-   SelectMenuBuilder,
+   StringSelectMenuBuilder,
    EmbedBuilder,
    ButtonBuilder,
    ButtonStyle

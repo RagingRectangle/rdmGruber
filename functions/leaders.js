@@ -1,6 +1,6 @@
 var {
    ActionRowBuilder,
-   SelectMenuBuilder,
+   StringSelectMenuBuilder,
    EmbedBuilder,
    ButtonBuilder,
    ButtonStyle
@@ -27,20 +27,20 @@ module.exports = {
       });
       var leaderOptions = [];
       //Pokemon Options
-      leaderOptions.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Pokemon Options').setCustomId(`${config.serverName}~leaderboard~addOption~addPokemon`).addOptions(util.boards.leader.pokemonOptions)));
+      leaderOptions.push(new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setPlaceholder('Select Pokemon Options').setCustomId(`${config.serverName}~leaderboard~addOption~addPokemon`).addOptions(util.boards.leader.pokemonOptions)));
       //Pokestop Options
-      leaderOptions.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Pokestop Options').setCustomId(`${config.serverName}~leaderboard~addOption~addPokestop`).addOptions(util.boards.leader.pokestopOptions)));
+      leaderOptions.push(new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setPlaceholder('Select Pokestop Options').setCustomId(`${config.serverName}~leaderboard~addOption~addPokestop`).addOptions(util.boards.leader.pokestopOptions)));
       //Gym/Raid Options
-      leaderOptions.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Gym/Raid Options').setCustomId(`${config.serverName}~leaderboard~addOption~addGymRaid`).addOptions(util.boards.leader.gymRaidOptions)));
+      leaderOptions.push(new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setPlaceholder('Select Gym/Raid Options').setCustomId(`${config.serverName}~leaderboard~addOption~addGymRaid`).addOptions(util.boards.leader.gymRaidOptions)));
       //Battle Options
-      leaderOptions.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Battle Options').setCustomId(`${config.serverName}~leaderboard~addOption~addBattle`).addOptions(util.boards.leader.battleOptions)));
+      leaderOptions.push(new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setPlaceholder('Select Battle Options').setCustomId(`${config.serverName}~leaderboard~addOption~addBattle`).addOptions(util.boards.leader.battleOptions)));
       //Other Options
       var leaderOptionList = util.boards.leader.otherOptions;
       if (type == 'total') {
          leaderOptionList.pop();
          leaderOptionList = leaderOptionList.concat(util.boards.leader.otherTotalOptions);
       }
-      leaderOptions.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Other Options').setCustomId(`${config.serverName}~leaderboard~addOption~addOther`).addOptions(leaderOptionList)));
+      leaderOptions.push(new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setPlaceholder('Select Other Options').setCustomId(`${config.serverName}~leaderboard~addOption~addOther`).addOptions(leaderOptionList)));
       await interaction.reply({
          content: `- Select options in the order you want them to appear.\n- Select 'Finish Leaderboard' in Other Options menu when done.`,
          embeds: [leaderEmbed],
@@ -82,7 +82,7 @@ module.exports = {
       }
       await interaction.update({
          content: ``,
-         components: [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Update Interval').setCustomId(`${config.serverName}~leaderboard~addInterval`).addOptions(util.boards.leader.updateIntervals))],
+         components: [new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setPlaceholder('Select Update Interval').setCustomId(`${config.serverName}~leaderboard~addInterval`).addOptions(util.boards.leader.updateIntervals))],
          ephemeral: true
       }).catch(console.error);
    }, //End of addUpdateInterval()

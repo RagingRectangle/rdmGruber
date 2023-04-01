@@ -1,6 +1,6 @@
 var {
    ActionRowBuilder,
-   SelectMenuBuilder,
+   StringSelectMenuBuilder,
    EmbedBuilder
 } = require('discord.js');
 var fs = require('fs');
@@ -20,7 +20,7 @@ module.exports = {
       });
       let fullQueryList = new ActionRowBuilder()
          .addComponents(
-            new SelectMenuBuilder()
+            new StringSelectMenuBuilder()
             .setCustomId(`${config.serverName}~queryList`)
             .setPlaceholder('Custom query list')
             .setMinValues(1)

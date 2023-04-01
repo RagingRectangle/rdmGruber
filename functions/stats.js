@@ -1,7 +1,7 @@
 var {
    ActionRowBuilder,
    EmbedBuilder,
-   SelectMenuBuilder
+   StringSelectMenuBuilder
 } = require('discord.js');
 var fs = require('fs');
 var moment = require('moment');
@@ -141,7 +141,7 @@ module.exports = {
                listOptions.push(util.stats.workerStats[i]);
             }
          } //End of i loop
-         componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~stats~worker~${workerName}~${statDuration}`).setPlaceholder('Worker Stat Type').addOptions(listOptions)));
+         componentList.push(new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(`${config.serverName}~stats~worker~${workerName}~${statDuration}`).setPlaceholder('Worker Stat Type').addOptions(listOptions)));
          await message.edit({
                content: ``,
                embeds: [new EmbedBuilder().setTitle(title).setImage(url)],

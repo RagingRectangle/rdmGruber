@@ -1,6 +1,6 @@
 var {
    ActionRowBuilder,
-   SelectMenuBuilder,
+   StringSelectMenuBuilder,
    EmbedBuilder,
    ButtonBuilder,
    ButtonStyle
@@ -45,7 +45,7 @@ module.exports = {
       var newComponents = [];
       //Current - add Pokemon options
       if (boardType === 'current') {
-         newComponents = [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Pokemon Options').setCustomId(`${config.serverName}~board~${boardType}~addPokemon`).addOptions(util.boards.current.pokemonOptions).setMaxValues(util.boards.current.pokemonOptions.length))]
+         newComponents = [new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setPlaceholder('Select Pokemon Options').setCustomId(`${config.serverName}~board~${boardType}~addPokemon`).addOptions(util.boards.current.pokemonOptions).setMaxValues(util.boards.current.pokemonOptions.length))]
       }
       await interaction.reply({
          embeds: [oldEmbed],
@@ -65,7 +65,7 @@ module.exports = {
       var newComponents = [];
       //Current - add Gym options
       if (boardType === 'current') {
-         newComponents = [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Gym Options').setCustomId(`${config.serverName}~board~${boardType}~addGyms`).addOptions(util.boards.current.gymOptions).setMaxValues(util.boards.current.gymOptions.length))]
+         newComponents = [new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setPlaceholder('Select Gym Options').setCustomId(`${config.serverName}~board~${boardType}~addGyms`).addOptions(util.boards.current.gymOptions).setMaxValues(util.boards.current.gymOptions.length))]
       }
       await interaction.update({
          embeds: [newEmbed],
@@ -85,7 +85,7 @@ module.exports = {
       var newComponents = [];
       //Current - add Pokestop options
       if (boardType === 'current') {
-         newComponents = [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Pokestop Options').setCustomId(`${config.serverName}~board~${boardType}~addPokestops`).addOptions(util.boards.current.pokestopOptions).setMaxValues(util.boards.current.pokestopOptions.length))]
+         newComponents = [new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setPlaceholder('Select Pokestop Options').setCustomId(`${config.serverName}~board~${boardType}~addPokestops`).addOptions(util.boards.current.pokestopOptions).setMaxValues(util.boards.current.pokestopOptions.length))]
       }
       await interaction.update({
          embeds: [newEmbed],
@@ -105,7 +105,7 @@ module.exports = {
       var newComponents = [];
       //Current - add update intervals
       if (boardType === 'current') {
-         newComponents = [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Update Interval').setCustomId(`${config.serverName}~board~${boardType}~updateInterval`).addOptions(util.boards.current.updateIntervals))];
+         newComponents = [new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setPlaceholder('Select Update Interval').setCustomId(`${config.serverName}~board~${boardType}~updateInterval`).addOptions(util.boards.current.updateIntervals))];
       }
       await interaction.update({
          embeds: [newEmbed],
@@ -566,7 +566,7 @@ module.exports = {
          value: 'history'
       });
       var componentList = [];
-      componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~board~history~addOptions`).setPlaceholder('Select stat history options').addOptions(util.boards.history.historyOptions).setMaxValues(util.boards.history.historyOptions.length)));
+      componentList.push(new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(`${config.serverName}~board~history~addOptions`).setPlaceholder('Select stat history options').addOptions(util.boards.history.historyOptions).setMaxValues(util.boards.history.historyOptions.length)));
       await interaction.reply({
          embeds: [newEmbed],
          components: componentList,
@@ -583,7 +583,7 @@ module.exports = {
          value: historyOptions.join('\n')
       });
       var componentList = [];
-      componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~board~${boardType}~addLength`).setPlaceholder('Select stat history length').addOptions(util.boards.history.updateIntervals).setMaxValues(1)));
+      componentList.push(new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(`${config.serverName}~board~${boardType}~addLength`).setPlaceholder('Select stat history length').addOptions(util.boards.history.updateIntervals).setMaxValues(1)));
       await interaction.update({
          embeds: [newEmbed],
          components: componentList,
@@ -629,7 +629,7 @@ module.exports = {
          name: 'Area Name:',
          value: interaction.options._hoistedOptions[0]['value']
       });
-      let newComponents = [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Update Interval').setCustomId(`${config.serverName}~board~kecleon~updateInterval`).addOptions(util.boards.kecleon.updateIntervals))];
+      let newComponents = [new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setPlaceholder('Select Update Interval').setCustomId(`${config.serverName}~board~kecleon~updateInterval`).addOptions(util.boards.kecleon.updateIntervals))];
       await interaction.reply({
          embeds: [newEmbed],
          components: newComponents,
@@ -640,7 +640,7 @@ module.exports = {
 
    addRaidArea: async function addRaidArea(interaction, newEmbed) {
       var componentList = [];
-      componentList.push(new ActionRowBuilder().addComponents(new SelectMenuBuilder().setCustomId(`${config.serverName}~board~raid~addTiers`).setPlaceholder('Select raid tiers').addOptions(util.boards.raid.raidTiers).setMaxValues(util.boards.raid.raidTiers.length)));
+      componentList.push(new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(`${config.serverName}~board~raid~addTiers`).setPlaceholder('Select raid tiers').addOptions(util.boards.raid.raidTiers).setMaxValues(util.boards.raid.raidTiers.length)));
       await interaction.reply({
          embeds: [newEmbed],
          components: componentList,
@@ -656,7 +656,7 @@ module.exports = {
          name: 'Tiers:',
          value: tiers.join('\n')
       });
-      let newComponents = [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Include Eggs?').setCustomId(`${config.serverName}~board~raid~addEggs`).addOptions({
+      let newComponents = [new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setPlaceholder('Include Eggs?').setCustomId(`${config.serverName}~board~raid~addEggs`).addOptions({
          label: "True",
          value: "true"
       }, {
@@ -678,7 +678,7 @@ module.exports = {
          name: 'Eggs:',
          value: includeEggs
       });
-      let newComponents = [new ActionRowBuilder().addComponents(new SelectMenuBuilder().setPlaceholder('Select Update Interval').setCustomId(`${config.serverName}~board~raid~updateInterval`).addOptions(util.boards.current.updateIntervals))];
+      let newComponents = [new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setPlaceholder('Select Update Interval').setCustomId(`${config.serverName}~board~raid~updateInterval`).addOptions(util.boards.current.updateIntervals))];
       await interaction.update({
          embeds: [newEmbed],
          components: newComponents,
