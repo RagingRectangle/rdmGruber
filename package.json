@@ -4,6 +4,7 @@
   "description": "Discord bot for controlling RDM, PM2 processes, and whatever else this idiot comes up with to add.",
   "main": "rdmgruber.js",
   "scripts": {
+    "start": "node .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -31,7 +32,7 @@
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.38",
     "mysql2": "^2.3.3",
-    "node-fetch": "2.6.1",
+    "node-fetch": "2.6.7",
     "node-schedule": "^2.1.0",
     "pm2": "^5.1.2",
     "quickchart-js": "^2.0.3",

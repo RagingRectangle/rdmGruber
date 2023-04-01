@@ -2,11 +2,11 @@ var fs = require('fs');
 var pm2 = require('pm2');
 var mysql = require('mysql2');
 var config = require('../config/config.json');
-var geoConfig = require('../config/geofence.json');
 
 module.exports = {
    generate: async function generate() {
-      var serverInfo = {};
+    var geoConfig = require('../config/geofence.json');
+    var serverInfo = {};
       //PM2 Processes
       let processList = generatePM2();
 

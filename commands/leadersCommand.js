@@ -5,10 +5,6 @@ var fs = require('fs');
 var config = require('../config/config.json');
 var Leaders = require('../functions/leaders.js');
 var Roles = require('../functions/roles.js');
-var locale = require('../locale/en.json');
-if (config.raidBoardOptions.language) {
-   locale = require(`../locale/${config.raidBoardOptions.language}.json`);
-}
 
 module.exports = {
    data: new SlashCommandBuilder()

@@ -13,12 +13,13 @@ var Handlebars = require("handlebars");
 var config = require('../config/config.json');
 var util = require('../util.json');
 var translations = require('../config/translations.json');
-var locale = require('../locale/en.json');
-if (config.raidBoardOptions.language) {
-   locale = require(`../locale/${config.raidBoardOptions.language}.json`);
-}
+var locale = {};
 
 module.exports = {
+   setLocale() {
+      locale = require(`../locale/${config.raidBoardOptions.language || 'en'}.json`);
+      console.log('[Leaders] Set Locale to: ' + config.raidBoardOptions.language);
+   },
    createNewLeaderboard: async function createNewLeaderboard(interaction, type) {
       var leaderEmbed = new EmbedBuilder().setTitle(`Creating New Leaderboard:`).addFields({
          name: 'Leaderboard Type:',
