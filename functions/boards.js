@@ -399,7 +399,7 @@ module.exports = {
                            boardTable.cell(translations.Rainy, queryResult[0][`rainy`] ? queryResult[0][`rainy`] : 0);
                         }
                         if (queryResult[0][`sparkly`] != 0) {
-                           boardTable.cell(translations.Rainy, queryResult[0][`sparkly`] ? queryResult[0][`sparkly`] : 0);
+                           boardTable.cell(translations.Sparkly, queryResult[0][`sparkly`] ? queryResult[0][`sparkly`] : 0);
                         }
                         boardTable.newRow();
                         if (boardTable.toString() !== '\n\n\n') {
