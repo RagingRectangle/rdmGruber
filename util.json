@@ -511,6 +511,7 @@
       ]
    },
    "queries": {
+      "dirtyRead": "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;",
       "current_total_pokemon": {
          "label": "{{{pokemonEmoji}}} {{Pokemon}}",
          "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE id IS NOT NULL AND expire_timestamp >= UNIX_TIMESTAMP() AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
