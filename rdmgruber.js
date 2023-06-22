@@ -342,7 +342,7 @@ client.on('interactionCreate', async interaction => {
 		Interactions.buttonInteraction(client, interaction, interactionID, userPerms);
 	}
 	//List interaction
-	else if (interaction.isSelectMenu()) {
+	else if (interaction.isStringSelectMenu()) {
 		Interactions.listInteraction(client, interaction, interactionID, userPerms);
 	}
 }); //End of buttons/lists

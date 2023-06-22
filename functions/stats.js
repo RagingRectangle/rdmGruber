@@ -777,7 +777,7 @@ module.exports = {
          dbConfig.multipleStatements = true;
          let statsConnection = mysql.createConnection(dbConfig);
          return new Promise((resolve, reject) => {
-            statsConnection.query(`${util.queries.dirtyRead} ${query}`, (error, results) => {
+            statsConnection.query(query, (error, results) => {
                if (error) {
                   statsConnection.end();
                   console.log(error)

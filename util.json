@@ -252,6 +252,30 @@
             {
                "label": "Tier 9 (Elite)",
                "value": "9"
+            },
+            {
+               "label": "Tier 10 (Primal)",
+               "value": "10"
+            },
+            {
+               "label": "Tier 11 (Shadow 1)",
+               "value": "11"
+            },
+            {
+               "label": "Tier 12 (Shadow 2)",
+               "value": "12"
+            },
+            {
+               "label": "Tier 13 (Shadow 3)",
+               "value": "13"
+            },
+            {
+               "label": "Tier 14 (Shadow 4)",
+               "value": "14"
+            },
+            {
+               "label": "Tier 15 (Shadow 5)",
+               "value": "15"
             }
          ]
       },
@@ -487,7 +511,6 @@
       ]
    },
    "queries": {
-      "dirtyRead": "SET SESSION tx_isolation = 'READ-UNCOMMITTED';",
       "current_total_pokemon": {
          "label": "{{{pokemonEmoji}}} {{Pokemon}}",
          "query": "SELECT count(*) as {{queryName}} FROM pokemon WHERE id IS NOT NULL AND expire_timestamp >= UNIX_TIMESTAMP() AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(pokemon.lat, pokemon.lon));"
@@ -534,7 +557,11 @@
       },
       "current_raid_tiers": {
          "label": "{{{raidsEmoji}}} {{Raids}}",
-         "query": "SELECT `tier_1`, `tier_2`, `tier_3`, `tier_4`, `tier_5`, `tier_6`, `tier_7`, `tier_8`, `tier_9` FROM (SELECT COUNT(CASE WHEN raid_level = 1 THEN 1 END) AS `tier_1`, COUNT(CASE WHEN raid_level = 2 THEN 1 END) AS `tier_2`, COUNT(CASE WHEN raid_level = 3 THEN 1 END) AS `tier_3`, COUNT(CASE WHEN raid_level = 4 THEN 1 END) AS `tier_4`, COUNT(CASE WHEN raid_level = 5 THEN 1 END) AS `tier_5`, COUNT(CASE WHEN raid_level = 6 THEN 1 END) AS `tier_6`, COUNT(CASE WHEN raid_level = 7 THEN 1 END) AS `tier_7`, COUNT(CASE WHEN raid_level = 8 THEN 1 END) AS `tier_8`, COUNT(CASE WHEN raid_level = 9 THEN 1 END) AS `tier_9` FROM gym WHERE UNIX_TIMESTAMP() < raid_end_timestamp AND UNIX_TIMESTAMP() > raid_battle_timestamp AND raid_pokemon_move_1 > 0 AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)))AS latte;"
+         "query": "SELECT `tier_1`, `tier_2`, `tier_3`, `tier_4`, `tier_5`, `tier_6`, `tier_7`, `tier_8`, `tier_9`, `tier_10`, `tier_11`, `tier_12`, `tier_13`, `tier_14`, `tier_15` FROM (SELECT COUNT(CASE WHEN raid_level = 1 THEN 1 END) AS `tier_1`, COUNT(CASE WHEN raid_level = 2 THEN 1 END) AS `tier_2`, COUNT(CASE WHEN raid_level = 3 THEN 1 END) AS `tier_3`, COUNT(CASE WHEN raid_level = 4 THEN 1 END) AS `tier_4`, COUNT(CASE WHEN raid_level = 5 THEN 1 END) AS `tier_5`, COUNT(CASE WHEN raid_level = 6 THEN 1 END) AS `tier_6`, COUNT(CASE WHEN raid_level = 7 THEN 1 END) AS `tier_7`, COUNT(CASE WHEN raid_level = 8 THEN 1 END) AS `tier_8`, COUNT(CASE WHEN raid_level = 9 THEN 1 END) AS `tier_9`, COUNT(CASE WHEN raid_level = 10 THEN 1 END) AS `tier_10`, COUNT(CASE WHEN raid_level = 11 THEN 1 END) AS `tier_11`, COUNT(CASE WHEN raid_level = 12 THEN 1 END) AS `tier_12`, COUNT(CASE WHEN raid_level = 13 THEN 1 END) AS `tier_13`, COUNT(CASE WHEN raid_level = 14 THEN 1 END) AS `tier_14`, COUNT(CASE WHEN raid_level = 15 THEN 1 END) AS `tier_15` FROM gym WHERE raid_pokemon_move_1 > 0 AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon))) AS latte;"
+      },
+      "current_raid_tiersREAL": {
+         "label": "{{{raidsEmoji}}} {{Raids}}",
+         "query": "SELECT `tier_1`, `tier_2`, `tier_3`, `tier_4`, `tier_5`, `tier_6`, `tier_7`, `tier_8`, `tier_9`, `tier_10`, `tier_11`, `tier_12`, `tier_13`, `tier_14`, `tier_15` FROM (SELECT COUNT(CASE WHEN raid_level = 1 THEN 1 END) AS `tier_1`, COUNT(CASE WHEN raid_level = 2 THEN 1 END) AS `tier_2`, COUNT(CASE WHEN raid_level = 3 THEN 1 END) AS `tier_3`, COUNT(CASE WHEN raid_level = 4 THEN 1 END) AS `tier_4`, COUNT(CASE WHEN raid_level = 5 THEN 1 END) AS `tier_5`, COUNT(CASE WHEN raid_level = 6 THEN 1 END) AS `tier_6`, COUNT(CASE WHEN raid_level = 7 THEN 1 END) AS `tier_7`, COUNT(CASE WHEN raid_level = 8 THEN 1 END) AS `tier_8`, COUNT(CASE WHEN raid_level = 9 THEN 1 END) AS `tier_9`, COUNT(CASE WHEN raid_level = 10 THEN 1 END) AS `tier_10`, COUNT(CASE WHEN raid_level = 11 THEN 1 END) AS `tier_11`, COUNT(CASE WHEN raid_level = 12 THEN 1 END) AS `tier_12`, COUNT(CASE WHEN raid_level = 13 THEN 1 END) AS `tier_13`, COUNT(CASE WHEN raid_level = 14 THEN 1 END) AS `tier_14`, COUNT(CASE WHEN raid_level = 15 THEN 1 END) AS `tier_15` FROM gym WHERE UNIX_TIMESTAMP() < raid_end_timestamp AND UNIX_TIMESTAMP() > raid_battle_timestamp AND raid_pokemon_move_1 > 0 AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon))) AS latte;"
       },
       "current_total_eggs": {
          "label": "{{{eggsEmoji}}} {{Eggs}}",
@@ -542,7 +569,11 @@
       },
       "current_egg_tiers": {
          "label": "{{{eggsEmoji}}} {{Eggs}}",
-         "query": "SELECT `tier_1`, `tier_2`, `tier_3`, `tier_4`, `tier_5`, `tier_6`, `tier_7`, `tier_8`, `tier_9` FROM (SELECT COUNT(CASE WHEN raid_level = 1 THEN 1 END) AS `tier_1`, COUNT(CASE WHEN raid_level = 2 THEN 1 END) AS `tier_2`, COUNT(CASE WHEN raid_level = 3 THEN 1 END) AS `tier_3`, COUNT(CASE WHEN raid_level = 4 THEN 1 END) AS `tier_4`, COUNT(CASE WHEN raid_level = 5 THEN 1 END) AS `tier_5`, COUNT(CASE WHEN raid_level = 6 THEN 1 END) AS `tier_6`, COUNT(CASE WHEN raid_level = 7 THEN 1 END) AS `tier_7`, COUNT(CASE WHEN raid_level = 8 THEN 1 END) AS `tier_8`, COUNT(CASE WHEN raid_level = 9 THEN 1 END) AS `tier_9` FROM gym WHERE UNIX_TIMESTAMP() < raid_battle_timestamp AND UNIX_TIMESTAMP() > raid_spawn_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon)))AS latte;"
+         "query": "SELECT `tier_1`, `tier_2`, `tier_3`, `tier_4`, `tier_5`, `tier_6`, `tier_7`, `tier_8`, `tier_9`, `tier_10`, `tier_11`, `tier_12`, `tier_13`, `tier_14`, `tier_15` FROM (SELECT COUNT(CASE WHEN raid_level = 1 THEN 1 END) AS `tier_1`, COUNT(CASE WHEN raid_level = 2 THEN 1 END) AS `tier_2`, COUNT(CASE WHEN raid_level = 3 THEN 1 END) AS `tier_3`, COUNT(CASE WHEN raid_level = 4 THEN 1 END) AS `tier_4`, COUNT(CASE WHEN raid_level = 5 THEN 1 END) AS `tier_5`, COUNT(CASE WHEN raid_level = 6 THEN 1 END) AS `tier_6`, COUNT(CASE WHEN raid_level = 7 THEN 1 END) AS `tier_7`, COUNT(CASE WHEN raid_level = 8 THEN 1 END) AS `tier_8`, COUNT(CASE WHEN raid_level = 9 THEN 1 END) AS `tier_9`, COUNT(CASE WHEN raid_level = 10 THEN 1 END) AS `tier_10`, COUNT(CASE WHEN raid_level = 11 THEN 1 END) AS `tier_11`, COUNT(CASE WHEN raid_level = 12 THEN 1 END) AS `tier_12`, COUNT(CASE WHEN raid_level = 13 THEN 1 END) AS `tier_13`, COUNT(CASE WHEN raid_level = 14 THEN 1 END) AS `tier_14`, COUNT(CASE WHEN raid_level = 15 THEN 1 END) AS `tier_15` FROM gym WHERE ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon))) AS latte;"
+      },
+      "current_egg_tiersREAL": {
+         "label": "{{{eggsEmoji}}} {{Eggs}}",
+         "query": "SELECT `tier_1`, `tier_2`, `tier_3`, `tier_4`, `tier_5`, `tier_6`, `tier_7`, `tier_8`, `tier_9`, `tier_10`, `tier_11`, `tier_12`, `tier_13`, `tier_14`, `tier_15` FROM (SELECT COUNT(CASE WHEN raid_level = 1 THEN 1 END) AS `tier_1`, COUNT(CASE WHEN raid_level = 2 THEN 1 END) AS `tier_2`, COUNT(CASE WHEN raid_level = 3 THEN 1 END) AS `tier_3`, COUNT(CASE WHEN raid_level = 4 THEN 1 END) AS `tier_4`, COUNT(CASE WHEN raid_level = 5 THEN 1 END) AS `tier_5`, COUNT(CASE WHEN raid_level = 6 THEN 1 END) AS `tier_6`, COUNT(CASE WHEN raid_level = 7 THEN 1 END) AS `tier_7`, COUNT(CASE WHEN raid_level = 8 THEN 1 END) AS `tier_8`, COUNT(CASE WHEN raid_level = 9 THEN 1 END) AS `tier_9`, COUNT(CASE WHEN raid_level = 10 THEN 1 END) AS `tier_10`, COUNT(CASE WHEN raid_level = 11 THEN 1 END) AS `tier_11`, COUNT(CASE WHEN raid_level = 12 THEN 1 END) AS `tier_12`, COUNT(CASE WHEN raid_level = 13 THEN 1 END) AS `tier_13`, COUNT(CASE WHEN raid_level = 14 THEN 1 END) AS `tier_14`, COUNT(CASE WHEN raid_level = 15 THEN 1 END) AS `tier_15` FROM gym WHERE UNIX_TIMESTAMP() < raid_battle_timestamp AND UNIX_TIMESTAMP() > raid_spawn_timestamp AND ST_CONTAINS(ST_GEOMFROMTEXT('POLYGON({{area}})'), point(gym.lat, gym.lon))) AS latte;"
       },
       "current_total_pokestops": {
          "label": "{{{pokestopsEmoji}}} {{Pokestops}}",

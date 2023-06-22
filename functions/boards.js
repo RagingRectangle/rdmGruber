@@ -321,6 +321,7 @@ module.exports = {
                if (boardData.gymOptions[0] !== 'None') {
                   for (var i in boardData.gymOptions) {
                      var boardTable = new Table;
+                     var boardTable2 = new Table;
                      var query = util.queries[boardData.gymOptions[i]]['query'].replace('{{queryName}}', boardData.gymOptions[i]).replace('{{area}}', boardData.geofence).replace('{{offset}}', config.timezoneOffsetHours);
                      let queryResult = await runQuery(query);
                      //Single result queries
@@ -341,7 +342,7 @@ module.exports = {
                         });
                         boardDescription.push(`${`\``}${boardTable.toString()}${`\``}`);
                      } else if (boardData.gymOptions[i] === 'current_raid_tiers' || boardData.gymOptions[i] === 'current_egg_tiers') {
-                        for (var i = 1; i < 10; i++) {
+                        for (var i = 1; i < 11; i++) {
                            if (queryResult[0][`tier_${i}`] != 0) {
                               boardTable.cell(`${translations.Tier} ${i}`, queryResult[0][`tier_${i}`] ? queryResult[0][`tier_${i}`] : 0);
                            }
@@ -349,6 +350,16 @@ module.exports = {
                         boardTable.newRow();
                         if (boardTable.toString() !== '\n\n\n') {
                            boardDescription.push(`${`\``}${boardTable.toString()}${`\``}`);
+                        }
+                        //Shadow Raids
+                        for (var i = 11; i < 16; i++) {
+                           if (queryResult[0][`tier_${i}`] != 0) {
+                              boardTable2.cell(`${translations.Tier} ${i}`, queryResult[0][`tier_${i}`] ? queryResult[0][`tier_${i}`] : 0);
+                           }
+                        } //End of i loop
+                        boardTable2.newRow();
+                        if (boardTable2.toString() !== '\n\n\n') {
+                           boardDescription.push(`${`\``}${boardTable2.toString()}${`\``}`);
                         }
                      }
                   } //End of i loop

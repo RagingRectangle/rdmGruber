@@ -432,7 +432,7 @@ module.exports = {
       dbConfig.multipleStatements = true;
       let questConnection = mysql.createConnection(dbConfig);
       return new Promise((resolve, reject) => {
-         questConnection.query(`${util.queries.dirtyRead} ${query}`, (error, results) => {
+         questConnection.query(query, (error, results) => {
             if (error) {
                questConnection.end();
                console.log(error)
